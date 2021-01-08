@@ -1,7 +1,7 @@
-package com.api.mercadeando.servicios;
+package com.api.mercadeando.service;
 
-import com.api.mercadeando.entidades.NotificationEmail;
-import com.api.mercadeando.excepciones.MercadeandoException;
+import com.api.mercadeando.entity.NotificationEmail;
+import com.api.mercadeando.exception.MercadeandoException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;

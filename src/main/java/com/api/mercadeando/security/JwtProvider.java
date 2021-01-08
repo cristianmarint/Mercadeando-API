@@ -1,6 +1,6 @@
-package com.api.mercadeando.seguridad;
+package com.api.mercadeando.security;
 
-import com.api.mercadeando.excepciones.MercadeandoException;
+import com.api.mercadeando.exception.MercadeandoException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

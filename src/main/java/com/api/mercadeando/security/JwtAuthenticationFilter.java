@@ -1,4 +1,4 @@
-package com.api.mercadeando.seguridad;
+package com.api.mercadeando.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

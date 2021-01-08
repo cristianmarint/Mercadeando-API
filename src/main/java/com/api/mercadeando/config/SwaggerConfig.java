@@ -1,4 +1,4 @@
-package com.api.mercadeando.configuracion;
+package com.api.mercadeando.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,8 +1,8 @@
-package com.api.mercadeando.servicios;
+package com.api.mercadeando.service;
 
-import com.api.mercadeando.entidades.RefreshToken;
-import com.api.mercadeando.excepciones.MercadeandoException;
-import com.api.mercadeando.repositorio.RefreshTokenRepository;
+import com.api.mercadeando.entity.RefreshToken;
+import com.api.mercadeando.exception.MercadeandoException;
+import com.api.mercadeando.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

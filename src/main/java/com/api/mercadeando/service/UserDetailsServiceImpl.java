@@ -1,7 +1,7 @@
-package com.api.mercadeando.servicios;
+package com.api.mercadeando.service;
 
-import com.api.mercadeando.entidades.User;
-import com.api.mercadeando.repositorio.UserRepository;
+import com.api.mercadeando.entity.User;
+import com.api.mercadeando.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,6 +1,6 @@
-package com.api.mercadeando.configuracion;
+package com.api.mercadeando.config;
 
-import com.api.mercadeando.seguridad.JwtAuthenticationFilter;
+import com.api.mercadeando.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

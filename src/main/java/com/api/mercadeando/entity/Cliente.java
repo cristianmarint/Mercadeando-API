@@ -1,9 +1,6 @@
 package com.api.mercadeando.entidades;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -12,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cliente {
@@ -31,9 +30,15 @@ public class Cliente {
     @Column(nullable = false)
     private String apellido;
 
+    @Column(unique = true)
     private String cedula;
 
     private String direccion;
+
+    private String ciudad;
+
+    @Enumerated(EnumType.STRING)
+    private ColombiaDepartamentos departamento;
 
 //    @OneToMany
 //    private Set<Orden> ordenes = new HashSet<>();

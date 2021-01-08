@@ -1,11 +1,11 @@
-package com.api.mercadeando.controladores;
+package com.api.mercadeando.controller;
 
 import com.api.mercadeando.dto.AuthenticationResponse;
 import com.api.mercadeando.dto.LoginRequest;
 import com.api.mercadeando.dto.RefreshTokenRequest;
 import com.api.mercadeando.dto.RegisterRequest;
-import com.api.mercadeando.servicios.AuthService;
-import com.api.mercadeando.servicios.RefreshTokenService;
+import com.api.mercadeando.service.AuthService;
+import com.api.mercadeando.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,16 +1,16 @@
-package com.api.mercadeando.servicios;
+package com.api.mercadeando.service;
 
 import com.api.mercadeando.dto.AuthenticationResponse;
 import com.api.mercadeando.dto.LoginRequest;
 import com.api.mercadeando.dto.RefreshTokenRequest;
 import com.api.mercadeando.dto.RegisterRequest;
-import com.api.mercadeando.entidades.NotificationEmail;
-import com.api.mercadeando.entidades.User;
-import com.api.mercadeando.entidades.VerificationToken;
-import com.api.mercadeando.excepciones.MercadeandoException;
-import com.api.mercadeando.repositorio.UserRepository;
-import com.api.mercadeando.repositorio.VerificationTokenRepository;
-import com.api.mercadeando.seguridad.JwtProvider;
+import com.api.mercadeando.entity.NotificationEmail;
+import com.api.mercadeando.entity.User;
+import com.api.mercadeando.entity.VerificationToken;
+import com.api.mercadeando.exception.MercadeandoException;
+import com.api.mercadeando.repository.UserRepository;
+import com.api.mercadeando.repository.VerificationTokenRepository;
+import com.api.mercadeando.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

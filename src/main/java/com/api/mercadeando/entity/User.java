@@ -22,7 +22,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Username es requerido")
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String username;
 
     @NotBlank(message = "Password es requerido")
@@ -31,7 +31,7 @@ public class User {
 
     @Email
     @NotBlank(message = "Email es requerido")
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Builder.Default

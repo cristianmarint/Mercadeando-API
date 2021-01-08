@@ -1,6 +1,6 @@
-package com.api.mercadeando.repositorio;
+package com.api.mercadeando.repository;
 
-import com.api.mercadeando.entidades.RefreshToken;
+import com.api.mercadeando.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
