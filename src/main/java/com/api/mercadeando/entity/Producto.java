@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -34,11 +33,20 @@ public class Producto {
     @Lob
     private String descripcion;
 
-    @Builder.Default
-    private Integer cantidad=0;
+    /**
+     * En gramos
+     */
+    private Double peso;
 
-    @NotBlank(message = "El precio del pruducto ser puede estar Blank")
-    @NotNull(message = "El precio del pruducto ser puede estar Null")
+    /**
+     * Unidades en bolsa
+     */
+    @Builder.Default
+    private Integer unidades=0;
+
+    /**
+     * En Peso Colombiano CO
+     */
     @Column(name = "precio", nullable = false)
     @DecimalMin(value = "0.00", message = "El precio debe de ser un valor mayor a cero (0)")
     @Builder.Default
@@ -48,7 +56,7 @@ public class Producto {
     private String foto;
 
     @Builder.Default
-    private Boolean estado=true;
+    private ProductoEstado estado=ProductoEstado.DISPONIBLE;
 
     @Builder.Default
     private Instant createdAt= Instant.now();

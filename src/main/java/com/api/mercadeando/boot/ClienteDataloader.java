@@ -1,8 +1,8 @@
 package com.api.mercadeando.boot;
 
-import com.api.mercadeando.entidades.Cliente;
-import com.api.mercadeando.entidades.ColombiaDepartamentos;
-import com.api.mercadeando.repositorio.ClienteRepository;
+import com.api.mercadeando.entity.Cliente;
+import com.api.mercadeando.entity.ColombiaDepartamentos;
+import com.api.mercadeando.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,8 +25,8 @@ public class ClienteDataloader implements CommandLineRunner {
         List<Cliente> clientes=new ArrayList<>();
         Cliente cliente1 = new Cliente().builder()
                 .cedula("112777001")
-                .nombre("Fernando")
-                .apellido("Lopez")
+                .nombres("Fernando")
+                .apellidos("Lopez")
                 .direccion("Crra 1 N # 54-26")
                 .ciudad("Cartago")
                 .departamento(ColombiaDepartamentos.VALLE_DEL_CAUCA)
@@ -36,8 +36,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente2 = new Cliente().builder()
                 .cedula("112777002")
-                .nombre("Carlos")
-                .apellido("Castaño")
+                .nombres("Carlos")
+                .apellidos("Castaño")
                 .direccion("Crra 2 N # 54-26")
                 .ciudad("Amalfi")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
@@ -47,8 +47,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente3 = new Cliente().builder()
                 .cedula("112777003")
-                .nombre("Fabio")
-                .apellido("Ochoa Vásquez")
+                .nombres("Fabio")
+                .apellidos("Ochoa Vásquez")
                 .direccion("Crra 3 N # 54-26")
                 .ciudad("Rionegro")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
@@ -58,8 +58,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente4 = new Cliente().builder()
                 .cedula("112777004")
-                .nombre("Gonzalo")
-                .apellido("Rodríguez Gacha")
+                .nombres("Gonzalo")
+                .apellidos("Rodríguez Gacha")
                 .direccion("Crra 4 N # 54-26")
                 .ciudad("Pacho")
                 .departamento(ColombiaDepartamentos.CUNDINAMARCA)
@@ -69,8 +69,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente5 = new Cliente().builder()
                 .cedula("112777005")
-                .nombre("Carlos")
-                .apellido("Lehder")
+                .nombres("Carlos")
+                .apellidos("Lehder")
                 .direccion("Crra 5 N # 54-26")
                 .ciudad("Armenia")
                 .departamento(ColombiaDepartamentos.QUINDIO)
@@ -80,8 +80,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente6 = new Cliente().builder()
                 .cedula("112777006")
-                .nombre("Gustavo")
-                .apellido("Gaviria")
+                .nombres("Gustavo")
+                .apellidos("Gaviria")
                 .direccion("Crra 6 N # 54-26")
                 .ciudad("Pereira")
                 .departamento(ColombiaDepartamentos.RISARALDA)
@@ -91,8 +91,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente7 = new Cliente().builder()
                 .cedula("112777007")
-                .nombre("Jorge Luis")
-                .apellido("Ochoa Vásquez")
+                .nombres("Jorge Luis")
+                .apellidos("Ochoa Vásquez")
                 .direccion("Crra 7 N # 54-26")
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
@@ -102,8 +102,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente8 = new Cliente().builder()
                 .cedula("112777008")
-                .nombre("Juan David")
-                .apellido("Ochoa Vásquez")
+                .nombres("Juan David")
+                .apellidos("Ochoa Vásquez")
                 .direccion("Crra 8 N # 54-26")
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
@@ -113,8 +113,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente9 = new Cliente().builder()
                 .cedula("112777009")
-                .nombre("Fabio")
-                .apellido("Ochoa Vásquez")
+                .nombres("Fabio")
+                .apellidos("Ochoa Vásquez")
                 .direccion("Crra 9 N # 54-26")
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
@@ -124,8 +124,8 @@ public class ClienteDataloader implements CommandLineRunner {
 
         Cliente cliente10 = new Cliente().builder()
                 .cedula("112777010")
-                .nombre("Ana Griselda")
-                .apellido("Blanco Restrepo")
+                .nombres("Ana Griselda")
+                .apellidos("Blanco Restrepo")
                 .direccion("Crra 10 N # 54-26")
                 .ciudad("Cartagena")
                 .departamento(ColombiaDepartamentos.BOLIVAR)

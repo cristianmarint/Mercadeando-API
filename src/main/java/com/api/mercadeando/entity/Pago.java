@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Calendar;
+import java.time.Instant;
 
 @Data
 @Entity
@@ -18,7 +18,7 @@ public class Pago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Calendar fecha;
+    private Instant fecha;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

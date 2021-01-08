@@ -1,4 +1,4 @@
-package com.api.mercadeando.excepciones;
+package com.api.mercadeando.exception;
 
 public class BadRequestException extends Exception{
     public BadRequestException(){}

@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +21,8 @@ public class OrdenProducto {
     private Integer cantidad;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "order_id",nullable = false,updatable = false)
-    private Orden ordenProducto;
+    @JoinColumn(name = "orden_id",nullable = false,updatable = false)
+    private Orden ordenx;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "producto_id",nullable = false)

@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +37,7 @@ public class Orden {
     @Builder.Default
     private Instant createdAt= Instant.now();
 
-    @OneToMany(mappedBy = "ordenProducto",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordenx",cascade = CascadeType.ALL)
     private Set<OrdenProducto> productos = new HashSet<>();
 
     @OneToOne()

@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
@@ -24,11 +24,11 @@ public class Cliente {
 
     @NotBlank(message = "El nombre del cliente ser no puede estar Blank o Null")
     @Column(nullable = false)
-    private String nombre;
+    private String nombres;
 
     @NotBlank(message = "El apellido del cliente ser no puede estar Blank o Null")
     @Column(nullable = false)
-    private String apellido;
+    private String apellidos;
 
     @Column(unique = true)
     private String cedula;

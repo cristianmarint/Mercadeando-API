@@ -1,4 +1,4 @@
-package com.api.mercadeando.entidades;
+package com.api.mercadeando.entity;
 
 public enum ColombiaDepartamentos {
     ANTIOQUIA,
