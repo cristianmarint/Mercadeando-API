@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+/**
+ * Respuesta de API para autentificación
+ */
 @Data
 @Builder
 @AllArgsConstructor

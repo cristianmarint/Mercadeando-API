@@ -11,6 +11,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * Configuración para documentación con Swagger
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
@@ -24,6 +27,10 @@ public class SwaggerConfig {
                 .apiInfo(getApiInfo());
     }
 
+    /**
+     * Información sobre el desarrollador
+     * @return ApiInfo
+     */
     private ApiInfo getApiInfo(){
         return new ApiInfoBuilder()
                 .title("Mercadeando")

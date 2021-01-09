@@ -19,6 +19,10 @@ import java.time.Instant;
 import static io.jsonwebtoken.Jwts.parser;
 import static java.util.Date.from;
 
+/**
+ * Proporciona funcionalidad para hacer uso del JWT
+ * por medio de una almacenamiento seguro en un JKS
+ */
 @Service
 public class JwtProvider {
 
@@ -26,8 +30,11 @@ public class JwtProvider {
     @Value("${jwt.expiration.time}")
     private Long jwtExpirationInMillis;
 
-    private static String SECRECT = "123456789";
+    private static final String SECRECT = "123456789";
 
+    /**
+     * Accede al archivo .JKS donde se almacena la llave privada
+     */
     @PostConstruct
     public void init() {
         try {
@@ -40,6 +47,11 @@ public class JwtProvider {
 
     }
 
+    /**
+     * Genera para un petición de autentificación un token Bearer
+     * @param authentication con datos de usuario
+     * @return String Bearer Token
+     */
     public String generateToken(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
         return Jwts.builder()
@@ -50,6 +62,11 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * Genera un Bearer token basado en el username
+     * @param username nombre de un usuario registrado
+     * @return String token
+     */
     public String generateTokenWithUserName(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -59,6 +76,10 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * Extrae la llava privada del archivo JKS
+     * @return PrivateKey
+     */
     private PrivateKey getPrivateKey() {
         try {
             return (PrivateKey) keyStore.getKey("mercadeando", SECRECT.toCharArray());
@@ -67,6 +88,10 @@ public class JwtProvider {
         }
     }
 
+    /**
+     * @param jwt token
+     * @return true
+     */
     public boolean validateToken(String jwt) {
         parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
         return true;
@@ -81,6 +106,11 @@ public class JwtProvider {
         }
     }
 
+    /**
+     * Extrae el nombre de usuario del Jwt
+     * @param token token
+     * @return String username
+     */
     public String getUsernameFromJwt(String token) {
         Claims claims = parser()
                 .setSigningKey(getPublickey())

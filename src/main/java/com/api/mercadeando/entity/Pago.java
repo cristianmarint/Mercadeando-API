@@ -22,5 +22,5 @@ public class Pago {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Metodo metodo;
+    private PagoMetodo pagoMetodo;
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * API request para terminar una sesión de usuario
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

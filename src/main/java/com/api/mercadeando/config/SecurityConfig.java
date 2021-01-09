@@ -16,6 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.api.mercadeando.controller.Mappings.URL_AUTH_V1;
+import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
+
+/**
+ * Configura la seguridad de la aplicacion
+ * URIs y permisos se acceso
+ */
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -33,12 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/**")
+                .antMatchers(URL_AUTH_V1 +"**")
                 .permitAll()
 
-                .antMatchers(HttpMethod.GET,"/api/v1/clientes/")
+                .antMatchers(HttpMethod.GET, URL_CLIENTES_V1)
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/api/v1/clientes/**")
+                .antMatchers(HttpMethod.GET,URL_CLIENTES_V1+"**")
                 .permitAll()
 
                 .antMatchers("/v2/api-docs",

@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Crea valores por defecto para productos en la BD
+ */
 @Component
 @AllArgsConstructor
 @Order(3)

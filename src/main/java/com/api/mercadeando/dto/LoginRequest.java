@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * API request para autentificar un usuario
+ */
 @Data
 @Builder
 @AllArgsConstructor

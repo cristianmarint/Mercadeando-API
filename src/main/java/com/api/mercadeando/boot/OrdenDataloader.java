@@ -14,6 +14,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Crea valores por defecto para ordenes en la BD
+ * Relacionando la orden con producto, cliente y usuario.
+ */
 @Component
 @Order(4)
 @AllArgsConstructor
@@ -34,7 +38,7 @@ public class OrdenDataloader implements CommandLineRunner {
         log.info("---------- 4 - CARGANDO ORDENES ----------");
         List<Orden> ordenes = new ArrayList<>();
 
-        Pago pago1 = new Pago().builder().fecha(Instant.parse("2021-01-08T08:48:04Z")).metodo(Metodo.EFECTIVO).build();
+        Pago pago1 = new Pago().builder().fecha(Instant.parse("2021-01-08T08:48:04Z")).pagoMetodo(PagoMetodo.EFECTIVO).build();
         pagoRepository.save(pago1);
 
         Orden orden1 = new Orden().builder()

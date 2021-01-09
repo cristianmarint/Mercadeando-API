@@ -8,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+/**
+ * Crea valores por defecto para usuarios en la BD
+ */
 @Component
 @Order(1)
 @AllArgsConstructor

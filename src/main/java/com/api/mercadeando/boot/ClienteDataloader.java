@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Crea valores por defecto para clientes en la BD
+ */
 @Component
 @AllArgsConstructor
 @Order(2)

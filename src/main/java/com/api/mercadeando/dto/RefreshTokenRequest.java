@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * API request para regenerar el token Bearer
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

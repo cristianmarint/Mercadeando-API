@@ -7,6 +7,10 @@ import com.api.mercadeando.entity.Cliente;
 
 import java.util.List;
 
+/**
+ * Permite mapear datos internos para mostrarlos de manera segura
+ * por medio de la API
+ */
 public class ClienteMapper {
     /**
      * Transforma el Cliente Entity a ClienteResponse para ser retornado por la API al frontend

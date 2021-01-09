@@ -27,6 +27,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service de autentificación de usuarios
+ */
 @Service
 @AllArgsConstructor
 @Transactional
@@ -41,6 +44,10 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
+    /**
+     * Permite registrar un usuario y envia correo para verificar cuenta
+     * @param registerRequest Contiene username, email, y password
+     */
     public void signup(RegisterRequest registerRequest) {
 
         if(userRepository.findByEmailIgnoreCase(registerRequest.getEmail()) == null && userRepository.findByUsernameIgnoreCase(registerRequest.getUsername()) == null)
@@ -62,6 +69,10 @@ public class AuthService {
         }
     }
 
+    /**
+     * Permite conocer el usuario de en una petición
+     * @return User usuario de petición actual
+     */
     @Transactional(readOnly = true)
     public User getCurrentUser() {
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
@@ -70,6 +81,10 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con username " + principal.getUsername()));
     }
 
+    /**
+     * Permite activar la cuenta de un usuario
+     * @param verificationToken token de verificacion con datos de usuario
+     */
     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new MercadeandoException("Usuario no encontrado con username: " + username));
@@ -77,6 +92,11 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    /**
+     * Permite generar token de verificación
+     * @param user usuario registrado
+     * @return String token
+     */
     private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
@@ -87,11 +107,20 @@ public class AuthService {
         return token;
     }
 
+    /**
+     * Permite activar una cuenta de usuario basado en el token
+     * @param token token de verificación
+     */
     public void verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
         fetchUserAndEnable(verificationToken.orElseThrow(() -> new MercadeandoException("Invalid Token")));
     }
 
+    /**
+     * Permite autentificar un usuario activo via credenciales correctas
+     * @param loginRequest Contiene username y password
+     * @return AuthenticationResponse con datos de acceso
+     */
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
@@ -105,6 +134,11 @@ public class AuthService {
                 .build();
     }
 
+    /**
+     * Permite generar un nuevo Bearer token
+     * @param refreshTokenRequest Contiene username y refreshToken
+     * @return AuthenticationResponse con datos de acceso
+     */
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
         String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
@@ -116,6 +150,10 @@ public class AuthService {
                 .build();
     }
 
+    /**
+     * Permite verificar si un usuario tiene un sesion activa
+     * @return boolean
+     */
     public boolean isLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
