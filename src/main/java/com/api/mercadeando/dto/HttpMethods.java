@@ -1,4 +1,4 @@
-package com.api.mercadeando.HATEOS;
+package com.api.mercadeando.dto;
 
 public enum HttpMethods {
     GET,

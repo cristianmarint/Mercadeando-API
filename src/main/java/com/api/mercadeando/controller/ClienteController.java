@@ -1,9 +1,7 @@
 package com.api.mercadeando.controller;
 
-import com.api.mercadeando.controller.model.GetClientesResponse;
 import com.api.mercadeando.service.ClienteService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ClienteController {
 
-    @Autowired
     private ClienteService clienteService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,7 +25,7 @@ public class ClienteController {
         if (limit < 0) limit = 5;
         if (limit > 100) limit = 100;
 
-        return ResponseEntity.ok().body(GetClientesResponse.from(clienteService.getClientes(offset,limit),offset,limit));
+        return ResponseEntity.ok().body(clienteService.getClientes(offset,limit));
     }
 
 }

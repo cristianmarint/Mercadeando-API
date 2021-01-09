@@ -31,7 +31,7 @@ public class OrdenDataloader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<Producto> productos = productoRepository.findAll();
 
-        log.info("---------- 3 - CARGANDO PRODUCTOS ----------");
+        log.info("---------- 4 - CARGANDO ORDENES ----------");
         List<Orden> ordenes = new ArrayList<>();
 
         Pago pago1 = new Pago().builder().fecha(Instant.parse("2021-01-08T08:48:04Z")).metodo(Metodo.EFECTIVO).build();
