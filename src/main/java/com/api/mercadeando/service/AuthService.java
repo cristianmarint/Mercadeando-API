@@ -27,6 +27,8 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.api.mercadeando.controller.Mappings.URL_AUTH_V1;
+
 /**
  * Service de autentificación de usuarios
  */
@@ -63,7 +65,7 @@ public class AuthService {
             mailService.sendMail(new NotificationEmail(
                     "Por favor active su cuenta", user.getEmail(),
                     "Gracias por registrarse en Mercadeando,  por favor acceda a el enlace para activar su cuenta: " +
-                            "http://localhost:8080/api/auth/account-verification/" + token));
+                            "http://localhost:8080"+URL_AUTH_V1+"account-verification/" + token));
         }else{
             throw new MercadeandoException("Correo en uso "+registerRequest.getEmail());
         }

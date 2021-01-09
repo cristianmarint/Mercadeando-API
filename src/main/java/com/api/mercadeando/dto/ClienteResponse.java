@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
- *  API response para cuando se solicita un solo Cliente.
+ *  API response para cuando se solicita un solo ICliente.
  */
 @JsonPropertyOrder({
         "id",
@@ -33,4 +35,6 @@ public class ClienteResponse {
     private String direccion;
     private String ciudad;
     private ColombiaDepartamentos departamento;
+
+    private Map<String,Link> ordenes;
 }

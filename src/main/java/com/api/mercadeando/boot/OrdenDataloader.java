@@ -37,9 +37,14 @@ public class OrdenDataloader implements CommandLineRunner {
 
         log.info("---------- 4 - CARGANDO ORDENES ----------");
         List<Orden> ordenes = new ArrayList<>();
+        List<Pago> pagos = new ArrayList<>();
+        List<OrdenProducto> ordenProductos = new ArrayList<>();
 
         Pago pago1 = new Pago().builder().fecha(Instant.parse("2021-01-08T08:48:04Z")).pagoMetodo(PagoMetodo.EFECTIVO).build();
-        pagoRepository.save(pago1);
+        Pago pago2 = new Pago().builder().fecha(Instant.parse("2021-01-01T01:01:01Z")).pagoMetodo(PagoMetodo.TARJETA_CREDITO).build();
+        pagos.add(pago1);
+        pagos.add(pago2);
+        pagoRepository.saveAll(pagos);
 
         Orden orden1 = new Orden().builder()
                 .estado(OrdenEstado.PENDIENTE)
@@ -50,13 +55,35 @@ public class OrdenDataloader implements CommandLineRunner {
                 .user(userRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
                 .build();
 
-        OrdenProducto ordenProducto1 = new OrdenProducto().builder()
-                .cantidad(1)
-                .producto(productos.get(1))
-                .ordenx(orden1)
+        Orden orden2 = new Orden().builder()
+                .estado(OrdenEstado.PAGADO)
+                .fecha(Instant.parse("2021-01-01T01:01:01Z"))
+                .precio(BigDecimal.valueOf(7.680))
+                .pago(pago2)
+                .cliente(clienteRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
+                .user(userRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
                 .build();
 
         ordenes.add(orden1);
+        ordenes.add(orden2);
         ordenRepository.saveAll(ordenes);
+
+        log.info("---------- 4.5 - CARGANDO PRODUCTO A ORDENES ----------");
+
+        OrdenProducto orden1Producto1 = new OrdenProducto().builder()
+                .cantidad(1)
+                .producto(productos.get(0))
+                .ordenx(orden1)
+                .build();
+
+        OrdenProducto orden2Producto4 = new OrdenProducto().builder()
+                .cantidad(3)
+                .producto(productos.get(3))
+                .ordenx(orden2)
+                .build();
+
+        ordenProductos.add(orden1Producto1);
+        ordenProductos.add(orden2Producto4);
+        ordenProductoRepository.saveAll(ordenProductos);
     }
 }
