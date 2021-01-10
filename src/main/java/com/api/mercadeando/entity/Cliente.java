@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.Instant;
 
 @Data
 @Entity
@@ -31,16 +32,23 @@ public class Cliente {
     @Column(nullable = false)
     private String apellidos;
 
+    @Nullable
     @Column(unique = true)
     private String cedula;
 
+    @Nullable
     private String direccion;
 
+    @Nullable
     private String ciudad;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
-    private ColombiaDepartamentos departamento;
+    private ColombiaDepartamentos departamento=ColombiaDepartamentos.NULL;
 
-//    @OneToMany
-//    private Set<Orden> ordenes = new HashSet<>();
+    @Builder.Default
+    private Instant createdAt= Instant.now();
+
+    @Builder.Default
+    private Instant updatedAt= Instant.now();
 }

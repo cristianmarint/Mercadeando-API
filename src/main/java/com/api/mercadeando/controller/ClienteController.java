@@ -1,15 +1,18 @@
 package com.api.mercadeando.controller;
 
+import com.api.mercadeando.dto.ClienteRequest;
 import com.api.mercadeando.dto.ClienteResponse;
 import com.api.mercadeando.dto.ClientesResponse;
 import com.api.mercadeando.exception.BadRequestException;
 import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.service.ClienteService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
@@ -19,7 +22,7 @@ import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 @AllArgsConstructor
 public class ClienteController {
 
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     /**
      * Encuentra todos los clientes y responde en JSON
@@ -56,4 +59,55 @@ public class ClienteController {
         }
     }
 
+    /**
+     * Permite crear un cliente especificando sus datos
+     * @param request ClienteRequest con datos necesarios para crear cliente
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @PostMapping
+    public ResponseEntity<Void> createCliente(@RequestBody @Valid ClienteRequest request){
+        try{
+            clienteService.createCliente(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Permite actializar un cliente registrado
+     * @param clienteId Id de un cliente registrado
+     * @param request ClienteRequest con los datos nuevos
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @PutMapping(value = "/{clienteId}")
+    public ResponseEntity<Void> updateCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
+        try{
+            clienteService.updateCliente(clienteId,request);
+            return ResponseEntity.ok().build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    /**
+     * Permite actializar el estado de un cliente (Softdelete)
+     * @param clienteId Id de un cliente registrado
+     * @param estado Nuevo estado de un cliente
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @DeleteMapping(value = "/{clienteId}")
+    public ResponseEntity<Void> deleteCliente(@PathVariable @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
+        try{
+            clienteService.softDeleteCliente(clienteId,estado);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }catch (BadRequestException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

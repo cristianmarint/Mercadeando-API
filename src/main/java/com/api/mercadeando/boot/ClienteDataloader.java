@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Cartago")
                 .departamento(ColombiaDepartamentos.VALLE_DEL_CAUCA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:01:01Z"))
                 .build();
         clientes.add(cliente1);
 
@@ -45,6 +47,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Amalfi")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:02:01Z"))
                 .build();
         clientes.add(cliente2);
 
@@ -56,6 +59,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Rionegro")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:03:01Z"))
                 .build();
         clientes.add(cliente3);
 
@@ -67,6 +71,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Pacho")
                 .departamento(ColombiaDepartamentos.CUNDINAMARCA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:04:01Z"))
                 .build();
         clientes.add(cliente4);
 
@@ -78,6 +83,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Armenia")
                 .departamento(ColombiaDepartamentos.QUINDIO)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:05:01Z"))
                 .build();
         clientes.add(cliente5);
 
@@ -89,6 +95,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Pereira")
                 .departamento(ColombiaDepartamentos.RISARALDA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:06:01Z"))
                 .build();
         clientes.add(cliente6);
 
@@ -100,6 +107,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:07:01Z"))
                 .build();
         clientes.add(cliente7);
 
@@ -111,6 +119,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:08:01Z"))
                 .build();
         clientes.add(cliente8);
 
@@ -122,6 +131,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Medellin")
                 .departamento(ColombiaDepartamentos.ANTIOQUIA)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:09:01Z"))
                 .build();
         clientes.add(cliente9);
 
@@ -133,6 +143,7 @@ public class ClienteDataloader implements CommandLineRunner {
                 .ciudad("Cartagena")
                 .departamento(ColombiaDepartamentos.BOLIVAR)
                 .activo(true)
+                .createdAt(Instant.parse("2021-01-09T18:10:01Z"))
                 .build();
         clientes.add(cliente10);
 
