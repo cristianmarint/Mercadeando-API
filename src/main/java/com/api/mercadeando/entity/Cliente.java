@@ -44,7 +44,7 @@ public class Cliente {
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    private ColombiaDepartamentos departamento=ColombiaDepartamentos.NULL;
+    private ColombiaDepartamentos departamento;
 
     @Builder.Default
     private Instant createdAt= Instant.now();
