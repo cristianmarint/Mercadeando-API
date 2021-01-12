@@ -2,6 +2,7 @@ package com.api.mercadeando.boot;
 
 import com.api.mercadeando.entity.Rol;
 import com.api.mercadeando.entity.User;
+import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.repository.RolRepository;
 import com.api.mercadeando.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,13 @@ public class UserDataloader implements CommandLineRunner {
     private final RolRepository rolRepository;
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws ResourceNotFoundException {
         log.info("---------- 1 - CARGANDO USERS ----------");
         userRepository.deleteAllInBatch();
+
+        Rol rolAdmin = rolRepository.findByName("ADMIN");
+        Rol rolCajero = rolRepository.findByName("CAJERO");
+
         User user1 = new User()
                 .builder()
                 .email("cristianmarint@mail.com")
@@ -35,11 +40,21 @@ public class UserDataloader implements CommandLineRunner {
                 .password("$2a$10$iralKLjgFstqxQ6J2yIdV.QM3zwATgGZx0l7QAvka52MfhZGbO0bG")// 123456789
                 .activo(true)
                 .build();
-        log.info(String.valueOf(user1));
-        Rol rolAdmin = rolRepository.findByName("ADMIN");
         rolAdmin.addUser(user1);
+        rolCajero.addUser(user1);
         user1.addRol(rolAdmin);
-        log.info(String.valueOf(user1));
+        user1.addRol(rolCajero);
         userRepository.save(user1);
+
+        User user2 = new User()
+                .builder()
+                .email("cajero@mercadeando.com")
+                .username("cajero")
+                .password("$2a$10$iralKLjgFstqxQ6J2yIdV.QM3zwATgGZx0l7QAvka52MfhZGbO0bG")// 123456789
+                .activo(true)
+                .build();
+        rolCajero.addUser(user2);
+        user2.addRol(rolCajero);
+        userRepository.save(user2);
     }
 }

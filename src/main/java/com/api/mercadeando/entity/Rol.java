@@ -1,6 +1,9 @@
 package com.api.mercadeando.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -53,7 +56,7 @@ public class Rol {
     private Set<Permiso> permisos;
     public void addPermiso(Permiso permiso){
         if (permisos == null){
-            permisos = new HashSet<Permiso>(Arrays.asList(permiso));
+            permisos = new HashSet<>(Arrays.asList(permiso));
         }else {
             permisos.add(permiso);
         }

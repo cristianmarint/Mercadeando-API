@@ -4,10 +4,10 @@ import com.api.mercadeando.dto.AuthenticationResponse;
 import com.api.mercadeando.dto.LoginRequest;
 import com.api.mercadeando.dto.RefreshTokenRequest;
 import com.api.mercadeando.dto.RegisterRequest;
-import com.api.mercadeando.entity.NotificationEmail;
-import com.api.mercadeando.entity.User;
-import com.api.mercadeando.entity.VerificationToken;
+import com.api.mercadeando.entity.*;
 import com.api.mercadeando.exception.MercadeandoException;
+import com.api.mercadeando.repository.PermisoRepository;
+import com.api.mercadeando.repository.RolRepository;
 import com.api.mercadeando.repository.UserRepository;
 import com.api.mercadeando.repository.VerificationTokenRepository;
 import com.api.mercadeando.security.JwtProvider;
@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.api.mercadeando.controller.Mappings.URL_AUTH_V1;
@@ -60,6 +62,7 @@ public class AuthService {
                     .email(registerRequest.getEmail())
                     .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .build();
+            user.addRol(rolRepository.findByName("USUARIO"));
             userRepository.save(user);
             String token = generateVerificationToken(user);
             mailService.sendMail(new NotificationEmail(
@@ -123,17 +126,37 @@ public class AuthService {
      * @param loginRequest Contiene username y password
      * @return AuthenticationResponse con datos de acceso
      */
+    private RolRepository rolRepository;
+    private PermisoRepository permisoRepository;
     public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                loginRequest.getPassword()));
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
-        return AuthenticationResponse.builder()
+
+        AuthenticationResponse response = AuthenticationResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(loginRequest.getUsername())
                 .build();
+
+        Set<Rol> rolSet = rolRepository.findByUsername(loginRequest.getUsername());
+        Set<String> permisos=new HashSet<>();
+        Set<String> roles=new HashSet<>();
+
+        for (Rol r:rolSet) {
+            roles.add(r.getName());
+            Set<Permiso> tempo = permisoRepository.findByRolName(r.getName());
+            for (Permiso p:tempo) {
+                permisos.add(p.getName());
+            }
+        }
+        response.setRoles(roles);
+        response.setPermisos(permisos);
+
+        return response;
     }
 
     /**

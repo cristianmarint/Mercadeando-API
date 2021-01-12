@@ -9,7 +9,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -50,10 +52,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "rol_id",referencedColumnName = "id")
     )
-    private List<Rol> roles;
+    private Set<Rol> roles = new HashSet<>();
     public void addRol(Rol rol){
         if (roles == null){
-            roles = new ArrayList<Rol>(Collections.singleton(rol));
+            roles = new HashSet<>(Collections.singleton(rol));
         }else {
             roles.add(rol);
         }

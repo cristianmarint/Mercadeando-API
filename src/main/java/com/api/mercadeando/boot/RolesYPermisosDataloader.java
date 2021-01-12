@@ -35,6 +35,7 @@ public class RolesYPermisosDataloader implements CommandLineRunner {
         permisoRepository.deleteAllInBatch();
         rolRepository.deleteAllInBatch();
         Rol adminRol = new Rol().builder().name("ADMIN").build();
+        Rol usuarioRol = new Rol().builder().name("USUARIO").build();
         Rol cajeroRol = new Rol().builder().name("CAJERO").build();
 
         Permiso BROWSE_CLIENTE = new Permiso().builder().name("BROWSE_CLIENTE").build();
@@ -101,6 +102,7 @@ public class RolesYPermisosDataloader implements CommandLineRunner {
         cajeroRol.addPermiso(ADD_ORDEN);
 
         rolRepository.save(adminRol);
+        rolRepository.save(usuarioRol);
         rolRepository.save(cajeroRol);
     }
 }

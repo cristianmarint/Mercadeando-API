@@ -4,8 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,6 +12,8 @@ import java.util.Set;
  */
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Permiso {
@@ -26,5 +26,5 @@ public class Permiso {
     private String name;
 
     @ManyToMany(mappedBy = "permisos", cascade = CascadeType.MERGE)
-    private List<Rol> roles;
+    private Set<Rol> roles;
 }
