@@ -47,6 +47,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final RolRepository rolRepository;
+    private final PermisoRepository permisoRepository;
 
     /**
      * Permite registrar un usuario y envia correo para verificar cuenta
@@ -126,8 +128,6 @@ public class AuthService {
      * @param loginRequest Contiene username y password
      * @return AuthenticationResponse con datos de acceso
      */
-    private RolRepository rolRepository;
-    private PermisoRepository permisoRepository;
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));

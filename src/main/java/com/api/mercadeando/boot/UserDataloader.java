@@ -32,11 +32,12 @@ public class UserDataloader implements CommandLineRunner {
 
         Rol rolAdmin = rolRepository.findByName("ADMIN");
         Rol rolCajero = rolRepository.findByName("CAJERO");
+        Rol rolUsuario = rolRepository.findByName("USUARIO");
 
         User user1 = new User()
                 .builder()
-                .email("cristianmarint@mail.com")
-                .username("cristianmarint")
+                .email("admin@mercadeando.com")
+                .username("admin")
                 .password("$2a$10$iralKLjgFstqxQ6J2yIdV.QM3zwATgGZx0l7QAvka52MfhZGbO0bG")// 123456789
                 .activo(true)
                 .build();
@@ -56,5 +57,16 @@ public class UserDataloader implements CommandLineRunner {
         rolCajero.addUser(user2);
         user2.addRol(rolCajero);
         userRepository.save(user2);
+
+        User user3 = new User()
+                .builder()
+                .email("usuario@mercadeando.com")
+                .username("usuario")
+                .password("$2a$10$iralKLjgFstqxQ6J2yIdV.QM3zwATgGZx0l7QAvka52MfhZGbO0bG")// 123456789
+                .activo(true)
+                .build();
+        rolUsuario.addUser(user3);
+        user3.addRol(rolUsuario);
+        userRepository.save(user3);
     }
 }
