@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,11 +26,12 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     /**
-     * Encuentra todos los clientes y responde en JSON
+     * Encuentra todos los clientes y responde en JSON si se cuenta con el permiso
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
      * @param limit Cantidad de valores a entontrar menor a cien
      * @return ResposeEntity<ClientesResponse> Con los clientes en formato JSON
      */
+    @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientesResponse> getClientes(
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
@@ -43,10 +45,11 @@ public class ClienteController {
     }
 
     /**
-     * Encuentra un cliente especificado y retorna sus datos y ordenes asociadas
+     * Encuentra un cliente especificado y retorna sus datos y ordenes asociadas si se cuenta con el permiso
      * @param clienteId Id de un cliente registrado
      * @return ResponseEntity<ClienteResponse> cuando el cliente es encontrado y sus datos correspondientes
      */
+    @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @GetMapping(value = "/{clienteId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClienteResponse> getCliente(@PathVariable(value = "clienteId") @Min(1) Long clienteId) {
         try{
@@ -60,10 +63,11 @@ public class ClienteController {
     }
 
     /**
-     * Permite crear un cliente especificando sus datos
+     * Permite crear un cliente especificando sus datos si se cuenta con el permiso
      * @param request ClienteRequest con datos necesarios para crear cliente
      * @return HttpStatus Estado Http según corresponda
      */
+    @PreAuthorize("hasAuthority('WRITE_CLIENTE')")
     @PostMapping
     public ResponseEntity<Void> createCliente(@RequestBody @Valid ClienteRequest request){
         try{
@@ -75,15 +79,16 @@ public class ClienteController {
     }
 
     /**
-     * Permite actializar un cliente registrado
+     * Permite actualizar un cliente registrado si se cuenta con el permiso
      * @param clienteId Id de un cliente registrado
      * @param request ClienteRequest con los datos nuevos
      * @return HttpStatus Estado Http según corresponda
      */
+    @PreAuthorize("hasAuthority('EDIT_CLIENTE')")
     @PutMapping(value = "/{clienteId}")
-    public ResponseEntity<Void> updateCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
+    public ResponseEntity<Void> editCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
         try{
-            clienteService.updateCliente(clienteId,request);
+            clienteService.editCliente(clienteId,request);
             return ResponseEntity.ok().build();
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();
@@ -94,11 +99,12 @@ public class ClienteController {
 
 
     /**
-     * Permite actializar el estado de un cliente (Softdelete)
+     * Permite actializar el estado de un cliente (Softdelete) si se cuenta con el permiso
      * @param clienteId Id de un cliente registrado
      * @param estado Nuevo estado de un cliente
      * @return HttpStatus Estado Http según corresponda
      */
+    @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     @DeleteMapping(value = "/{clienteId}")
     public ResponseEntity<Void> deleteCliente(@PathVariable @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
         try{
