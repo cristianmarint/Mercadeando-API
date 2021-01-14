@@ -24,8 +24,8 @@ public class ProductoDataloader implements CommandLineRunner {
     private ProductoRepository productoRepository;
 
     @Override
-    public void run(String... args) throws Exception {
-        log.info("---------- 3 - CARGANDO PRODUCTOS ----------");
+    public void run(String... args) {
+        log.info("---------> 3 - CARGANDO PRODUCTOS");
         List<Producto> productos = new ArrayList<>();
 
         Producto producto1 = new Producto().builder()

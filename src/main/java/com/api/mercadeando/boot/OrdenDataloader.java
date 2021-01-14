@@ -35,7 +35,7 @@ public class OrdenDataloader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<Producto> productos = productoRepository.findAll();
 
-        log.info("---------- 4 - CARGANDO ORDENES ----------");
+        log.info("---------> 4 - CARGANDO ORDENES");
         List<Orden> ordenes = new ArrayList<>();
         List<Pago> pagos = new ArrayList<>();
         List<OrdenProducto> ordenProductos = new ArrayList<>();
@@ -68,7 +68,7 @@ public class OrdenDataloader implements CommandLineRunner {
         ordenes.add(orden2);
         ordenRepository.saveAll(ordenes);
 
-        log.info("---------- 4.5 - CARGANDO PRODUCTO A ORDENES ----------");
+        log.info("---------> 4.5 - CARGANDO PRODUCTO A ORDENES");
 
         OrdenProducto orden1Producto1 = new OrdenProducto().builder()
                 .cantidad(1)
