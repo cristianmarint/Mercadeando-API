@@ -15,4 +15,10 @@ public interface OrdenRepository extends JpaRepository<Orden,Long> {
             value = "SELECT * FROM orden WHERE cliente_id=:clienteId ORDER BY created_at DESC"
     )
     List<Orden> getClienteOrdenes(@Param(value = "clienteId") Long clienteId);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT orden.* FROM orden ORDER BY orden.created_at ASC LIMIT :limit OFFSET :offset"
+    )
+    List<Orden> getOrdenes(int offset, int limit);
 }

@@ -58,7 +58,7 @@ public class OrdenDataloader implements CommandLineRunner {
         Orden orden2 = new Orden().builder()
                 .estado(OrdenEstado.PAGADO)
                 .fecha(Instant.parse("2021-01-01T01:01:01Z"))
-                .precio(BigDecimal.valueOf(7.680))
+                .precio(BigDecimal.valueOf(38.200))
                 .pago(pago2)
                 .cliente(clienteRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
                 .user(userRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
@@ -82,8 +82,22 @@ public class OrdenDataloader implements CommandLineRunner {
                 .ordenx(orden2)
                 .build();
 
+        OrdenProducto orden2Producto3 = new OrdenProducto().builder()
+                .cantidad(3)
+                .producto(productos.get(2))
+                .ordenx(orden2)
+                .build();
+
+        OrdenProducto orden2Producto2 = new OrdenProducto().builder()
+                .cantidad(2)
+                .producto(productos.get(1))
+                .ordenx(orden2)
+                .build();
+
         ordenProductos.add(orden1Producto1);
         ordenProductos.add(orden2Producto4);
+        ordenProductos.add(orden2Producto3);
+        ordenProductos.add(orden2Producto2);
         ordenProductoRepository.saveAll(ordenProductos);
     }
 }

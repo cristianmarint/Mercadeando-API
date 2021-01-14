@@ -26,7 +26,7 @@ import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 public class ClienteMapper {
 
     /**
-     * Transforma el Cliente Entity a ClienteResponse para ser retornado por la API al frontend
+     * Transforma el Cliente Entity a ClienteResponse para ser retornado por la API en formato JSON
      * @param cliente entidad con datos de un cliente
      * @param ordenesLinks Links a ordenes
      * @return ClienteResponse con detalles de cliente y links a ordenes
@@ -54,7 +54,7 @@ public class ClienteMapper {
      */
     public ClientesResponse mapClientesToClienteResponse(List<Cliente> clientes, int offset, int limit){
         ClientesResponse response = new ClientesResponse();
-        if (clientes!=null || !clientes.isEmpty()){
+        if (clientes!=null & !clientes.isEmpty()){
             response.setCount(clientes.size());
             clientes.forEach(cliente -> response.getClientes().add(
                     this.mapClienteToClienteResponse(
