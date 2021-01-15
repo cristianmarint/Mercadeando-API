@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -19,6 +20,9 @@ public class OrdenProducto {
 
     @Column(nullable = false)
     private Integer cantidad;
+
+    @Column(nullable = false)
+    private BigDecimal precio= BigDecimal.valueOf(0);
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "orden_id",nullable = false,updatable = false)

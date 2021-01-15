@@ -72,24 +72,28 @@ public class OrdenDataloader implements CommandLineRunner {
 
         OrdenProducto orden1Producto1 = new OrdenProducto().builder()
                 .cantidad(1)
+                .precio(BigDecimal.valueOf(15.490))
                 .producto(productos.get(0))
                 .ordenx(orden1)
                 .build();
 
         OrdenProducto orden2Producto4 = new OrdenProducto().builder()
                 .cantidad(3)
+                .precio(BigDecimal.valueOf(2.59))
                 .producto(productos.get(3))
                 .ordenx(orden2)
                 .build();
 
         OrdenProducto orden2Producto3 = new OrdenProducto().builder()
                 .cantidad(3)
+                .precio(BigDecimal.valueOf(8.99))
                 .producto(productos.get(2))
                 .ordenx(orden2)
                 .build();
 
         OrdenProducto orden2Producto2 = new OrdenProducto().builder()
                 .cantidad(2)
+                .precio(BigDecimal.valueOf(1.73))
                 .producto(productos.get(1))
                 .ordenx(orden2)
                 .build();

@@ -1,6 +1,5 @@
 package com.api.mercadeando.dto;
 
-import com.api.mercadeando.entity.Orden;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 

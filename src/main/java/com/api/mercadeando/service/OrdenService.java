@@ -3,23 +3,24 @@ package com.api.mercadeando.service;
 import com.api.mercadeando.dto.Link;
 import com.api.mercadeando.dto.OrdenResponse;
 import com.api.mercadeando.entity.Orden;
+import com.api.mercadeando.entity.OrdenProducto;
 import com.api.mercadeando.entity.Producto;
 import com.api.mercadeando.exception.MercadeandoException;
 import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.mapper.OrdenMapper;
-import com.api.mercadeando.repository.ClienteRepository;
+import com.api.mercadeando.repository.OrdenProductoRepository;
 import com.api.mercadeando.repository.OrdenRepository;
 import com.api.mercadeando.repository.ProductoRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
-import static com.api.mercadeando.controller.Mappings.URL_ORDENES_V1;
 
 /**
  * @author cristianmarint
@@ -28,27 +29,31 @@ import static com.api.mercadeando.controller.Mappings.URL_ORDENES_V1;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class OrdenService {
     @Autowired
     private OrdenRepository ordenRepository;
     @Autowired
-    private ClienteRepository clienteRepository;
-    @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private OrdenProductoRepository ordenProductoRepository;
     @Autowired
     private OrdenMapper ordenMapper;
 
+    /**
+     * Crea una respuesta Json mapeado los datos de Orden, Productos y OrdenProductos a una respuesta
+     * @param ordenId Id de una orden registrada
+     * @return OrdenResponse con los detos en formato JSON
+     * @throws ResourceNotFoundException
+     */
+    @PreAuthorize("hasAuthority('READ_ORDEN')")
     public OrdenResponse getCliente(Long ordenId) throws ResourceNotFoundException {
         if (ordenId==null) throw new MercadeandoException("OrdenId cannot be Null");
-
         Orden orden = ordenRepository.findById(ordenId).orElseThrow(()->new ResourceNotFoundException(ordenId,"Orden"));
         Map<String, Link> productosLinks=new HashMap<>();
-        for (Producto producto:productoRepository.getOrdenProductos(ordenId)) {
-            productosLinks.put("producto-"+producto.getId(), new Link("producto",String.format(URL_ORDENES_V1+"/"+ordenId+"/productos/%s",producto.getId())));
-        }
-        Link clienteLink = new Link("cliente",String.format(URL_CLIENTES_V1+"/%s",orden.getCliente().getId()));
-        Link self = new Link("self",String.format(URL_ORDENES_V1+"/%s",orden.getId()));
-        return ordenMapper.mapOrdenToOrdenResponse(orden,self,clienteLink,productosLinks);
+        List<OrdenProducto> ordenProductosDetalles = ordenProductoRepository.getOrdenProductoDetalles(ordenId);
+        List<Producto> ordenProductos = productoRepository.getOrdenProductos(ordenId);
+        return ordenMapper.mapOrdenToOrdenResponse(orden,ordenProductos,ordenProductosDetalles);
     }
 
 //    @PreAuthorize("hasAuthority('READ_ORDEN')")
