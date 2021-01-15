@@ -2,6 +2,7 @@ package com.api.mercadeando.service;
 
 import com.api.mercadeando.dto.Link;
 import com.api.mercadeando.dto.OrdenResponse;
+import com.api.mercadeando.dto.OrdenesResponse;
 import com.api.mercadeando.entity.Orden;
 import com.api.mercadeando.entity.OrdenProducto;
 import com.api.mercadeando.entity.Producto;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,13 +58,13 @@ public class OrdenService {
         return ordenMapper.mapOrdenToOrdenResponse(orden,ordenProductos,ordenProductosDetalles);
     }
 
-//    @PreAuthorize("hasAuthority('READ_ORDEN')")
-//    @Transactional(readOnly = true)
-//    public OrdenesResponse getOrdenes(int offset, int limit){
-//        if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
-//        if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
-//        if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
-//        List<Orden> ordenes=ordenRepository.getOrdenes(offset,limit);
-//        return ordenMapper.mapOrdenesToOrdenResponse(ordenes,offset,limit);
-//    }
+    @PreAuthorize("hasAuthority('READ_ORDEN')")
+    @Transactional(readOnly = true)
+    public OrdenesResponse getOrdenes(int offset, int limit){
+        if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
+        if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
+        if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
+        List<Orden> ordenes=ordenRepository.getOrdenes(offset,limit);
+        return ordenMapper.mapOrdenesToOrdenResponse(ordenes,offset,limit);
+    }
 }

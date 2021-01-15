@@ -16,8 +16,8 @@ import java.util.List;
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 
 /**
- * Permite mapear datos internos para mostrarlos de manera segura
- * por medio de la API
+ * Permite mapear datos internos de un Cliente
+ * para mostrarlos de manera segura por medio de la API
  */
 @Component
 @AllArgsConstructor

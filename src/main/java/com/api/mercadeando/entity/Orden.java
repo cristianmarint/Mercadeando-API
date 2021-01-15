@@ -21,6 +21,9 @@ public class Orden {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * False = borrado con softdelete
+     */
     @Builder.Default
     private Boolean activo = true;
 
@@ -32,7 +35,7 @@ public class Orden {
     private Instant fecha=null;
 
     @Builder.Default
-    private BigDecimal precio = null;
+    private BigDecimal total = null;
 
     @Builder.Default
     private Instant createdAt= Instant.now();

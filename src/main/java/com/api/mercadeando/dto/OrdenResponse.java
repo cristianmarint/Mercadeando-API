@@ -25,7 +25,7 @@ import static com.api.mercadeando.controller.Mappings.URL_PRODUCTOS_V1;
         "self",
         "activo",
         "fecha",
-        "precio",
+        "total",
         "estado",
         "pago",
         "cliente",
@@ -44,7 +44,7 @@ public class OrdenResponse {
     private Boolean activo;
     private OrdenEstado estado;
     private String fecha;
-    private BigDecimal precio;
+    private BigDecimal total;
     private PagoResponse pago= new PagoResponse();
     private Link cliente;
     private List<productosDetalle> productos=new ArrayList<>();
