@@ -20,9 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
@@ -67,11 +66,10 @@ public class ClienteService {
 
         Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
 
-        Map<String,Link> ordenesLinks=new HashMap<>();
+        List<Link> ordenesLinks=new ArrayList<>();
         for (Orden orden : ordenRepository.getClienteOrdenes(clienteId)) {
-            ordenesLinks.put("orden-" + orden.getId(), new Link("orden", String.format(URL_CLIENTES_V1 + "/" + clienteId + "/ordenes/%s", orden.getId())));
-        }
-
+            ordenesLinks.add(new Link("orden", String.format(URL_CLIENTES_V1 + "/" + clienteId + "/ordenes/%s", orden.getId())));
+        };
         return clienteMapper.mapClienteToClienteResponse(cliente,ordenesLinks);
     }
 

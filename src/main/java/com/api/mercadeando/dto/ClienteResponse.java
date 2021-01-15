@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  *  API response para cuando se solicita un solo Cliente.
  */
 @JsonPropertyOrder({
         "id",
+        "self",
         "activo",
         "nombres",
         "apellidos",
@@ -26,6 +27,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ClienteResponse {
     private Long id;
+    private Link self;
     private Boolean activo;
     private String nombres;
     private String apellidos;
@@ -34,5 +36,5 @@ public class ClienteResponse {
     private String ciudad;
     private ColombiaDepartamentos departamento;
 
-    private Map<String,Link> ordenes;
+    private List<Link> ordenes;
 }
