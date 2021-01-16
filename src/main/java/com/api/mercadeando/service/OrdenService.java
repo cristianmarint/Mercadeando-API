@@ -1,17 +1,15 @@
 package com.api.mercadeando.service;
 
 import com.api.mercadeando.dto.Link;
+import com.api.mercadeando.dto.OrdenRequest;
 import com.api.mercadeando.dto.OrdenResponse;
 import com.api.mercadeando.dto.OrdenesResponse;
-import com.api.mercadeando.entity.Orden;
-import com.api.mercadeando.entity.OrdenProducto;
-import com.api.mercadeando.entity.Producto;
+import com.api.mercadeando.entity.*;
+import com.api.mercadeando.exception.BadRequestException;
 import com.api.mercadeando.exception.MercadeandoException;
 import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.mapper.OrdenMapper;
-import com.api.mercadeando.repository.OrdenProductoRepository;
-import com.api.mercadeando.repository.OrdenRepository;
-import com.api.mercadeando.repository.ProductoRepository;
+import com.api.mercadeando.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,11 @@ import java.util.Map;
 /**
  * @author cristianmarint
  * @Date 2021-01-14 9:41
+ */
+
+/**
+ * Brinda acceso a modificación y creación de
+ * recursos
  */
 @Service
 @AllArgsConstructor
@@ -41,9 +46,13 @@ public class OrdenService {
     private OrdenProductoRepository ordenProductoRepository;
     @Autowired
     private OrdenMapper ordenMapper;
+    @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private PagoRepository pagoRepository;
 
     /**
-     * Crea una respuesta Json mapeado los datos de Orden, Productos y OrdenProductos a una respuesta
+     * Crea una respuesta Json mapeado los datos de Orden, Productos y OrdenProductos a una respuesta detallada
      * @param ordenId Id de una orden registrada
      * @return OrdenResponse con los detos en formato JSON
      * @throws ResourceNotFoundException
@@ -58,6 +67,12 @@ public class OrdenService {
         return ordenMapper.mapOrdenToOrdenResponse(orden,ordenProductos,ordenProductosDetalles);
     }
 
+    /**
+     * Crea una respuesta en JSON mapeado los datos de Orden, Producto y OrdenProducto a una respues
+     * @param offset Punto de partida mayor a cero para buscar nuevos valores
+     * @param limit Cantidad de valores a entontrar menor a cien
+     * @return OrdenesResponse con datos correspondientes
+     */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     @Transactional(readOnly = true)
     public OrdenesResponse getOrdenes(int offset, int limit){
@@ -66,5 +81,90 @@ public class OrdenService {
         if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
         List<Orden> ordenes=ordenRepository.getOrdenes(offset,limit);
         return ordenMapper.mapOrdenesToOrdenResponse(ordenes,offset,limit);
+    }
+
+    /**
+     * Permite crear una orden especificando sus datos si se cuenta con el permiso
+     * verifica si existe suficientes productos para la orden y descuenta
+     * la cantidad pedida
+     *
+     * @param ordenRequest Datos necesarios para crear orden
+     * @throws BadRequestException cuando faltan datos necesario
+     * @throws ResourceNotFoundException cuando no se encuentra un recurso
+     */
+    @PreAuthorize("hasAuthority('ADD_ORDEN')")
+    public void createOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
+        validateOrden(ordenRequest);
+        if (ordenRequest.getCliente_id()!=null){
+            Cliente cliente = clienteRepository.findById(ordenRequest.getCliente_id()).orElseThrow(()-> new ResourceNotFoundException(ordenRequest.getCliente_id(), "Cliente"));
+            ordenRequest.setCliente(cliente);
+            ordenRequest.setCliente_id(cliente.getId());
+        }else{
+            ordenRequest.setCliente(null);
+            ordenRequest.setCliente_id(null);
+        }
+
+        Orden orden=ordenRepository.save(ordenMapper.mapOrdenRequestToOrden(ordenRequest, null));
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
+             ) {
+            Producto producto = productoRepository.findById(o.getProducto_id()).get();
+            if (o.getCantidad()>producto.getUnidades())
+                throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
+        }
+
+        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
+             ) {
+            Producto producto = productoRepository.findById(o.getProducto_id()).get();
+
+            producto.setUnidades(producto.getUnidades()-o.getCantidad());
+
+            OrdenProducto ordenProducto = new OrdenProducto(
+                    null,
+                    o.getCantidad(),
+                    producto.getPrecio(),
+                    orden,
+                    producto);
+
+            total = total.add(producto.getPrecio().multiply(BigDecimal.valueOf(o.getCantidad())));
+
+            if (producto.getUnidades()>10){
+                producto.setEstado(ProductoEstado.DISPONIBLE);
+            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
+                producto.setEstado(ProductoEstado.POCAS_UNIDADES);
+            }else{
+                producto.setEstado(ProductoEstado.AGOTADO);
+            }
+
+            productoRepository.save(producto);
+            ordenProductoRepository.save(ordenProducto);
+        }
+
+        Pago pago = new Pago(null, ordenRequest.getPago().getFecha(), ordenRequest.getPago().getMetodo());
+        pagoRepository.save(pago);
+        orden.setTotal(total);
+        orden.setPago(pago);
+
+        ordenRepository.save(orden);
+    }
+
+    /**
+     * Valida datos necesario en una OrdenRequest
+     * @param ordenRequest Datos necesarios para crear orden
+     * @throws BadRequestException cuando faltan datos necesario
+     * @throws ResourceNotFoundException cuando no se encuentra un recurso
+     */
+    private void validateOrden(OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
+        if (ordenRequest.getOrdenDetalle()==null) throw new BadRequestException("La orden debe tener uno o mas productos");
+        if (ordenRequest.getFecha()==null) throw new BadRequestException("La fecha de la orden no puede ser Null");
+
+        for (OrdenRequest.ordenProductos detalleOrdenProducto:ordenRequest.getOrdenDetalle()
+        ) {
+            Producto producto = productoRepository.findById(detalleOrdenProducto.getProducto_id()).orElseThrow(()-> new ResourceNotFoundException(detalleOrdenProducto.getProducto_id(),"No se encontro el producto"));
+            if (detalleOrdenProducto.getCantidad()>producto.getUnidades()){
+                throw new BadRequestException("No existe suficientes productos de "+producto.getNombre()+" producto_id: "+producto.getId());
+            }
+        }
     }
 }

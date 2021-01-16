@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -46,7 +47,8 @@ public class Orden {
     @OneToOne()
     private Pago pago;
 
-    @ManyToOne(optional = false)
+    @Nullable
+    @ManyToOne(optional = true)
     private Cliente cliente;
 
     @ManyToOne(optional = false)

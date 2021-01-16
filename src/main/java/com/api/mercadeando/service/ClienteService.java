@@ -26,6 +26,10 @@ import java.util.Optional;
 
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 
+/**
+ * Brinda acceso a modificación y creación de
+ * recursos
+ */
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -82,7 +86,6 @@ public class ClienteService {
     public void createCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
         validateCliente(clienteRequest);
         Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(clienteRequest,null));
-        clienteRequest.setId(cliente.getId());
     }
 
     /**

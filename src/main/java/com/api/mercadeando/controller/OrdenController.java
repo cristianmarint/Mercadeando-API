@@ -1,16 +1,19 @@
 package com.api.mercadeando.controller;
 
+import com.api.mercadeando.dto.OrdenRequest;
 import com.api.mercadeando.dto.OrdenResponse;
 import com.api.mercadeando.dto.OrdenesResponse;
 import com.api.mercadeando.exception.BadRequestException;
 import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.service.OrdenService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import static com.api.mercadeando.controller.Mappings.URL_ORDENES_V1;
@@ -61,5 +64,18 @@ public class OrdenController {
         if (limit > 100) limit = 100;
 
         return ResponseEntity.ok().body(ordenService.getOrdenes(offset,limit));
+    }
+
+    @PreAuthorize("hasAuthority('ADD_ORDEN')")
+    @PostMapping
+    public ResponseEntity<?> createCliente(@RequestBody @Valid OrdenRequest request){
+        try{
+            ordenService.createOrden(request);
+            return ResponseEntity.ok().build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
