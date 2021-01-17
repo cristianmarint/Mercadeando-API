@@ -102,8 +102,7 @@ public class ClienteService {
         Optional<Cliente> actual = clienteRepository.findById(clienteId);
         if (actual.isPresent()){
             request.setId(clienteId);
-            Cliente test = clienteMapper.mapClienteRequestToCliente(request,actual.get());
-            clienteRepository.save(test);
+            clienteRepository.save(clienteMapper.mapClienteRequestToCliente(request,actual.get()));
         }else {
             throw new ResourceNotFoundException(clienteId,"Cliente");
         }
@@ -120,7 +119,11 @@ public class ClienteService {
     @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     public void softDeleteCliente(Long clienteId, boolean estado) throws BadRequestException, ResourceNotFoundException {
         if(clienteId==null) throw new BadRequestException("ClienteId cannot be Null");
-        if (clienteRepository.findById(clienteId).isPresent()) clienteRepository.updateClienteEstado(clienteId,estado);
+        if (clienteRepository.findById(clienteId).isPresent()) {
+            clienteRepository.updateClienteEstado(clienteId,estado);
+        }else {
+            throw new ResourceNotFoundException(clienteId,"Cliente");
+        }
     }
 
     /**

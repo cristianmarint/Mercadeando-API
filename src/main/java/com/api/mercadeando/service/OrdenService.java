@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author cristianmarint
@@ -147,6 +148,38 @@ public class OrdenService {
         orden.setPago(pago);
 
         ordenRepository.save(orden);
+    }
+
+    /**
+     * Actualiza los datos de una orden registrada si se cuenta con el permiso
+     * @param ordenId Id de una orden registrado
+     * @param request OrdenRequest con los datos nuevos
+     * @throws ResourceNotFoundException cuando el recuerso no existe
+     * @throws BadRequestException cuando existen valores incorrectos.
+     */
+    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
+    public void editOrden(Long ordenId, OrdenRequest request) throws BadRequestException, ResourceNotFoundException {
+        validateOrden(request);
+        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
+        Optional<Orden> actual = ordenRepository.findById(ordenId);
+        if (actual.isPresent()){
+//          TODO: Actualizar la cantidad de productos y evaluar los cambios
+            request.setId(ordenId);
+            ordenRepository.save(ordenMapper.mapOrdenRequestToOrden(request,actual.get()));
+        }else{
+            throw new ResourceNotFoundException(ordenId,"Orden");
+        }
+    }
+
+    @PreAuthorize("hasAuthority('DELETE_ORDEN')")
+    public void softDeleteOrden(Long ordenId, boolean estado) throws ResourceNotFoundException, BadRequestException {
+        if (ordenId==null) throw new BadRequestException("OrdenId cannot be Null");
+        if (ordenRepository.findById(ordenId).isPresent()){
+            //          TODO: Actualizar la cantidad de productos y evaluar los cambios
+            ordenRepository.updateOrdenEstado(ordenId,estado);
+        }else {
+            throw new ResourceNotFoundException(ordenId,"Orden");
+        }
     }
 
     /**
