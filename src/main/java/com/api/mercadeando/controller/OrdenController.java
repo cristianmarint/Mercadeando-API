@@ -84,24 +84,26 @@ public class OrdenController {
         }
     }
 
-    /**
-     * Permite actualizar una orden registrada si se cuenta con el permiso
-     * @param ordenId Id de una orden registrada
-     * @param request OrdenRequest con los datos nuevos
-     * @return HttpStatus Estado Http según corresponda
-     */
-    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
-    @PutMapping("/{ordenId}")
-    public ResponseEntity editOrden(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestBody @Valid OrdenRequest request){
-        try {
-            ordenService.editOrden(ordenId,request);
-            return ResponseEntity.ok().build();
-        } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    /**
+//     * Actualiza los datos de una orden registrada si se cuenta con el permiso
+//     * 1) Si Orden.estado = PAGADO no se puede modificar.
+//     * 2) La Ordeno no se puede Editar, solo softdelete por ende se desactiva este service
+//     * @param ordenId Id de una orden registrada
+//     * @param request OrdenRequest con los datos nuevos
+//     * @return HttpStatus Estado Http según corresponda
+//     */
+//    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
+//    @PutMapping("/{ordenId}")
+//    public ResponseEntity editOrden(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestBody @Valid OrdenRequest request){
+//        try {
+//            ordenService.editOrden(ordenId,request);
+//            return ResponseEntity.ok().build();
+//        } catch (BadRequestException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        } catch (ResourceNotFoundException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
 
     /**
      * Permite actializar el estado de una orden (Softdelete) si se cuenta con el permiso
@@ -111,14 +113,14 @@ public class OrdenController {
      */
     @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     @DeleteMapping(value = "/{ordenId}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
+    public ResponseEntity deleteCliente(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
         try{
             ordenService.softDeleteOrden(ordenId,estado);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }catch (BadRequestException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

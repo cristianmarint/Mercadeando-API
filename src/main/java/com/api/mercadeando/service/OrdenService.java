@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.api.mercadeando.entity.OrdenEstado.*;
+import static com.api.mercadeando.entity.PagoMetodo.*;
+import static com.api.mercadeando.entity.PagoMetodo.EFECTIVO;
+
 /**
  * @author cristianmarint
  * @Date 2021-01-14 9:41
@@ -104,9 +108,7 @@ public class OrdenService {
             ordenRequest.setCliente(null);
             ordenRequest.setCliente_id(null);
         }
-
         Orden orden=ordenRepository.save(ordenMapper.mapOrdenRequestToOrden(ordenRequest, null));
-        BigDecimal total = BigDecimal.ZERO;
 
         for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
              ) {
@@ -115,68 +117,66 @@ public class OrdenService {
                 throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
         }
 
-        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
-             ) {
-            Producto producto = productoRepository.findById(o.getProducto_id()).get();
 
-            producto.setUnidades(producto.getUnidades()-o.getCantidad());
-
-            OrdenProducto ordenProducto = new OrdenProducto(
-                    null,
-                    o.getCantidad(),
-                    producto.getPrecio(),
-                    orden,
-                    producto);
-
-            total = total.add(producto.getPrecio().multiply(BigDecimal.valueOf(o.getCantidad())));
-
-            if (producto.getUnidades()>10){
-                producto.setEstado(ProductoEstado.DISPONIBLE);
-            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
-                producto.setEstado(ProductoEstado.POCAS_UNIDADES);
-            }else{
-                producto.setEstado(ProductoEstado.AGOTADO);
-            }
-
-            productoRepository.save(producto);
-            ordenProductoRepository.save(ordenProducto);
-        }
+        if (ordenRequest.getPago().getMetodo().equals(EFECTIVO)) orden.setEstado(PAGADO);
+        if (ordenRequest.getPago().getMetodo().equals(TARJETA_DEBITO)) orden.setEstado(PAGADO);
+        if (ordenRequest.getPago().getMetodo().equals(TARJETA_CREDITO)) orden.setEstado(PENDIENTE);
+        if (ordenRequest.getPago().getMetodo().equals(CHECK)) orden.setEstado(PENDIENTE);
 
         Pago pago = new Pago(null, ordenRequest.getPago().getFecha(), ordenRequest.getPago().getMetodo());
         pagoRepository.save(pago);
+
+        BigDecimal total = getTotalYActualizarOrdenProductoDetalle(ordenRequest, orden);
         orden.setTotal(total);
         orden.setPago(pago);
 
         ordenRepository.save(orden);
     }
 
-    /**
-     * Actualiza los datos de una orden registrada si se cuenta con el permiso
-     * @param ordenId Id de una orden registrado
-     * @param request OrdenRequest con los datos nuevos
-     * @throws ResourceNotFoundException cuando el recuerso no existe
-     * @throws BadRequestException cuando existen valores incorrectos.
-     */
-    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
-    public void editOrden(Long ordenId, OrdenRequest request) throws BadRequestException, ResourceNotFoundException {
-        validateOrden(request);
-        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
-        Optional<Orden> actual = ordenRepository.findById(ordenId);
-        if (actual.isPresent()){
-//          TODO: Actualizar la cantidad de productos y evaluar los cambios
-            request.setId(ordenId);
-            ordenRepository.save(ordenMapper.mapOrdenRequestToOrden(request,actual.get()));
-        }else{
-            throw new ResourceNotFoundException(ordenId,"Orden");
-        }
-    }
+//    /**
+//    TODO:
+//     * Permitir cambiar solo el estado del pago
 
+    
+//     * Actualiza los datos de una orden registrada si se cuenta con el permiso
+//     * 1) Si Orden.estado = PAGADO no se puede modificar.
+//     * 2) La Ordeno no se puede Editar, solo softdelete por ende se desactiva este service.
+//     * @param ordenId Id de una orden registrado
+//     * @param request OrdenRequest con los datos nuevos
+//     * @throws ResourceNotFoundException cuando el recuerso no existe
+//     * @throws BadRequestException cuando existen valores incorrectos.
+//     */
+//    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
+//    public void editOrden(Long ordenId, OrdenRequest request) throws BadRequestException, ResourceNotFoundException {
+//        validateOrden(request);
+//        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
+//        Optional<Orden> actual = ordenRepository.findById(ordenId);
+//        if (actual.isPresent()){
+//            if (!actual.get().getEstado().equals(PAGADO) & request.getEstado().equals(OrdenEstado.CANCELADA)){
+//                actual.get().setActivo(false);
+//                ordenRepository.save(actual.get());
+//            }else{
+//                log.error("La orden no puede ser modificada, el pago ya fue procesado");
+//                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
+//            }
+//        }else{
+//            log.error("La orden ["+ordenId+"] no fue encontrada");
+//            throw new ResourceNotFoundException(ordenId,"Orden");
+//        }
+//    }
+
+    /**
+     * Cambia el estado de una Orden a false (softdelete)
+     * @param ordenId Id de una orden registrada
+     * @param estado Boolean
+     * @throws ResourceNotFoundException
+     * @throws BadRequestException
+     */
     @PreAuthorize("hasAuthority('DELETE_ORDEN')")
-    public void softDeleteOrden(Long ordenId, boolean estado) throws ResourceNotFoundException, BadRequestException {
+    public void softDeleteOrden(Long ordenId,Boolean estado) throws ResourceNotFoundException, BadRequestException {
         if (ordenId==null) throw new BadRequestException("OrdenId cannot be Null");
         if (ordenRepository.findById(ordenId).isPresent()){
-            //          TODO: Actualizar la cantidad de productos y evaluar los cambios
-            ordenRepository.updateOrdenEstado(ordenId,estado);
+           ordenRepository.updateOrdenEstado(ordenId,estado);
         }else {
             throw new ResourceNotFoundException(ordenId,"Orden");
         }
@@ -199,5 +199,47 @@ public class OrdenService {
                 throw new BadRequestException("No existe suficientes productos de "+producto.getNombre()+" producto_id: "+producto.getId());
             }
         }
+    }
+
+
+    /**
+     * Para una OrdenRequest Crea o actualizar una orden y le asigna el total
+     * 1) Solo se descuentan los producto si orden.estado=PAGADO
+     * @param ordenRequest Petición para crear una nueva orden
+     * @param orden Orden almacenada, si no se provee se crea una.
+     * @return total BigDecimal con el total de la orden.
+     */
+    private BigDecimal getTotalYActualizarOrdenProductoDetalle(OrdenRequest ordenRequest, Orden orden) {
+        BigDecimal total = BigDecimal.ZERO;
+        if (orden==null) orden = new Orden();
+
+        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
+        ) {
+            Producto producto = productoRepository.findById(o.getProducto_id()).get();
+
+            if (orden.getEstado().equals(PAGADO)){
+                producto.setUnidades(producto.getUnidades()-o.getCantidad());
+            }
+            OrdenProducto ordenProducto = new OrdenProducto(
+                    null,
+                    o.getCantidad(),
+                    producto.getPrecio(),
+                    orden,
+                    producto);
+
+            total = total.add(producto.getPrecio().multiply(BigDecimal.valueOf(o.getCantidad())));
+
+            if (producto.getUnidades()>10){
+                producto.setEstado(ProductoEstado.DISPONIBLE);
+            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
+                producto.setEstado(ProductoEstado.POCAS_UNIDADES);
+            }else{
+                producto.setEstado(ProductoEstado.AGOTADO);
+            }
+
+            productoRepository.save(producto);
+            ordenProductoRepository.save(ordenProducto);
+        }
+        return total;
     }
 }

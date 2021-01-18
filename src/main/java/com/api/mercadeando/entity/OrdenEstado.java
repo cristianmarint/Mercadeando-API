@@ -12,5 +12,9 @@ public enum OrdenEstado {
     /**
      * No se a iniciado el proceso
      */
-    PENDIENTE
+    PENDIENTE,
+    /**
+     * La orden fue cancelada, softdelete
+     */
+    CANCELADA
 }
