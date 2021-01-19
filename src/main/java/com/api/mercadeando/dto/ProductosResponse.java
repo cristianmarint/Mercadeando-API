@@ -7,20 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * API response para cuando se solicitan multiples Clientes.
+ * @author cristianmarint
+ * @Date 2021-01-19 10:00
+ */
+/**
+ * API response para cuando se solicitan multiples productos.
  */
 @JsonPropertyOrder({
         "count",
-        "clientes",
+        "productos",
         "links"
 })
 @Builder
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientesResponse {
-    private int count = 0;
-    private List<ClienteResponse> clientes = new ArrayList<>();
+public class ProductosResponse {
+    private int count=0;
+    List<ProductoResponse> productos = new ArrayList<>();
     private List<Link> links = new ArrayList<>();
 }
