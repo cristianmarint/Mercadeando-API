@@ -49,7 +49,7 @@ public class OrdenDataloader implements CommandLineRunner {
         Orden orden1 = new Orden().builder()
                 .estado(OrdenEstado.PENDIENTE)
                 .fecha(Instant.now())
-                .precio(BigDecimal.valueOf(15.490))
+                .total(BigDecimal.valueOf(15.490))
                 .pago(pago1)
                 .cliente(clienteRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
                 .user(userRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
@@ -58,7 +58,7 @@ public class OrdenDataloader implements CommandLineRunner {
         Orden orden2 = new Orden().builder()
                 .estado(OrdenEstado.PAGADO)
                 .fecha(Instant.parse("2021-01-01T01:01:01Z"))
-                .precio(BigDecimal.valueOf(7.680))
+                .total(BigDecimal.valueOf(38.200))
                 .pago(pago2)
                 .cliente(clienteRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
                 .user(userRepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
@@ -72,18 +72,36 @@ public class OrdenDataloader implements CommandLineRunner {
 
         OrdenProducto orden1Producto1 = new OrdenProducto().builder()
                 .cantidad(1)
+                .precio(BigDecimal.valueOf(15.490))
                 .producto(productos.get(0))
                 .ordenx(orden1)
                 .build();
 
         OrdenProducto orden2Producto4 = new OrdenProducto().builder()
                 .cantidad(3)
+                .precio(BigDecimal.valueOf(2.59))
                 .producto(productos.get(3))
+                .ordenx(orden2)
+                .build();
+
+        OrdenProducto orden2Producto3 = new OrdenProducto().builder()
+                .cantidad(3)
+                .precio(BigDecimal.valueOf(8.99))
+                .producto(productos.get(2))
+                .ordenx(orden2)
+                .build();
+
+        OrdenProducto orden2Producto2 = new OrdenProducto().builder()
+                .cantidad(2)
+                .precio(BigDecimal.valueOf(1.73))
+                .producto(productos.get(1))
                 .ordenx(orden2)
                 .build();
 
         ordenProductos.add(orden1Producto1);
         ordenProductos.add(orden2Producto4);
+        ordenProductos.add(orden2Producto3);
+        ordenProductos.add(orden2Producto2);
         ordenProductoRepository.saveAll(ordenProductos);
     }
 }

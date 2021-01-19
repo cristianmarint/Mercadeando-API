@@ -27,7 +27,7 @@ public class UserDataloader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws ResourceNotFoundException {
-        log.info("---------- 1 - CARGANDO USERS ----------");
+        log.info("---------> 1 - CARGANDO USERS");
         userRepository.deleteAllInBatch();
 
         Rol rolAdmin = rolRepository.findByName("ADMIN");

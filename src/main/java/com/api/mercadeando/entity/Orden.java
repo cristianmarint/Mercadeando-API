@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,6 +22,9 @@ public class Orden {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * False = borrado con softdelete
+     */
     @Builder.Default
     private Boolean activo = true;
 
@@ -32,7 +36,7 @@ public class Orden {
     private Instant fecha=null;
 
     @Builder.Default
-    private BigDecimal precio = null;
+    private BigDecimal total = null;
 
     @Builder.Default
     private Instant createdAt= Instant.now();
@@ -43,7 +47,8 @@ public class Orden {
     @OneToOne()
     private Pago pago;
 
-    @ManyToOne(optional = false)
+    @Nullable
+    @ManyToOne(optional = true)
     private Cliente cliente;
 
     @ManyToOne(optional = false)

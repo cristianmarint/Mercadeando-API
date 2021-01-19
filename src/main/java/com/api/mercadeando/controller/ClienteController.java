@@ -106,7 +106,7 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     @DeleteMapping(value = "/{clienteId}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
+    public ResponseEntity<Void> deleteCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
         try{
             clienteService.softDeleteCliente(clienteId,estado);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
