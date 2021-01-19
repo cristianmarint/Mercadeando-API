@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * API response para cuando se solicitas multiples Clientes.
+ * API response para cuando se solicitan multiples Clientes.
  */
 @JsonPropertyOrder({
         "count",

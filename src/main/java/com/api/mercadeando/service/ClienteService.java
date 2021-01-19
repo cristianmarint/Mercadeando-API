@@ -20,13 +20,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 
+/**
+ * Brinda acceso a modificación y creación de
+ * recursos
+ */
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,11 +70,10 @@ public class ClienteService {
 
         Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
 
-        Map<String,Link> ordenesLinks=new HashMap<>();
+        List<Link> ordenesLinks=new ArrayList<>();
         for (Orden orden : ordenRepository.getClienteOrdenes(clienteId)) {
-            ordenesLinks.put("orden-" + orden.getId(), new Link("orden", String.format(URL_CLIENTES_V1 + "/" + clienteId + "/ordenes/%s", orden.getId())));
-        }
-
+            ordenesLinks.add(new Link("orden", String.format(URL_CLIENTES_V1 + "/" + clienteId + "/ordenes/%s", orden.getId())));
+        };
         return clienteMapper.mapClienteToClienteResponse(cliente,ordenesLinks);
     }
 
@@ -84,7 +86,6 @@ public class ClienteService {
     public void createCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
         validateCliente(clienteRequest);
         Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(clienteRequest,null));
-        clienteRequest.setId(cliente.getId());
     }
 
     /**
@@ -101,8 +102,7 @@ public class ClienteService {
         Optional<Cliente> actual = clienteRepository.findById(clienteId);
         if (actual.isPresent()){
             request.setId(clienteId);
-            Cliente test = clienteMapper.mapClienteRequestToCliente(request,actual.get());
-            clienteRepository.save(test);
+            clienteRepository.save(clienteMapper.mapClienteRequestToCliente(request,actual.get()));
         }else {
             throw new ResourceNotFoundException(clienteId,"Cliente");
         }
@@ -119,7 +119,11 @@ public class ClienteService {
     @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     public void softDeleteCliente(Long clienteId, boolean estado) throws BadRequestException, ResourceNotFoundException {
         if(clienteId==null) throw new BadRequestException("ClienteId cannot be Null");
-        if (clienteRepository.findById(clienteId).isPresent()) clienteRepository.updateClienteEstado(clienteId,estado);
+        if (clienteRepository.findById(clienteId).isPresent()) {
+            clienteRepository.updateClienteEstado(clienteId,estado);
+        }else {
+            throw new ResourceNotFoundException(clienteId,"Cliente");
+        }
     }
 
     /**

@@ -12,13 +12,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 
 /**
- * Permite mapear datos internos para mostrarlos de manera segura
- * por medio de la API
+ * Permite mapear datos internos de un Cliente
+ * para mostrarlos de manera segura por medio de la API
  */
 @Component
 @AllArgsConstructor
@@ -26,12 +25,12 @@ import static com.api.mercadeando.controller.Mappings.URL_CLIENTES_V1;
 public class ClienteMapper {
 
     /**
-     * Transforma el Cliente Entity a ClienteResponse para ser retornado por la API al frontend
+     * Transforma el Cliente Entity a ClienteResponse para ser retornado por la API en formato JSON
      * @param cliente entidad con datos de un cliente
      * @param ordenesLinks Links a ordenes
      * @return ClienteResponse con detalles de cliente y links a ordenes
      */
-    public ClienteResponse mapClienteToClienteResponse(Cliente cliente, Map<String, Link> ordenesLinks){
+    public ClienteResponse mapClienteToClienteResponse(Cliente cliente,List<Link> ordenesLinks){
         ClienteResponse response = new ClienteResponse();
         if (cliente.getId()!=null) response.setId(cliente.getId());
         if (cliente.getActivo()!=null) response.setActivo(cliente.getActivo());
@@ -42,6 +41,7 @@ public class ClienteMapper {
         if (cliente.getCiudad()!=null) response.setCiudad(cliente.getCiudad());
         if (cliente.getDepartamento()!=null) response.setDepartamento(cliente.getDepartamento());
         if (ordenesLinks!=null) response.setOrdenes(ordenesLinks);
+        response.setSelf(new Link("self",String.format(URL_CLIENTES_V1+"/%s",cliente.getId())));
         return response;
     }
 
@@ -54,12 +54,12 @@ public class ClienteMapper {
      */
     public ClientesResponse mapClientesToClienteResponse(List<Cliente> clientes, int offset, int limit){
         ClientesResponse response = new ClientesResponse();
-        if (clientes!=null || !clientes.isEmpty()){
+        if (clientes!=null & !clientes.isEmpty()){
             response.setCount(clientes.size());
             clientes.forEach(cliente -> response.getClientes().add(
                     this.mapClienteToClienteResponse(
                             cliente,
-                            Collections.singletonMap("_link",new Link("ordenes",URL_CLIENTES_V1+"/"+cliente.getId()+"/ordenes"))
+                            Collections.singletonList(new Link("orden",URL_CLIENTES_V1+"/"+cliente.getId()+"/ordenes"))
                     )));
             if (offset>0){
                 response.getLinks().add(
