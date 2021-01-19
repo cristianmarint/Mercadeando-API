@@ -3,6 +3,7 @@ package com.api.mercadeando.controller;
 import com.api.mercadeando.dto.OrdenRequest;
 import com.api.mercadeando.dto.OrdenResponse;
 import com.api.mercadeando.dto.OrdenesResponse;
+import com.api.mercadeando.entity.PagoMetodo;
 import com.api.mercadeando.exception.BadRequestException;
 import com.api.mercadeando.exception.ResourceNotFoundException;
 import com.api.mercadeando.service.OrdenService;
@@ -84,26 +85,26 @@ public class OrdenController {
         }
     }
 
-//    /**
-//     * Actualiza los datos de una orden registrada si se cuenta con el permiso
-//     * 1) Si Orden.estado = PAGADO no se puede modificar.
-//     * 2) La Ordeno no se puede Editar, solo softdelete por ende se desactiva este service
-//     * @param ordenId Id de una orden registrada
-//     * @param request OrdenRequest con los datos nuevos
-//     * @return HttpStatus Estado Http según corresponda
-//     */
-//    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
-//    @PutMapping("/{ordenId}")
-//    public ResponseEntity editOrden(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestBody @Valid OrdenRequest request){
-//        try {
-//            ordenService.editOrden(ordenId,request);
-//            return ResponseEntity.ok().build();
-//        } catch (BadRequestException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        } catch (ResourceNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        }
-//    }
+    /**
+     * Permite cambiar el metodo de pago de una orden por medio del metodo de pago
+     * @param ordenId Id de una orden registrada
+     * @param pagoMetodo Metodo de pago valido
+     * @throws BadRequestException Cuando valores necesario no son asignados
+     * @throws ResourceNotFoundException Cuando la orden requerida no es encontrada
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
+    @PutMapping("/{ordenId}")
+    public ResponseEntity editOrden(@PathVariable("ordenId") @Min(1) Long ordenId, @RequestBody @Valid PagoMetodo pagoMetodo){
+        try {
+            ordenService.editOrden(ordenId,pagoMetodo);
+            return ResponseEntity.ok().build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
     /**
      * Permite actializar el estado de una orden (Softdelete) si se cuenta con el permiso

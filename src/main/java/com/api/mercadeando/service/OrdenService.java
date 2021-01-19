@@ -20,14 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.api.mercadeando.entity.OrdenEstado.*;
+import static com.api.mercadeando.entity.OrdenEstado.PAGADO;
+import static com.api.mercadeando.entity.OrdenEstado.PENDIENTE;
 import static com.api.mercadeando.entity.PagoMetodo.*;
-import static com.api.mercadeando.entity.PagoMetodo.EFECTIVO;
 
 /**
  * @author cristianmarint
@@ -60,7 +61,7 @@ public class OrdenService {
      * Crea una respuesta Json mapeado los datos de Orden, Productos y OrdenProductos a una respuesta detallada
      * @param ordenId Id de una orden registrada
      * @return OrdenResponse con los detos en formato JSON
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException Cuando la orden no es encontrada
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     public OrdenResponse getCliente(Long ordenId) throws ResourceNotFoundException {
@@ -133,44 +134,49 @@ public class OrdenService {
         ordenRepository.save(orden);
     }
 
-//    /**
-//    TODO:
-//     * Permitir cambiar solo el estado del pago
+    /**
+     * Permite cambiar el metodo de pago de una orden por medio del metodo de pago
+     * @param ordenId Id de una orden registrada
+     * @param pagoMetodo Metodo de pago valido
+     * @throws BadRequestException Cuando valores necesario no son asignados
+     * @throws ResourceNotFoundException Cuando la orden requerida no es encontrada
+     */
+    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
+    public void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException {
+        if (pagoMetodo==null) throw new BadRequestException("Metodo de pago no puede ser Null");
+        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
 
-    
-//     * Actualiza los datos de una orden registrada si se cuenta con el permiso
-//     * 1) Si Orden.estado = PAGADO no se puede modificar.
-//     * 2) La Ordeno no se puede Editar, solo softdelete por ende se desactiva este service.
-//     * @param ordenId Id de una orden registrado
-//     * @param request OrdenRequest con los datos nuevos
-//     * @throws ResourceNotFoundException cuando el recuerso no existe
-//     * @throws BadRequestException cuando existen valores incorrectos.
-//     */
-//    @PreAuthorize("hasAuthority('EDIT_ORDEN')")
-//    public void editOrden(Long ordenId, OrdenRequest request) throws BadRequestException, ResourceNotFoundException {
-//        validateOrden(request);
-//        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
-//        Optional<Orden> actual = ordenRepository.findById(ordenId);
-//        if (actual.isPresent()){
-//            if (!actual.get().getEstado().equals(PAGADO) & request.getEstado().equals(OrdenEstado.CANCELADA)){
-//                actual.get().setActivo(false);
-//                ordenRepository.save(actual.get());
-//            }else{
-//                log.error("La orden no puede ser modificada, el pago ya fue procesado");
-//                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
-//            }
-//        }else{
-//            log.error("La orden ["+ordenId+"] no fue encontrada");
-//            throw new ResourceNotFoundException(ordenId,"Orden");
-//        }
-//    }
+        OrdenRequest ordenRequestMetodoPago = new OrdenRequest();
+        Pago pago = new Pago().builder().pagoMetodo(pagoMetodo).fecha(Instant.now()).build();
+        pagoRepository.save(pago);
+        Optional<Orden> ordenAlmacenda = ordenRepository.findById(ordenId);
+
+        if (ordenAlmacenda.isPresent()){
+            if (!ordenAlmacenda.get().getEstado().equals(PAGADO)){
+
+                ordenAlmacenda.get().setPago(pago);
+                if (pagoMetodo.equals(EFECTIVO)) ordenAlmacenda.get().setEstado(PAGADO);
+                if (pagoMetodo.equals(TARJETA_DEBITO)) ordenAlmacenda.get().setEstado(PAGADO);
+                if (pagoMetodo.equals(TARJETA_CREDITO)) ordenAlmacenda.get().setEstado(PENDIENTE);
+                if (pagoMetodo.equals(CHECK)) ordenAlmacenda.get().setEstado(PENDIENTE);
+
+                ordenRepository.save(ordenAlmacenda.get());
+            }else{
+                log.error("La orden no puede ser modificada, el pago ya fue procesado");
+                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
+            }
+        }else{
+            log.error("La orden ["+ordenId+"] no fue encontrada");
+            throw new ResourceNotFoundException(ordenId,"Orden");
+        }
+    }
 
     /**
      * Cambia el estado de una Orden a false (softdelete)
      * @param ordenId Id de una orden registrada
      * @param estado Boolean
-     * @throws ResourceNotFoundException
-     * @throws BadRequestException
+     * @throws ResourceNotFoundException Cuando no se encuentra la Orden
+     * @throws BadRequestException Cuando existen valores necesarios Null
      */
     @PreAuthorize("hasAuthority('DELETE_ORDEN')")
     public void softDeleteOrden(Long ordenId,Boolean estado) throws ResourceNotFoundException, BadRequestException {
