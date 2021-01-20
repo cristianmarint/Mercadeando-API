@@ -11,6 +11,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 
 @Data
 @Entity
@@ -52,8 +53,8 @@ public class Producto {
     @Builder.Default
     private BigDecimal precio= BigDecimal.valueOf(0);
 
-    @Column(length = 2000)
-    private String foto;
+    @OneToMany
+    private Set<FileStorage> fotos;
 
     @Builder.Default
     private ProductoEstado estado=ProductoEstado.DISPONIBLE;

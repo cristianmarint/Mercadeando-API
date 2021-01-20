@@ -3,8 +3,11 @@ package com.api.mercadeando.mapper;
 import com.api.mercadeando.dto.Link;
 import com.api.mercadeando.dto.ProductoResponse;
 import com.api.mercadeando.dto.ProductosResponse;
+import com.api.mercadeando.dto.UploadFileResponse;
+import com.api.mercadeando.entity.FileStorage;
 import com.api.mercadeando.entity.Producto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import static com.api.mercadeando.controller.Mappings.URL_PRODUCTOS_V1;
  */
 @Component
 @AllArgsConstructor
+@Slf4j
 public class ProductoMapper {
     /**
      * Crea una respuesta Json mapeado los datos de Producto a una respuesta
@@ -33,7 +37,12 @@ public class ProductoMapper {
         if (producto.getPeso()!=null) response.setPeso(producto.getPeso());
         if (producto.getUnidades()!=null) response.setUnidades(producto.getUnidades());
         if (producto.getPrecio()!=null) response.setPrecio(producto.getPrecio());
-        if (producto.getFoto()!=null) response.setFoto(producto.getFoto());
+        if (producto.getFotos()!=null) {
+            for (FileStorage foto:producto.getFotos()
+                 ) {
+                response.getFotos().add(new UploadFileResponse(foto.getFileName(),foto.getFileUrl(),foto.getDocumentFormat(),foto.getFileSize()));
+            }
+        }
         if (producto.getEstado()!=null) response.setEstado(producto.getEstado());
         return response;
     }

@@ -1,11 +1,14 @@
 package com.api.mercadeando.dto;
 
+import com.api.mercadeando.entity.FileStorage;
 import com.api.mercadeando.entity.ProductoEstado;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author cristianmarint
@@ -23,8 +26,8 @@ import java.math.BigDecimal;
         "peso",
         "unidades",
         "precio",
-        "foto",
-        "estado"
+        "estado",
+        "fotos"
 })
 @Builder
 @Setter
@@ -41,6 +44,6 @@ public class ProductoResponse {
     private Double peso;
     private Integer unidades;
     private BigDecimal precio;
-    private String foto;
+    private Set<UploadFileResponse> fotos = new HashSet<>();
     private ProductoEstado estado;
 }
