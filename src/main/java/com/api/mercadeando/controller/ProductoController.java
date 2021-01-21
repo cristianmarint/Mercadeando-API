@@ -1,5 +1,6 @@
 package com.api.mercadeando.controller;
 
+import com.api.mercadeando.dto.ProductoRequest;
 import com.api.mercadeando.dto.ProductoResponse;
 import com.api.mercadeando.dto.ProductosResponse;
 import com.api.mercadeando.dto.UploadFileResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,40 @@ public class ProductoController {
     }
 
     /**
+     * Permite crear un producto especificando sus datos si se cuenta con el permiso
+     * @param request ProductoRequest con datos necesarios para crear un producto
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @PreAuthorize("hasAuthority('ADD_PRODUCTO')")
+    @PostMapping
+    public ResponseEntity addProducto(@RequestBody @Valid ProductoRequest request){
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED).body(productoService.addProducto(request));
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Permite actualizar un producto registrado si se cuenta con el permiso
+     * @param productoId Id de un producto registrado
+     * @param request ProductoRequest con los datos nuevos
+     * @return HttpStatus Estado Http según corresponda
+     */
+    @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
+    @PutMapping(value = "/{productoId}")
+    public ResponseEntity<String> editProducto(@PathVariable("productoId") @Min(1) Long productoId, @RequestBody @Valid ProductoRequest request){
+        try{
+            productoService.editProducto(productoId,request);
+            return ResponseEntity.ok().build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Permite subir una foto a un producto si cuenta con el permiso
      * @param productoId Id de un producto existente
      * @param uploadedFile (MIME) foto
@@ -88,7 +124,7 @@ public class ProductoController {
      */
     @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
     @PostMapping("/{productoId}/foto")
-    public ResponseEntity addFoto(@PathVariable("productoId") Long productoId, @RequestParam("file") MultipartFile uploadedFile) throws DocumentStorageException, BadRequestException, ResourceNotFoundException {
+    public ResponseEntity addFoto(@PathVariable("productoId") @Min(1) Long productoId, @RequestParam("file") MultipartFile uploadedFile) throws DocumentStorageException, BadRequestException, ResourceNotFoundException {
         if (productoId==null) throw new BadRequestException("ProductoId cannot be Null");
         List<String> allowedMimeTypes = new ArrayList<>();
         allowedMimeTypes.add("image/jpg");
@@ -122,7 +158,7 @@ public class ProductoController {
      */
     @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
     @DeleteMapping("/{productoId}/foto/{nombreArchivo}")
-    public ResponseEntity deleteFoto(@PathVariable("productoId") Long productoId, @PathVariable("nombreArchivo") String nombreArchivo, HttpServletRequest request) {
+    public ResponseEntity deleteFoto(@PathVariable("productoId") @Min(1) Long productoId, @PathVariable("nombreArchivo") String nombreArchivo, HttpServletRequest request) {
         if (productoId==null) return ResponseEntity.badRequest().body("ProductoId cannot be Null");
         if (nombreArchivo==null || nombreArchivo.isEmpty()) return ResponseEntity.badRequest().body("nombreArchivo cannot be Null");
         String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);

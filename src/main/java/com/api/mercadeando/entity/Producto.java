@@ -43,7 +43,7 @@ public class Producto {
     private Double peso;
 
     /**
-     * Unidades en bolsa
+     * Unidades
      */
     @Builder.Default
     private Integer unidades=0;

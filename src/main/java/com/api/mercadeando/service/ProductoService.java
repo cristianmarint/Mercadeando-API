@@ -1,5 +1,6 @@
 package com.api.mercadeando.service;
 
+import com.api.mercadeando.dto.ProductoRequest;
 import com.api.mercadeando.dto.ProductoResponse;
 import com.api.mercadeando.dto.ProductosResponse;
 import com.api.mercadeando.entity.FileStorage;
@@ -18,7 +19,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author cristianmarint
@@ -69,6 +72,39 @@ public class ProductoService {
     }
 
     /**
+     * Permite crear un producto especificando sus datos si se cuenta con el permiso
+     * @param request Datos necesario para crear un producto
+     * @return ProductoResponse con los datos en formato JSON
+     * @throws BadRequestException cuando faltan datos necesarios
+     */
+    @PreAuthorize("hasAuthority('ADD_PRODUCTO')")
+    public ProductoResponse addProducto(@Valid ProductoRequest request) throws BadRequestException {
+        validarProducto(request);
+        Producto nuevo = productoRepository.save(productoMapper.mapProductoRequestToProducto(request, null));
+        return productoMapper.mapProductoToProductoResponse(nuevo);
+    }
+
+    /**
+     * Permite actualizar los datos de un producto registrado si se cuenta con el permiso
+     * @param productoId Id de un producto registrado
+     * @param request ProductoRequest con los datos modificados
+     * @throws BadRequestException cuando existen valores incorrectos
+     * @throws ResourceNotFoundException cuando el recurso no existe
+     */
+    @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
+    public void editProducto(Long productoId, ProductoRequest request) throws BadRequestException, ResourceNotFoundException {
+        validarProducto(request);
+        if (productoId==null) throw new BadRequestException("ProductoId cannot be Null");
+        Optional<Producto> actual = productoRepository.findById(productoId);
+        if (actual.isPresent()){
+            request.setId(productoId);
+            productoRepository.save(productoMapper.mapProductoRequestToProducto(request, actual.get()));
+        }else {
+            throw new ResourceNotFoundException(productoId,"Producto");
+        }
+    }
+
+    /**
      * Permite agregar una foto a un producto
      * @param productoId Id de un producto registrado
      * @param foto FileStorage (foto) con formato valido
@@ -103,5 +139,15 @@ public class ProductoService {
         } catch (Exception e) {
             throw new ResourceNotFoundException("Foto no encontrada.");
         }
+    }
+
+    /**
+     * Permite validar campos necesarios
+     * @param request entidad para verificar
+     * @throws BadRequestException
+     */
+    private void validarProducto(ProductoRequest request) throws BadRequestException {
+        if (request.getNombre()==null) throw new BadRequestException("El nombre no puede ser Null");
+        if (request.getPrecio()==null) throw new BadRequestException("El precio no puede ser Null");
     }
 }

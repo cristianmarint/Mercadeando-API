@@ -79,25 +79,27 @@ public class ClienteService {
 
     /**
      * Permite crear un cliente especificando sus datos si se cuenta con el permiso
-     * @param clienteRequest Datos necesarios para crear cliente
+     * @param request Datos necesarios para crear cliente
      * @throws BadRequestException cuando faltan datos necesario
+     * @return ClienteResponse con los datos en formato JSON
      */
     @PreAuthorize("hasAuthority('ADD_CLIENTE')")
-    public void addCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
-        validateCliente(clienteRequest);
-        Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(clienteRequest,null));
+    public ClienteResponse addCliente(@Valid ClienteRequest request) throws BadRequestException {
+        validarCliente(request);
+        Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(request, null));
+        return clienteMapper.mapClienteToClienteResponse(cliente,null);
     }
 
     /**
-     * Actualiza los datos de un cliente registrado si se cuenta con el permiso
+     * Permite actualizar los datos de un cliente registrado si se cuenta con el permiso
      * @param clienteId Id de un cliente registrado
-     * @param request ClienteRequest con los datos nuevos
+     * @param request ClienteRequest con los datos modificados
      * @throws ResourceNotFoundException cuando el recuerso no existe
      * @throws BadRequestException cuando existen valores incorrectos.
      */
     @PreAuthorize("hasAuthority('EDIT_CLIENTE')")
     public void editCliente(Long clienteId, ClienteRequest request) throws ResourceNotFoundException, BadRequestException {
-        validateCliente(request);
+        validarCliente(request);
         if (clienteId == null) throw new BadRequestException("ClienteId cannot be Null");
         Optional<Cliente> actual = clienteRepository.findById(clienteId);
         if (actual.isPresent()){
@@ -127,12 +129,13 @@ public class ClienteService {
     }
 
     /**
-     * Permite validar los campos con caracteristica Notnull
-     * @param clienteRequest entidad a verificar
+     * Permite validar campos necesarios
+     * @param request entidad a verificar
+     * @throws BadRequestException cuando existen valores en NUll
      */
-    private void validateCliente(ClienteRequest clienteRequest) throws BadRequestException {
-        if (clienteRequest.getNombres()==null) throw new BadRequestException("El nombre del cliente no puede ser Null");
-        if (clienteRequest.getApellidos()==null) throw new BadRequestException("El apellido del cliente no puede ser Null");
+    private void validarCliente(ClienteRequest request) throws BadRequestException {
+        if (request.getNombres()==null) throw new BadRequestException("El nombre del cliente no puede ser Null");
+        if (request.getApellidos()==null) throw new BadRequestException("El apellido del cliente no puede ser Null");
     }
 
 }

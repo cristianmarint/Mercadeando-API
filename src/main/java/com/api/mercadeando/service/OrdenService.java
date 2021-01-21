@@ -97,9 +97,10 @@ public class OrdenService {
      * @param ordenRequest Datos necesarios para crear orden
      * @throws BadRequestException cuando faltan datos necesario
      * @throws ResourceNotFoundException cuando no se encuentra un recurso
+     * @return OrdenResponse con los datos en formato JSON
      */
     @PreAuthorize("hasAuthority('ADD_ORDEN')")
-    public void addOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
+    public OrdenResponse addOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
         validateOrden(ordenRequest);
         if (ordenRequest.getCliente_id()!=null){
             Cliente cliente = clienteRepository.findById(ordenRequest.getCliente_id()).orElseThrow(()-> new ResourceNotFoundException(ordenRequest.getCliente_id(), "Cliente"));
@@ -131,7 +132,11 @@ public class OrdenService {
         orden.setTotal(total);
         orden.setPago(pago);
 
-        ordenRepository.save(orden);
+        Orden or = ordenRepository.save(orden);
+        List<OrdenProducto> ordenProductosDetalles = ordenProductoRepository.getOrdenProductoDetalles(or.getId());
+        List<Producto> ordenProductos = productoRepository.getOrdenProductos(or.getId());
+
+        return ordenMapper.mapOrdenToOrdenResponse(or,ordenProductos,ordenProductosDetalles);
     }
 
     /**

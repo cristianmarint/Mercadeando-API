@@ -76,8 +76,7 @@ public class OrdenController {
     @PostMapping
     public ResponseEntity addOrden(@RequestBody @Valid OrdenRequest request){
         try{
-            ordenService.addOrden(request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(ordenService.addOrden(request));
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ResourceNotFoundException e) {

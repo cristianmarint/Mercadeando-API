@@ -64,17 +64,16 @@ public class ClienteController {
 
     /**
      * Permite crear un cliente especificando sus datos si se cuenta con el permiso
-     * @param request ClienteRequest con datos necesarios para crear cliente
+     * @param request ClienteRequest con datos necesarios para crear un cliente
      * @return HttpStatus Estado Http según corresponda
      */
     @PreAuthorize("hasAuthority('ADD_CLIENTE')")
     @PostMapping
-    public ResponseEntity<Void> addCliente(@RequestBody @Valid ClienteRequest request){
+    public ResponseEntity addCliente(@RequestBody @Valid ClienteRequest request){
         try{
-            clienteService.addCliente(request);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.addCliente(request));
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -86,12 +85,12 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('EDIT_CLIENTE')")
     @PutMapping(value = "/{clienteId}")
-    public ResponseEntity<Void> editCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
+    public ResponseEntity<String> editCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
         try{
             clienteService.editCliente(clienteId,request);
             return ResponseEntity.ok().build();
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
