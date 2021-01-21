@@ -64,7 +64,7 @@ public class OrdenService {
      * @throws ResourceNotFoundException Cuando la orden no es encontrada
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
-    public OrdenResponse getCliente(Long ordenId) throws ResourceNotFoundException {
+    public OrdenResponse readOrden(Long ordenId) throws ResourceNotFoundException {
         if (ordenId==null) throw new MercadeandoException("OrdenId cannot be Null");
         Orden orden = ordenRepository.findById(ordenId).orElseThrow(()->new ResourceNotFoundException(ordenId,"Orden"));
         Map<String, Link> productosLinks=new HashMap<>();
@@ -81,7 +81,7 @@ public class OrdenService {
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     @Transactional(readOnly = true)
-    public OrdenesResponse getOrdenes(int offset, int limit){
+    public OrdenesResponse readOrdenes(int offset, int limit){
         if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
         if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
         if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
@@ -99,7 +99,7 @@ public class OrdenService {
      * @throws ResourceNotFoundException cuando no se encuentra un recurso
      */
     @PreAuthorize("hasAuthority('ADD_ORDEN')")
-    public void createOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
+    public void addOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
         validateOrden(ordenRequest);
         if (ordenRequest.getCliente_id()!=null){
             Cliente cliente = clienteRepository.findById(ordenRequest.getCliente_id()).orElseThrow(()-> new ResourceNotFoundException(ordenRequest.getCliente_id(), "Cliente"));
@@ -162,11 +162,9 @@ public class OrdenService {
 
                 ordenRepository.save(ordenAlmacenda.get());
             }else{
-                log.error("La orden no puede ser modificada, el pago ya fue procesado");
                 throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
             }
         }else{
-            log.error("La orden ["+ordenId+"] no fue encontrada");
             throw new ResourceNotFoundException(ordenId,"Orden");
         }
     }

@@ -36,10 +36,10 @@ public class OrdenController {
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     @GetMapping(value = "/{ordenId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrdenResponse> getOrden(@PathVariable(value = "ordenId") @Min(1) Long ordenId){
+    public ResponseEntity<OrdenResponse> readOrden(@PathVariable(value = "ordenId") @Min(1) Long ordenId){
         try{
             if (ordenId==null) throw new BadRequestException();
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ordenService.getCliente(ordenId));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ordenService.readOrden(ordenId));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();
         }catch (ResourceNotFoundException e){
@@ -56,7 +56,7 @@ public class OrdenController {
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrdenesResponse> getOrdenes(
+    public ResponseEntity<OrdenesResponse> readOrdenes(
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") int limit
     ){
@@ -64,7 +64,7 @@ public class OrdenController {
         if (limit < 0) limit = 5;
         if (limit > 100) limit = 100;
 
-        return ResponseEntity.ok().body(ordenService.getOrdenes(offset,limit));
+        return ResponseEntity.ok().body(ordenService.readOrdenes(offset,limit));
     }
 
     /**
@@ -74,9 +74,9 @@ public class OrdenController {
      */
     @PreAuthorize("hasAuthority('ADD_ORDEN')")
     @PostMapping
-    public ResponseEntity createOrden(@RequestBody @Valid OrdenRequest request){
+    public ResponseEntity addOrden(@RequestBody @Valid OrdenRequest request){
         try{
-            ordenService.createOrden(request);
+            ordenService.addOrden(request);
             return ResponseEntity.ok().build();
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

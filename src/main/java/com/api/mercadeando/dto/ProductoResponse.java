@@ -1,6 +1,5 @@
 package com.api.mercadeando.dto;
 
-import com.api.mercadeando.entity.FileStorage;
 import com.api.mercadeando.entity.ProductoEstado;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
@@ -19,7 +18,7 @@ import java.util.Set;
  */
 @JsonPropertyOrder({
         "id",
-        "self",
+        "codigo",
         "activo",
         "nombre",
         "descripcion",
@@ -27,7 +26,8 @@ import java.util.Set;
         "unidades",
         "precio",
         "estado",
-        "fotos"
+        "fotos",
+        "self"
 })
 @Builder
 @Setter
@@ -37,7 +37,7 @@ import java.util.Set;
 @Slf4j
 public class ProductoResponse {
     private Long id;
-    private Link self;
+    private String codigo;
     private Boolean activo;
     private String nombre;
     private String descripcion;
@@ -46,4 +46,5 @@ public class ProductoResponse {
     private BigDecimal precio;
     private Set<UploadFileResponse> fotos = new HashSet<>();
     private ProductoEstado estado;
+    private Link self;
 }

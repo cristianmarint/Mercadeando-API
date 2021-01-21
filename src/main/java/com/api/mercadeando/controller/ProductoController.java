@@ -13,15 +13,15 @@ import com.api.mercadeando.service.FileStorageService;
 import com.api.mercadeando.service.ProductoService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +47,10 @@ public class ProductoController {
      */
     @PreAuthorize("hasAuthority('READ_PRODUCTO')")
     @GetMapping(value = "/{productoId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductoResponse> getProducto(@PathVariable("productoId") @Min(1) Long productoId){
+    public ResponseEntity<ProductoResponse> readProducto(@PathVariable("productoId") @Min(1) Long productoId){
         try{
             if (productoId==null) throw new BadRequestException();
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productoService.getProducto(productoId));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productoService.readProducto(productoId));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();
         } catch (ResourceNotFoundException e) {
@@ -66,7 +66,7 @@ public class ProductoController {
      */
     @PreAuthorize("hasAuthority('READ_PRODUCTO')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductosResponse> getProductos(
+    public ResponseEntity<ProductosResponse> readProductos(
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") int limit
     ){
@@ -74,20 +74,22 @@ public class ProductoController {
         if (limit < 0) limit = 5;
         if (limit > 100) limit = 100;
 
-        return ResponseEntity.ok().body(productoService.getProductos(offset,limit));
+        return ResponseEntity.ok().body(productoService.readProductos(offset,limit));
     }
 
     /**
-     * Permite subir una foto a un producto
+     * Permite subir una foto a un producto si cuenta con el permiso
      * @param productoId Id de un producto existente
      * @param uploadedFile (MIME) foto
-     * @return UploadFileResponse JSON con los datos de la imagen subida
+     * @return ResponseEntity<> JSON con los datos de la imagen subida
      * @throws DocumentStorageException Cuando existe un problema almacenando la foto
      * @throws BadRequestException Cuando el formato de la foto no es permitido
      * @throws ResourceNotFoundException Cuando el producto no existe
      */
+    @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
     @PostMapping("/{productoId}/foto")
-    public UploadFileResponse uploadFile(@PathVariable("productoId") Long productoId,@RequestParam("file") MultipartFile uploadedFile) throws DocumentStorageException, BadRequestException, ResourceNotFoundException {
+    public ResponseEntity addFoto(@PathVariable("productoId") Long productoId, @RequestParam("file") MultipartFile uploadedFile) throws DocumentStorageException, BadRequestException, ResourceNotFoundException {
+        if (productoId==null) throw new BadRequestException("ProductoId cannot be Null");
         List<String> allowedMimeTypes = new ArrayList<>();
         allowedMimeTypes.add("image/jpg");
         allowedMimeTypes.add("image/jpeg");
@@ -104,11 +106,33 @@ public class ProductoController {
 
         if (permitido){
             FileStorage file = fileStorageService.storeFileLocally(uploadedFile, FileStorageDocumentType.FOTO_PRODUCTO);
-            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/").path(file.getFileName()).toUriString();
             productoService.addFoto(productoId,file);
-            return new UploadFileResponse(file.getFileName(), fileDownloadUri, uploadedFile.getContentType(), uploadedFile.getSize());
+            return ResponseEntity.ok().body(new UploadFileResponse(file.getFileName(), file.getFileUrl(), uploadedFile.getContentType(), uploadedFile.getSize()));
         }else {
-            throw new BadRequestException("La foto del producto solo puede ser: "+allowedMimeTypes);
+            return ResponseEntity.badRequest().body("La foto del producto solo puede ser: "+allowedMimeTypes);
+        }
+    }
+
+    /**
+     * Permite borrar una foto de BD y sistema de archivos local si cuenta con el permiso
+     * @param productoId Id de un producto registrado
+     * @param nombreArchivo Nombre de una foto existente
+     * @param request HttpServletRequest
+     * @return ResponseEntity con estado Http y mensaje segun corresponda
+     */
+    @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
+    @DeleteMapping("/{productoId}/foto/{nombreArchivo}")
+    public ResponseEntity deleteFoto(@PathVariable("productoId") Long productoId, @PathVariable("nombreArchivo") String nombreArchivo, HttpServletRequest request) {
+        if (productoId==null) return ResponseEntity.badRequest().body("ProductoId cannot be Null");
+        if (nombreArchivo==null || nombreArchivo.isEmpty()) return ResponseEntity.badRequest().body("nombreArchivo cannot be Null");
+        String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);
+        try {
+            productoService.deleteFoto(productoId,uriFileName);
+            return ResponseEntity.noContent().build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

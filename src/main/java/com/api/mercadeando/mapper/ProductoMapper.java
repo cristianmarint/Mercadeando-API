@@ -37,9 +37,9 @@ public class ProductoMapper {
         if (producto.getPeso()!=null) response.setPeso(producto.getPeso());
         if (producto.getUnidades()!=null) response.setUnidades(producto.getUnidades());
         if (producto.getPrecio()!=null) response.setPrecio(producto.getPrecio());
+        if (producto.getCodigo()!=null) response.setCodigo(producto.getCodigo());
         if (producto.getFotos()!=null) {
-            for (FileStorage foto:producto.getFotos()
-                 ) {
+            for (FileStorage foto:producto.getFotos()) {
                 response.getFotos().add(new UploadFileResponse(foto.getFileName(),foto.getFileUrl(),foto.getDocumentFormat(),foto.getFileSize()));
             }
         }

@@ -26,6 +26,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.api.mercadeando.controller.Mappings.URL_STATIC_FILE_V1;
+
 
 /**
  * @author cristianmarint
@@ -82,7 +84,7 @@ public class FileStorageService {
 
             fileName = UUID.randomUUID().toString()+""+ fileExtension;
             //Crea la url para acceder
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/").path(fileName).toUriString();
+            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(URL_STATIC_FILE_V1+"/").path(fileName).toUriString();
 
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
@@ -104,18 +106,15 @@ public class FileStorageService {
         }
     }
 
-    public Boolean deleteFileLocally(String fileName) throws Exception {
+    /**
+     * Permite borrar un archivo local
+     * @param fileName nombre de un archivo existente
+     * @throws Exception cuando el archivo no es encontrado
+     */
+    public void deleteFileLocally(String fileName) throws Exception {
         Resource file = this.loadFileAsResource(fileName);
         Path targetLocation = this.fileStorageLocation.resolve(fileName);
-
-        log.info(String.valueOf(targetLocation));
-
         Files.delete(targetLocation);
-
-        if(this.loadFileAsResource(fileName).exists()){
-            return true;
-        }
-        return false;
     }
 
 
@@ -145,6 +144,11 @@ public class FileStorageService {
      * @return Boolean true si el archivo es encontrado, false si no.
      */
     public Boolean doesItExists(String fileName) {
-        return fileStorageRepository.findByFileName(fileName);
+        Integer var = fileStorageRepository.findByFileNameAndCount(fileName);
+        if (var==0){
+            return false;
+        }else {
+            return true;
+        }
     }
 }

@@ -1,10 +1,11 @@
 package com.api.mercadeando.repository;
 
 import com.api.mercadeando.entity.FileStorage;
-import com.api.mercadeando.entity.FileStorageDocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * @author cristianmarint
@@ -18,8 +19,19 @@ public interface FileStorageRepository extends JpaRepository<FileStorage, Long> 
      * @return Boolean true si el archivo es encontrado, false si no.
      */
     @Query(
-            value = "Select case when(count (*) > 0) then true else false end from file_storage where file_name =:fileName",
+            value = "Select count(*) from file_storage where file_name =:fileName",
             nativeQuery = true
     )
-    Boolean findByFileName(String fileName);
+    Integer findByFileNameAndCount(String fileName);
+
+    /**
+     * Busca un archivo por nombre.
+     * @param fileName nombre de un archivo
+     * @return Optional<FileStorage> datos archivo encontrado
+     */
+    @Query(
+            value = "Select * from file_storage where file_name =:fileName",
+            nativeQuery = true
+    )
+    Optional<FileStorage> findByFileName(String fileName);
 }

@@ -21,6 +21,13 @@ public class Permiso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * BROWSE:
+     * READ: LEEAR UN REGISTRO
+     * EDIT: MODIFICAR UN REGISTRO
+     * ADD: CREAR UN REGISTRO
+     * DELETE: BORRAR/SOFT UN REGISTRO
+     */
     @NotNull
     @Column(unique = true)
     private String name;

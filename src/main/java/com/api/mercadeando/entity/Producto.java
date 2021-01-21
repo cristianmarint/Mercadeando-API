@@ -23,6 +23,9 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String codigo;
+
     @Nullable
     @Builder.Default
     private Boolean activo=true;
@@ -53,7 +56,8 @@ public class Producto {
     @Builder.Default
     private BigDecimal precio= BigDecimal.valueOf(0);
 
-    @OneToMany
+    @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true)
+    @JoinTable(name = "producto_foto")
     private Set<FileStorage> fotos;
 
     @Builder.Default

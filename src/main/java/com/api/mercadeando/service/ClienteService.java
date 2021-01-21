@@ -50,7 +50,7 @@ public class ClienteService {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @Transactional(readOnly = true)
-    public ClientesResponse getClientes(int offset, int limit){
+    public ClientesResponse readClientes(int offset, int limit){
         if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
         if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
         if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
@@ -65,7 +65,7 @@ public class ClienteService {
      * @throws ResourceNotFoundException cuando el cliente no es encontrado
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
-    public ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException {
+    public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException {
         if (clienteId==null) throw new MercadeandoException("ClienteId cannot be Null");
 
         Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
@@ -82,8 +82,8 @@ public class ClienteService {
      * @param clienteRequest Datos necesarios para crear cliente
      * @throws BadRequestException cuando faltan datos necesario
      */
-    @PreAuthorize("hasAuthority('WRITE_CLIENTE')")
-    public void createCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
+    @PreAuthorize("hasAuthority('ADD_CLIENTE')")
+    public void addCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
         validateCliente(clienteRequest);
         Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(clienteRequest,null));
     }

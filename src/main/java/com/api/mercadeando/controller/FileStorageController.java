@@ -10,7 +10,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -21,9 +24,6 @@ import static com.api.mercadeando.controller.Mappings.URL_BASE_V1;
  * @author cristianmarint
  * @Date 2021-01-19 12:10
  */
-//TODO:
-//    * CREAR PERMISO PARA SUBIR ARCHIVOS Y ASIGNAR AL ROL
-//    * O USAR EL PERMISO DE WRITE_TABLE ?
 @RestController
 @RequestMapping(URL_BASE_V1)
 @AllArgsConstructor
@@ -53,7 +53,7 @@ public class FileStorageController {
      */
     @GetMapping("/static/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String pathFileName, HttpServletRequest request){
-        String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);;
+        String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);
         Resource resource = null;
         if(fileStorageService.doesItExists(uriFileName)) {
             try {
