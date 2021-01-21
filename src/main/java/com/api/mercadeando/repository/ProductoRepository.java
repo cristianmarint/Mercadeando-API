@@ -21,4 +21,16 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
                     "WHERE orden_producto.orden_id=:ordenId ORDER BY producto.id DESC"
     )
     List<Producto> getOrdenProductos(Long ordenId);
+
+    /**
+     * Permite buscar a todos los productos
+     * @param offset Punto de partida mayor a cero para buscar nuevos valores
+     * @param limit Cantidad de valores a entontrar menor a cien
+     * @return List<Producto> Listado de productos existentes
+     */
+    @Query(
+            nativeQuery = true,
+            value = "SELECT producto.* FROM producto ORDER BY producto.created_at ASC LIMIT :limit OFFSET :offset"
+    )
+    List<Producto> getProductos(int offset, int limit);
 }

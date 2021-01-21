@@ -50,7 +50,7 @@ public class ClienteService {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @Transactional(readOnly = true)
-    public ClientesResponse getClientes(int offset, int limit){
+    public ClientesResponse readClientes(int offset, int limit){
         if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
         if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
         if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
@@ -65,7 +65,7 @@ public class ClienteService {
      * @throws ResourceNotFoundException cuando el cliente no es encontrado
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
-    public ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException {
+    public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException {
         if (clienteId==null) throw new MercadeandoException("ClienteId cannot be Null");
 
         Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
@@ -79,25 +79,27 @@ public class ClienteService {
 
     /**
      * Permite crear un cliente especificando sus datos si se cuenta con el permiso
-     * @param clienteRequest Datos necesarios para crear cliente
+     * @param request Datos necesarios para crear cliente
      * @throws BadRequestException cuando faltan datos necesario
+     * @return ClienteResponse con los datos en formato JSON
      */
-    @PreAuthorize("hasAuthority('WRITE_CLIENTE')")
-    public void createCliente(@Valid ClienteRequest clienteRequest) throws BadRequestException {
-        validateCliente(clienteRequest);
-        Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(clienteRequest,null));
+    @PreAuthorize("hasAuthority('ADD_CLIENTE')")
+    public ClienteResponse addCliente(@Valid ClienteRequest request) throws BadRequestException {
+        validarCliente(request);
+        Cliente cliente = clienteRepository.save(clienteMapper.mapClienteRequestToCliente(request, null));
+        return clienteMapper.mapClienteToClienteResponse(cliente,null);
     }
 
     /**
-     * Actualiza los datos de un cliente registrado si se cuenta con el permiso
+     * Permite actualizar los datos de un cliente registrado si se cuenta con el permiso
      * @param clienteId Id de un cliente registrado
-     * @param request ClienteRequest con los datos nuevos
+     * @param request ClienteRequest con los datos modificados
      * @throws ResourceNotFoundException cuando el recuerso no existe
      * @throws BadRequestException cuando existen valores incorrectos.
      */
     @PreAuthorize("hasAuthority('EDIT_CLIENTE')")
     public void editCliente(Long clienteId, ClienteRequest request) throws ResourceNotFoundException, BadRequestException {
-        validateCliente(request);
+        validarCliente(request);
         if (clienteId == null) throw new BadRequestException("ClienteId cannot be Null");
         Optional<Cliente> actual = clienteRepository.findById(clienteId);
         if (actual.isPresent()){
@@ -127,12 +129,13 @@ public class ClienteService {
     }
 
     /**
-     * Permite validar los campos con caracteristica Notnull
-     * @param clienteRequest entidad a verificar
+     * Permite validar campos necesarios
+     * @param request entidad a verificar
+     * @throws BadRequestException cuando existen valores en NUll
      */
-    private void validateCliente(ClienteRequest clienteRequest) throws BadRequestException {
-        if (clienteRequest.getNombres()==null) throw new BadRequestException("El nombre del cliente no puede ser Null");
-        if (clienteRequest.getApellidos()==null) throw new BadRequestException("El apellido del cliente no puede ser Null");
+    private void validarCliente(ClienteRequest request) throws BadRequestException {
+        if (request.getNombres()==null) throw new BadRequestException("El nombre del cliente no puede ser Null");
+        if (request.getApellidos()==null) throw new BadRequestException("El apellido del cliente no puede ser Null");
     }
 
 }
