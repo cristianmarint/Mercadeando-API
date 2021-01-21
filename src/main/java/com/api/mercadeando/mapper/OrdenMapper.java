@@ -51,7 +51,7 @@ public class OrdenMapper {
         if(orden.getId()!=null) {
             response.setId(orden.getId());
             if (orden.getCliente()!=null) response.setCliente(new Link("cliente",String.format(URL_CLIENTES_V1+"/%s",orden.getCliente().getId())));
-            response.setSelf(new Link("self",String.format(URL_ORDENES_V1+"/%s",orden.getId())));
+            response.setSelf(new Link("self",URL_ORDENES_V1+"/"+orden.getId()));
         }
         if(orden.getActivo()!=null) response.setActivo(orden.getActivo());
         if(orden.getEstado()!=null) response.setEstado(orden.getEstado());
@@ -110,11 +110,11 @@ public class OrdenMapper {
             if (offset>0){
                 response.getLinks().add(
                         new Link("prev",
-                                String.format("/api/v1/clientes?offset=%s&limit=%s", Math.max(offset - limit, 0), limit)));
+                                String.format(URL_CLIENTES_V1+"?offset=%s&limit=%s", Math.max(offset - limit, 0), limit)));
             }
             response.getLinks().add(
                     new Link("next",
-                            String.format("/api/v1/clientes?offset=%s&limit=%s", offset + limit, limit)));
+                            String.format(URL_CLIENTES_V1+"?offset=%s&limit=%s", offset + limit, limit)));
         }
         return response;
     }

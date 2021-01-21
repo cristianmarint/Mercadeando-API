@@ -33,7 +33,7 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClientesResponse> getClientes(
+    public ResponseEntity<ClientesResponse> readClientes(
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") int limit
     ){
@@ -41,7 +41,7 @@ public class ClienteController {
         if (limit < 0) limit = 5;
         if (limit > 100) limit = 100;
 
-        return ResponseEntity.ok().body(clienteService.getClientes(offset,limit));
+        return ResponseEntity.ok().body(clienteService.readClientes(offset,limit));
     }
 
     /**
@@ -51,10 +51,10 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @GetMapping(value = "/{clienteId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClienteResponse> getCliente(@PathVariable(value = "clienteId") @Min(1) Long clienteId) {
+    public ResponseEntity<ClienteResponse> readCliente(@PathVariable(value = "clienteId") @Min(1) Long clienteId) {
         try{
             if(clienteId == null) throw new BadRequestException();
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(clienteService.getCliente(clienteId));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(clienteService.readCliente(clienteId));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();
         } catch (ResourceNotFoundException e) {
@@ -64,17 +64,16 @@ public class ClienteController {
 
     /**
      * Permite crear un cliente especificando sus datos si se cuenta con el permiso
-     * @param request ClienteRequest con datos necesarios para crear cliente
+     * @param request ClienteRequest con datos necesarios para crear un cliente
      * @return HttpStatus Estado Http según corresponda
      */
-    @PreAuthorize("hasAuthority('WRITE_CLIENTE')")
+    @PreAuthorize("hasAuthority('ADD_CLIENTE')")
     @PostMapping
-    public ResponseEntity<Void> createCliente(@RequestBody @Valid ClienteRequest request){
+    public ResponseEntity addCliente(@RequestBody @Valid ClienteRequest request){
         try{
-            clienteService.createCliente(request);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.addCliente(request));
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -86,12 +85,12 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('EDIT_CLIENTE')")
     @PutMapping(value = "/{clienteId}")
-    public ResponseEntity<Void> editCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
+    public ResponseEntity<String> editCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestBody @Valid ClienteRequest request){
         try{
             clienteService.editCliente(clienteId,request);
             return ResponseEntity.ok().build();
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
