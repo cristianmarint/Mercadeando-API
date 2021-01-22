@@ -12,7 +12,7 @@ import java.util.Set;
  * @Date 2021-01-11 10:42
  */
 @Repository
-public interface RolRepository extends JpaRepository<Rol,Long> {
+public interface RolJPARepository extends JpaRepository<Rol,Long> {
     Rol findByName(String name);
 
     @Query(

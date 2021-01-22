@@ -1,4 +1,4 @@
-package com.api.mercadeando.infrastructure.persistence.model;
+package com.api.mercadeando.infrastructure.persistence.entity;
 
 public enum OrdenEstado {
     /**

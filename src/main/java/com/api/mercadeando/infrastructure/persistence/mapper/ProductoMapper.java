@@ -1,4 +1,4 @@
-package com.api.mercadeando.mapper;
+package com.api.mercadeando.infrastructure.persistence.mapper;
 
 import com.api.mercadeando.domain.dto.*;
 import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
@@ -25,7 +25,7 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PRODUCT
 public class ProductoMapper {
     private AuthService authService;
     /**
-     * Crea una respuesta Json mapeado los datos de Producto a una respuesta
+     * Crea una respuesta Json mapeado los datos de ProductoData a una respuesta
      * @param producto datos de una producto
      * @return ProductoResponse
      */

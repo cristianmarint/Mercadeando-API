@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+public interface ClienteJPARepository extends JpaRepository<Cliente, Long> {
     @Query(
             nativeQuery = true,
             value = "SELECT cliente.* FROM cliente ORDER BY cliente.created_at ASC LIMIT :limit OFFSET :offset"

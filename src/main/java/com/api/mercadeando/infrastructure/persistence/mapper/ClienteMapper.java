@@ -1,4 +1,4 @@
-package com.api.mercadeando.mapper;
+package com.api.mercadeando.infrastructure.persistence.mapper;
 
 import com.api.mercadeando.domain.dto.ClienteRequest;
 import com.api.mercadeando.domain.dto.ClienteResponse;

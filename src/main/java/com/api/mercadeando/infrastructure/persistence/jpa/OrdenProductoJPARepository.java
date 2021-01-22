@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrdenProductoRepository extends JpaRepository<OrdenProducto, Long> {
+public interface OrdenProductoJPARepository extends JpaRepository<OrdenProducto, Long> {
     /**
      * Permite buscar los detalles asociados a un producto en una orden
      * @param ordenId Id de una orden existente

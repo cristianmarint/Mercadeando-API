@@ -1,6 +1,6 @@
-package com.api.mercadeando.dto;
+package com.api.mercadeando.domain.dto;
 
-import com.api.mercadeando.domain.model.OrdenEstado;
+import com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;

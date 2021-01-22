@@ -1,4 +1,4 @@
-package com.api.mercadeando.app.security;
+package com.api.mercadeando.infrastructure.security;
 
 import com.api.mercadeando.domain.exception.MercadeandoException;
 import io.jsonwebtoken.Claims;

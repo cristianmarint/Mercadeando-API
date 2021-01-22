@@ -12,7 +12,7 @@ import java.util.Optional;
  * @Date 2021-01-19 11:43
  */
 @Repository
-public interface FileStorageRepository extends JpaRepository<FileStorage, Long> {
+public interface FileStorageJPARepository extends JpaRepository<FileStorage, Long> {
     /**
      * Busca un archivo por nombre.
      * @param fileName nombre de un archivo

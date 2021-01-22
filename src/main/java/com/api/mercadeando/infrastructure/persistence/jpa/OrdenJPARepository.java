@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface OrdenRepository extends JpaRepository<Orden,Long> {
+public interface OrdenJPARepository extends JpaRepository<Orden,Long> {
     /**
      * @param clienteId Id de un cliente registrado y con almenos una orden
      * @return List<Orden> Listado de ordenes

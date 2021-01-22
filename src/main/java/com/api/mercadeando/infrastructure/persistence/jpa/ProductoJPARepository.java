@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductoRepository extends JpaRepository<Producto, Long> {
+public interface ProductoJPARepository extends JpaRepository<Producto, Long> {
     /**
      * Permite buscar a los productos en una orden
      * @param ordenId Id de una orden existente
@@ -26,7 +26,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      * Permite buscar a todos los productos
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
      * @param limit Cantidad de valores a entontrar menor a cien
-     * @return List<Producto> Listado de productos existentes
+     * @return List<ProductoData> Listado de productos existentes
      */
     @Query(
             nativeQuery = true,

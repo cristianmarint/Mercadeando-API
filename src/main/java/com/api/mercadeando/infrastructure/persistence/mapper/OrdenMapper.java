@@ -1,4 +1,4 @@
-package com.api.mercadeando.mapper;
+package com.api.mercadeando.infrastructure.persistence.mapper;
 
 import com.api.mercadeando.domain.dto.Link;
 import com.api.mercadeando.domain.dto.OrdenRequest;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CLIENTES_V1;
 import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES_V1;
-import static com.api.mercadeando.utils.formatDates.instantToString;
+import static com.api.mercadeando.domain.utils.formatDates.instantToString;
 /**
  * @author cristianmarint
  * @Date 2021-01-14 9:42

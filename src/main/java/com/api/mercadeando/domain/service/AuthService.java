@@ -10,7 +10,7 @@ import com.api.mercadeando.infrastructure.persistence.jpa.PermisoJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.RolJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.UserJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.VerificationTokenJPARepository;
-import com.api.mercadeando.app.security.JwtProvider;
+import com.api.mercadeando.infrastructure.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
