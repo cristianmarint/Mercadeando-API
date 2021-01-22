@@ -14,7 +14,7 @@ public interface ClienteData {
 
     ClientesResponse getClientes(int offset, int limit);
 
-    ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException;
+    ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException;
 
     ClienteResponse addCliente(ClienteRequest request) throws BadRequestException;
 

@@ -1,11 +1,12 @@
 package com.api.mercadeando.infrastructure.persistence.mapper;
 
 import com.api.mercadeando.domain.dto.*;
+import com.api.mercadeando.domain.exception.BadRequestException;
+import com.api.mercadeando.domain.service.AuthService;
+import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
 import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.infrastructure.persistence.entity.ProductoEstado;
-import com.api.mercadeando.domain.exception.BadRequestException;
-import com.api.mercadeando.domain.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.List;
 
+import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CATEGORIAS_V1;
 import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PRODUCTOS_V1;
 
 /**
@@ -46,6 +48,19 @@ public class ProductoMapper {
             }
         }
         if (producto.getEstado()!=null) response.setEstado(producto.getEstado());
+        if (producto.getCategorias()!=null) {
+            for (Categoria c:producto.getCategorias()
+                 ) {
+                response.getCategorias().add(
+                        new CategoriaResponse().builder()
+                                .id(c.getId())
+                                .self(new Link("self",URL_CATEGORIAS_V1+"/"+c.getId()))
+                                .nombre(c.getNombre())
+                                .descripcion(c.getDescripcion())
+                                .build()
+                );
+            }
+        }
         return response;
     }
 

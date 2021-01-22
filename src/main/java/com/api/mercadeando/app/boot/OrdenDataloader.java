@@ -19,7 +19,7 @@ import java.util.List;
  * Relacionando la orden con producto, cliente y usuario.
  */
 @Component
-@Order(4)
+@Order(5)
 @AllArgsConstructor
 @Slf4j
 public class OrdenDataloader implements CommandLineRunner {
@@ -35,7 +35,7 @@ public class OrdenDataloader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<Producto> productos = productoJPARepository.findAll();
 
-        log.info("---------> 4 - CARGANDO ORDENES");
+        log.info("---------> 5 - CARGANDO ORDENES");
         List<Orden> ordenes = new ArrayList<>();
         List<Pago> pagos = new ArrayList<>();
         List<OrdenProducto> ordenProductos = new ArrayList<>();

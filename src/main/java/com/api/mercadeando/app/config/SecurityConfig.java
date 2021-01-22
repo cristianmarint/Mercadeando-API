@@ -16,8 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.api.mercadeando.infrastructure.controller.Mappings.URL_AUTH_V1;
-import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CLIENTES_V1;
+import static com.api.mercadeando.infrastructure.controller.Mappings.*;
 
 /**
  * Configura la seguridad de la aplicacion
@@ -43,9 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(URL_AUTH_V1 +"**")
                 .permitAll()
 
-                .antMatchers(HttpMethod.GET, URL_CLIENTES_V1)
+                .antMatchers(HttpMethod.GET, URL_PRODUCTOS_V1)
                 .permitAll()
-                .antMatchers(HttpMethod.GET,URL_CLIENTES_V1+"**")
+                .antMatchers(HttpMethod.GET,URL_PRODUCTOS_V1+"**")
                 .permitAll()
 
                 .antMatchers("/v2/api-docs",

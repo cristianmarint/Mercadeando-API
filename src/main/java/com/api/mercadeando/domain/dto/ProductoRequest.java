@@ -1,5 +1,6 @@
 package com.api.mercadeando.domain.dto;
 
+import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author cristianmarint
@@ -39,4 +42,5 @@ public class ProductoRequest {
     @NotNull
     @DecimalMin(value = "0.00", message = "El precio debe de ser un valor mayor a cero (0)")
     private BigDecimal precio= BigDecimal.valueOf(0);
+    private Set<CategoriaResponse> categorias = new HashSet<>();
 }

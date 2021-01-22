@@ -1,18 +1,12 @@
 package com.api.mercadeando.domain.service;
 
-import com.api.mercadeando.domain.data.OrdenData;
 import com.api.mercadeando.domain.data.ProductoData;
 import com.api.mercadeando.domain.dto.ProductoRequest;
 import com.api.mercadeando.domain.dto.ProductoResponse;
 import com.api.mercadeando.domain.dto.ProductosResponse;
-import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
-import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.domain.exception.BadRequestException;
-import com.api.mercadeando.domain.exception.MercadeandoException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
-import com.api.mercadeando.infrastructure.persistence.mapper.ProductoMapper;
-import com.api.mercadeando.infrastructure.persistence.jpa.FileStorageJPARepository;
-import com.api.mercadeando.infrastructure.persistence.jpa.ProductoJPARepository;
+import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author cristianmarint
@@ -34,6 +26,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Slf4j
 public class ProductoService {
+    @Autowired
     private ProductoData productoData;
     /**
      * Crea una respuesta Json mapeado los datos de ProductoData a una respuesta detallada

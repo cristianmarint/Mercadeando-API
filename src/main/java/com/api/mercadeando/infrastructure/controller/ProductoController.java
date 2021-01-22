@@ -51,7 +51,6 @@ public class ProductoController {
     @GetMapping(value = "/{productoId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductoResponse> readProducto(@PathVariable("productoId") @Min(1) Long productoId){
         try{
-            if (productoId==null) throw new BadRequestException();
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productoService.readProducto(productoId));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();

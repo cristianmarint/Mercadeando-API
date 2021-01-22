@@ -1,5 +1,6 @@
 package com.api.mercadeando.domain.dto;
 
+import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import com.api.mercadeando.infrastructure.persistence.entity.ProductoEstado;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
@@ -45,6 +46,7 @@ public class ProductoResponse {
     private Integer unidades;
     private BigDecimal precio;
     private Set<UploadFileResponse> fotos = new HashSet<>();
+    private Set<CategoriaResponse> categorias = new HashSet<>();
     private ProductoEstado estado;
     private Link self;
 }

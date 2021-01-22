@@ -56,7 +56,7 @@ public class ClienteService {
      * @throws ResourceNotFoundException cuando el cliente no es encontrado
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
-    public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException {
+    public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
         if (clienteId==null) throw new MercadeandoException("ClienteId cannot be Null");
         return clienteData.getCliente(clienteId);
     }

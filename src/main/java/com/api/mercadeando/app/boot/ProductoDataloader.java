@@ -1,7 +1,9 @@
 package com.api.mercadeando.app.boot;
 
 import com.api.mercadeando.infrastructure.persistence.entity.Producto;
+import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import com.api.mercadeando.infrastructure.persistence.entity.ProductoEstado;
+import com.api.mercadeando.infrastructure.persistence.jpa.CategoriaJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.ProductoJPARepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,21 +14,26 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author cristianmarint
+ * @Date 2021-01-15 10:02
+ */
 /**
  * Crea valores por defecto para productos en la BD
  */
 @Component
 @AllArgsConstructor
-@Order(3)
+@Order(4)
 @Slf4j
 public class ProductoDataloader implements CommandLineRunner {
     private ProductoJPARepository productoJPARepository;
+    private CategoriaJPARepository categoriaJPARepository;
 
     @Override
     public void run(String... args) {
-        log.info("---------> 3 - CARGANDO PRODUCTOS");
+        log.info("---------> 4 - CARGANDO PRODUCTOS");
         List<Producto> productos = new ArrayList<>();
+        Categoria categoria4 = categoriaJPARepository.findById(4L).get();
 
         Producto producto1 = new Producto().builder()
                 .nombre("Arroz Diana")
@@ -39,6 +46,8 @@ public class ProductoDataloader implements CommandLineRunner {
                 .estado(ProductoEstado.DISPONIBLE)
                 .activo(true)
                 .build();
+        producto1.agregarCategoria(categoria4);
+        categoria4.agregarProducto(producto1);
         productos.add(producto1);
 
         Producto producto2 = new Producto().builder()
@@ -52,6 +61,8 @@ public class ProductoDataloader implements CommandLineRunner {
                 .estado(ProductoEstado.POCAS_UNIDADES)
                 .activo(true)
                 .build();
+        producto2.agregarCategoria(categoria4);
+        categoria4.agregarProducto(producto2);
         productos.add(producto2);
 
         Producto producto3 = new Producto().builder()
@@ -65,6 +76,8 @@ public class ProductoDataloader implements CommandLineRunner {
                 .estado(ProductoEstado.DISPONIBLE)
                 .activo(true)
                 .build();
+        producto3.agregarCategoria(categoria4);
+        categoria4.agregarProducto(producto3);
         productos.add(producto3);
 
         Producto producto4 = new Producto().builder()
@@ -78,6 +91,8 @@ public class ProductoDataloader implements CommandLineRunner {
                 .estado(ProductoEstado.DISPONIBLE)
                 .activo(true)
                 .build();
+        producto4.agregarCategoria(categoria4);
+        categoria4.agregarProducto(producto4);
         productos.add(producto4);
 
         Producto producto5 = new Producto().builder()
@@ -91,6 +106,8 @@ public class ProductoDataloader implements CommandLineRunner {
                 .estado(ProductoEstado.DISPONIBLE)
                 .activo(true)
                 .build();
+        producto5.agregarCategoria(categoria4);
+        categoria4.agregarProducto(producto5);
         productos.add(producto5);
 
         productoJPARepository.saveAll(productos);

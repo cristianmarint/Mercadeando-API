@@ -101,6 +101,27 @@ public class RolesYPermisosDataloader implements CommandLineRunner {
         cajeroRol.addPermiso(EDIT_ORDEN);
         cajeroRol.addPermiso(ADD_ORDEN);
 
+        Permiso BROWSE_CATEGORIA = new Permiso().builder().name("BROWSE_CATEGORIA").build();
+        Permiso READ_CATEGORIA = new Permiso().builder().name("READ_CATEGORIA").build();
+        Permiso EDIT_CATEGORIA = new Permiso().builder().name("EDIT_CATEGORIA").build();
+        Permiso ADD_CATEGORIA = new Permiso().builder().name("ADD_CATEGORIA").build();
+        Permiso DELETE_CATEGORIA = new Permiso().builder().name("DELETE_CATEGORIA").build();
+        permisoJPARepository.save(BROWSE_CATEGORIA);
+        permisoJPARepository.save(READ_CATEGORIA);
+        permisoJPARepository.save(EDIT_CATEGORIA);
+        permisoJPARepository.save(ADD_CATEGORIA);
+        permisoJPARepository.save(DELETE_CATEGORIA);
+
+        adminRol.addPermiso(BROWSE_CATEGORIA);
+        adminRol.addPermiso(READ_CATEGORIA);
+        adminRol.addPermiso(EDIT_CATEGORIA);
+        adminRol.addPermiso(ADD_CATEGORIA);
+        adminRol.addPermiso(DELETE_CATEGORIA);
+
+        cajeroRol.addPermiso(READ_CATEGORIA);
+        cajeroRol.addPermiso(EDIT_CATEGORIA);
+        cajeroRol.addPermiso(ADD_CATEGORIA);
+
         rolJPARepository.save(adminRol);
         rolJPARepository.save(usuarioRol);
         rolJPARepository.save(cajeroRol);

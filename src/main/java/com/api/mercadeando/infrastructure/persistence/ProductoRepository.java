@@ -13,6 +13,7 @@ import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.infrastructure.persistence.jpa.FileStorageJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.ProductoJPARepository;
 import com.api.mercadeando.infrastructure.persistence.mapper.ProductoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,7 @@ import java.util.Optional;
  * @Date 2021-01-21 3:29
  */
 @Repository
+@Slf4j
 public class ProductoRepository implements ProductoData {
     @Autowired
     private ProductoJPARepository productoJPARepository;
@@ -37,7 +39,7 @@ public class ProductoRepository implements ProductoData {
 
     public ProductoResponse readProducto(Long productoId) throws BadRequestException, ResourceNotFoundException {
         if (productoId==null) throw new BadRequestException("ProductoId cannot be null");
-        Producto producto = productoJPARepository.findById(productoId).orElseThrow(() -> new ResourceNotFoundException(productoId, "ProductoData"));
+        Producto producto = productoJPARepository.findById(productoId).orElseThrow(() -> new ResourceNotFoundException(productoId, "Producto"));
         return productoMapper.mapProductoToProductoResponse(producto);
     }
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CLIENTES_V1;
+import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES_V1;
 
 /**
  * @author cristianmarint
@@ -40,17 +41,17 @@ public class ClienteRepository implements ClienteData {
     @Override
     public ClientesResponse getClientes(int offset, int limit) {
         List<Cliente> clientes = clienteJPARepository.getClientes(offset, limit);
-        ClientesResponse tmp = clienteMapper.mapClientesToClienteResponse(clientes, offset, limit);
-        return tmp;
+        return clienteMapper.mapClientesToClienteResponse(clientes, offset, limit);
     }
 
     @Override
-    public ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException {
+    public ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
+        if (clienteId==null) throw new BadRequestException("ClienteId cannot be null");
         Cliente cliente = clienteJPARepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
 
         List<Link> ordenesLinks=new ArrayList<>();
         for (Orden orden : ordenJPARepository.getClienteOrdenes(clienteId)) {
-            ordenesLinks.add(new Link("orden", String.format(URL_CLIENTES_V1 + "/" + clienteId + "/ordenes/%s", orden.getId())));
+            ordenesLinks.add(new Link("orden", String.format(URL_ORDENES_V1 + "/", orden.getId())));
         };
         return clienteMapper.mapClienteToClienteResponse(cliente,ordenesLinks);
     }
