@@ -5,7 +5,6 @@ import com.api.mercadeando.domain.dto.OrdenResponse;
 import com.api.mercadeando.domain.dto.OrdenesResponse;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
-import com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo;
 
 /**
  * @author cristianmarint
@@ -18,7 +17,7 @@ public interface OrdenData {
 
     OrdenResponse addOrden(OrdenRequest request) throws ResourceNotFoundException, BadRequestException;
 
-    void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException;
-
     void softDeleteOrden(Long ordenId,Boolean estado) throws BadRequestException, ResourceNotFoundException;
+
+    void addPagoId(Long ordenId ,Long pagoId) throws ResourceNotFoundException;
 }

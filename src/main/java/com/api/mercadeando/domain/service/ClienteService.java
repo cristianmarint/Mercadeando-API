@@ -46,7 +46,7 @@ public class ClienteService {
         if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
         if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
         if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
-        return clienteData.getClientes(offset,limit);
+        return clienteData.readClientes(offset,limit);
     }
 
     /**
@@ -57,8 +57,8 @@ public class ClienteService {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
-        if (clienteId==null) throw new MercadeandoException("ClienteId cannot be Null");
-        return clienteData.getCliente(clienteId);
+        if (clienteId==null) throw new MercadeandoException("ClienteId no puede ser Null");
+        return clienteData.readCliente(clienteId);
     }
 
     /**

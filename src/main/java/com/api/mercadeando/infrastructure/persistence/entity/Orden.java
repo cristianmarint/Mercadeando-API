@@ -45,10 +45,11 @@ public class Orden {
     private Set<OrdenProducto> productos = new HashSet<>();
 
     @OneToOne()
-    private Pago pago;
+    @JoinColumn(name = "pago_id", updatable = false)
+    private Pago pagox;
 
     @Nullable
-    @ManyToOne(optional = true)
+    @ManyToOne()
     private Cliente cliente;
 
     @ManyToOne(optional = false)

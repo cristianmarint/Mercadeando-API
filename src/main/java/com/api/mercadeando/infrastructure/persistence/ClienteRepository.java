@@ -38,14 +38,14 @@ public class ClienteRepository implements ClienteData {
     @Autowired
     private ClienteMapper clienteMapper;
     @Override
-    public ClientesResponse getClientes(int offset, int limit) {
+    public ClientesResponse readClientes(int offset, int limit) {
         List<Cliente> clientes = clienteJPARepository.getClientes(offset, limit);
         return clienteMapper.mapClientesToClienteResponse(clientes, offset, limit);
     }
 
     @Override
-    public ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
-        if (clienteId==null) throw new BadRequestException("ClienteId cannot be null");
+    public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
+        if (clienteId==null) throw new BadRequestException("ClienteId no puede ser Null");
         Cliente cliente = clienteJPARepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
 
         List<Link> ordenesLinks=new ArrayList<>();
@@ -63,7 +63,7 @@ public class ClienteRepository implements ClienteData {
 
     @Override
     public void editCliente(Long clienteId, ClienteRequest request) throws ResourceNotFoundException, BadRequestException {
-        if (clienteId == null) throw new BadRequestException("ClienteId cannot be Null");
+        if (clienteId == null) throw new BadRequestException("ClienteId no puede ser Null");
         Optional<Cliente> actual = clienteJPARepository.findById(clienteId);
         if (actual.isPresent()){
             request.setId(clienteId);
@@ -75,7 +75,7 @@ public class ClienteRepository implements ClienteData {
 
     @Override
     public void deactivateCliente(Long clienteId, boolean estado) throws BadRequestException, ResourceNotFoundException {
-        if(clienteId==null) throw new BadRequestException("ClienteId cannot be Null");
+        if(clienteId==null) throw new BadRequestException("ClienteId no puede ser Null");
         if (clienteJPARepository.findById(clienteId).isPresent()) {
             clienteJPARepository.updateClienteEstado(clienteId,estado);
         }else {

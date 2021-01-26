@@ -15,15 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PAGADO;
-import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PENDIENTE;
-import static com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo.*;
 
 /**
  * @author cristianmarint
@@ -46,7 +42,7 @@ public class OrdenRepository implements OrdenData {
 
     @Override
     public OrdenResponse readOrden(Long ordenId) throws ResourceNotFoundException, BadRequestException {
-        if (ordenId==null) throw new BadRequestException("OrdenId cannot be Null");
+        if (ordenId==null) throw new BadRequestException("OrdenId no puede ser Null");
         Orden orden = ordenJPARepository.findById(ordenId).orElseThrow(()->new ResourceNotFoundException(ordenId,"Orden"));
         Map<String, Link> productosLinks=new HashMap<>();
         List<OrdenProducto> ordenProductosDetalles = ordenProductoJPARepository.getOrdenProductoDetalles(ordenId);
@@ -83,52 +79,14 @@ public class OrdenRepository implements OrdenData {
                 throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
         }
 
-
-        if (ordenRequest.getPago().getMetodo().equals(EFECTIVO)) orden.setEstado(PAGADO);
-        if (ordenRequest.getPago().getMetodo().equals(TARJETA_DEBITO)) orden.setEstado(PAGADO);
-        if (ordenRequest.getPago().getMetodo().equals(TARJETA_CREDITO)) orden.setEstado(PENDIENTE);
-        if (ordenRequest.getPago().getMetodo().equals(CHECK)) orden.setEstado(PENDIENTE);
-
-        Pago pago = new Pago(null, ordenRequest.getPago().getFecha(), ordenRequest.getPago().getMetodo());
-        pagoJPARepository.save(pago);
-
         BigDecimal total = getTotalYActualizarOrdenProductoDetalle(ordenRequest, orden);
         orden.setTotal(total);
-        orden.setPago(pago);
 
-        Orden or = ordenJPARepository.save(orden);
-        List<OrdenProducto> ordenProductosDetalles = ordenProductoJPARepository.getOrdenProductoDetalles(or.getId());
-        List<Producto> ordenProductos = productoJPARepository.getOrdenProductos(or.getId());
+        Orden save = ordenJPARepository.save(orden);
+        List<OrdenProducto> ordenProductosDetalles = ordenProductoJPARepository.getOrdenProductoDetalles(save.getId());
+        List<Producto> ordenProductos = productoJPARepository.getOrdenProductos(save.getId());
 
-        return ordenMapper.mapOrdenToOrdenResponse(or,ordenProductos,ordenProductosDetalles);
-    }
-
-    @Override
-    public void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException {
-        if (pagoMetodo==null) throw new BadRequestException("Metodo de pago no puede ser Null");
-        if (ordenId==null) throw new BadRequestException("OrdenId Cannot be Null");
-
-        OrdenRequest ordenRequestMetodoPago = new OrdenRequest();
-        Pago pago = new Pago().builder().pagoMetodo(pagoMetodo).fecha(Instant.now()).build();
-        pagoJPARepository.save(pago);
-        Optional<Orden> ordenAlmacenda = ordenJPARepository.findById(ordenId);
-
-        if (ordenAlmacenda.isPresent()){
-            if (!ordenAlmacenda.get().getEstado().equals(PAGADO)){
-
-                ordenAlmacenda.get().setPago(pago);
-//                if (pagoMetodo.equals(EFECTIVO)) ordenAlmacenda.get().setEstado(PAGADO);
-                if (pagoMetodo.equals(TARJETA_DEBITO)) ordenAlmacenda.get().setEstado(PAGADO);
-                if (pagoMetodo.equals(TARJETA_CREDITO)) ordenAlmacenda.get().setEstado(PENDIENTE);
-                if (pagoMetodo.equals(CHECK)) ordenAlmacenda.get().setEstado(PENDIENTE);
-
-                ordenJPARepository.save(ordenAlmacenda.get());
-            }else{
-                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
-            }
-        }else{
-            throw new ResourceNotFoundException(ordenId,"Orden");
-        }
+        return ordenMapper.mapOrdenToOrdenResponse(save,ordenProductos,ordenProductosDetalles);
     }
 
     /**
@@ -172,11 +130,43 @@ public class OrdenRepository implements OrdenData {
         return total;
     }
 
+//    @Override
+//    public void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException {
+//
+//
+//        OrdenRequest ordenRequestMetodoPago = new OrdenRequest();
+//        Pago pago = new Pago().builder().metodo(pagoMetodo).fecha(Instant.now()).build();
+//        pagoJPARepository.save(pago);
+//        Optional<Orden> ordenAlmacenda = ordenJPARepository.findById(ordenId);
+//
+//        if (ordenAlmacenda.isPresent()){
+//            if (!ordenAlmacenda.get().getEstado().equals(PAGADO)){
+//
+//                ordenAlmacenda.get().setPagox(pago);
+//
+//                ordenJPARepository.save(ordenAlmacenda.get());
+//            }else{
+//                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
+//            }
+//        }else{
+//            throw new ResourceNotFoundException(ordenId,"Orden");
+//        }
+//    }
+
     public void softDeleteOrden(Long ordenId, Boolean estado) throws BadRequestException, ResourceNotFoundException {
-        if (ordenId==null) throw new BadRequestException("OrdenId cannot be Null");
+        if (ordenId==null) throw new BadRequestException("OrdenId no puede ser Null");
         if (ordenJPARepository.findById(ordenId).isPresent()){
             ordenJPARepository.updateOrdenEstado(ordenId,estado);
         }else {
+            throw new ResourceNotFoundException(ordenId,"Orden");
+        }
+    }
+
+    @Override
+    public void addPagoId(Long ordenId, Long pagoId) throws ResourceNotFoundException {
+        if (ordenJPARepository.findById(ordenId).isPresent()){
+            ordenJPARepository.editPagoId(ordenId,pagoId);
+        } else{
             throw new ResourceNotFoundException(ordenId,"Orden");
         }
     }

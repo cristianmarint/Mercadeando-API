@@ -1,14 +1,20 @@
 package com.api.mercadeando.domain.service;
 
+import com.api.mercadeando.domain.data.OrdenData;
 import com.api.mercadeando.domain.data.PagoData;
+import com.api.mercadeando.domain.dto.OrdenResponse;
 import com.api.mercadeando.domain.dto.PagoRequest;
+import com.api.mercadeando.domain.dto.PagoResponse;
+import com.api.mercadeando.domain.exception.BadRequestException;
+import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado;
-import com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,81 +34,106 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PAGOS_V
 @AllArgsConstructor
 @Slf4j
 public class PagoService {
-//    @Autowired
+    @Autowired
     private final APIContext context;
 
+    @Autowired
     private final PagoData pagoData;
 
-    public Map<String, Object> crearPago(PagoRequest request){
+    @Autowired
+    private final OrdenData ordenData;
 
-        if (request.getMetodo().equals(PagoMetodo.PAYPAL)){
-            Map<String, Object> response = new HashMap<String, Object>();
-            Amount amount = new Amount();
-                amount.setCurrency(request.getCurrency());
-                amount.setTotal(request.getTotal());
-            Transaction transaction = new Transaction();
-                transaction.setAmount(amount);
-            List<Transaction> transactions = new ArrayList<Transaction>();
-                transactions.add(transaction);
+    @PreAuthorize("hasAuthority('ADD_PAGO')")
+    public PagoResponse addPago(PagoRequest request) throws BadRequestException, ResourceNotFoundException {
+        validarPagoRequest(request);
+        OrdenResponse orden;
+        PagoResponse pago = null;
+        try {
+            orden = ordenData.readOrden(request.getOrdenId());
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Orden no encontrada");
+        }
 
-            Payer payer = new Payer();
-            payer.setPaymentMethod("paypal");
+        switch (request.getMetodo()){
+            case EFECTIVO:
+            case TARJETA_DEBITO:
+                    request.setOrdenEstado(OrdenEstado.PAGADO);
+                    request.setTotal(String.valueOf(orden.getTotal()));
+                    pago = pagoData.addPago(request);
+                    ordenData.addPagoId(orden.getId(), pago.getId());
+                break;
 
-            Payment payment = new Payment();
-            payment.setIntent("sale");
-            payment.setPayer(payer);
-            payment.setTransactions(transactions);
+            case CHECK:
+            case TARJETA_CREDITO:
+                    request.setOrdenEstado(OrdenEstado.PENDIENTE);
+                    request.setTotal(String.valueOf(orden.getTotal()));
+                    pago = pagoData.addPago(request);
+                    ordenData.addPagoId(orden.getId(), pago.getId());
+                break;
 
-            RedirectUrls redirectUrls = new RedirectUrls();
-            redirectUrls.setCancelUrl(URL_PAGOS_V1+"/cancelar");
-            redirectUrls.setReturnUrl(URL_ORDENES_V1+"/"+request.getOrdenId());
-            payment.setRedirectUrls(redirectUrls);
-            Payment createdPayment;
-            try {
-                String redirectUrl = "";
-                createdPayment = payment.create(context);
-                log.info("getRequestId -> "+ context.getRequestId());
-                log.info("getAccessToken -> "+ context.getAccessToken());
-                log.info("payment -> "+ payment);
-                if(createdPayment!=null){
-                    List<Links> links = createdPayment.getLinks();
-                    for (Links link:links) {
-                        if(link.getRel().equals("approval_url")){
-                            redirectUrl = link.getHref();
-                            break;
+            case PAYPAL:
+                    Map<String, Object> response = new HashMap<String, Object>();
+                    Amount amount = new Amount();
+                    amount.setCurrency(request.getMoneda().toString());
+                    amount.setTotal(request.getTotal());
+                    Transaction transaction = new Transaction();
+                    transaction.setAmount(amount);
+                    List<Transaction> transactions = new ArrayList<Transaction>();
+                    transactions.add(transaction);
+
+                    Payer payer = new Payer();
+                    payer.setPaymentMethod("paypal");
+
+                    Payment payment = new Payment();
+                    payment.setIntent("sale");
+                    payment.setPayer(payer);
+                    payment.setTransactions(transactions);
+
+                    RedirectUrls redirectUrls = new RedirectUrls();
+                    redirectUrls.setCancelUrl(URL_PAGOS_V1+"/cancelar");
+                    redirectUrls.setReturnUrl(URL_ORDENES_V1+"/"+request.getOrdenId());
+                    payment.setRedirectUrls(redirectUrls);
+                    Payment createdPayment;
+                    try {
+                        String redirectUrl = "";
+                        createdPayment = payment.create(context);
+                        log.info("getRequestId -> "+ context.getRequestId());
+                        log.info("getAccessToken -> "+ context.getAccessToken());
+                        log.info("payment -> "+ payment);
+                        if(createdPayment!=null){
+                            List<Links> links = createdPayment.getLinks();
+                            for (Links link:links) {
+                                if(link.getRel().equals("approval_url")){
+                                    redirectUrl = link.getHref();
+                                    break;
+                                }
+                            }
+                            pagoData.addPago(request);
+                            response.put("status", "success");
+                            response.put("redirect_url", redirectUrl);
+                            log.info("response -> "+ response);
+                            log.info("links -> "+ links);
                         }
+                    } catch (PayPalRESTException e) {
+                        log.error("Error happened during payment creation!");
                     }
-                    response.put("status", "success");
-                    response.put("redirect_url", redirectUrl);
-                    log.info("response -> "+ response);
-                    log.info("links -> "+ links);
-                }
-            } catch (PayPalRESTException e) {
-                log.error("Error happened during payment creation!");
-            }
+                break;
+            default:
+                throw new BadRequestException("El metodo de pago no es valido: " + request.getMetodo());
         }
+        return pago;
+    }
 
-        if (request.getMetodo().equals(PagoMetodo.EFECTIVO)){
-            request.setOrdenEstado(OrdenEstado.PAGADO);
-        }
+    @PreAuthorize("hasAuthority('READ_PAGO')")
+    public PagoResponse readPago(Long pagoId) throws BadRequestException, ResourceNotFoundException {
+        if (pagoId==null) throw new BadRequestException("PagoId no puede ser Null");
+        return pagoData.readCliente(pagoId);
+    }
 
-        if (request.getMetodo().equals(PagoMetodo.CHECK)){
-            request.setOrdenEstado(OrdenEstado.PENDIENTE);
-        }
-
-        if (request.getMetodo().equals(PagoMetodo.TARJETA_CREDITO)){
-            request.setOrdenEstado(OrdenEstado.PENDIENTE;
-        }
-
-        if (request.getMetodo().equals(PagoMetodo.TARJETA_DEBITO)){
-
-        }
-
-        if (request.getMetodo().equals(PagoMetodo.PAYPAL)){
-
-        }
-
-        return response;
+    private void validarPagoRequest(PagoRequest request) throws BadRequestException {
+        if (request.getMoneda()==null) throw new BadRequestException("Moneda no puede ser Null");
+        if (request.getMetodo()==null) throw new BadRequestException("Metodo de Pago no puede ser Null");
+        if (request.getOrdenId()==null) throw new BadRequestException("OrdenId no puede ser Null");
     }
 
 

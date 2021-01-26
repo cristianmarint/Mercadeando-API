@@ -2,10 +2,6 @@ package com.api.mercadeando.infrastructure.persistence.entity;
 
 public enum PagoMetodo {
     /**
-     * Estado de la orden Orden.setEstado = PAGADO
-     */
-    EFECTIVO,
-    /**
      * Estado de la orden Orden.setEstado = PENDIENTE
      */
     CHECK,
@@ -16,6 +12,13 @@ public enum PagoMetodo {
     /**
      * Estado de la orden Orden.setEstado = PAGADO
      */
+    EFECTIVO,
+    /**
+     * Estado de la orden Orden.setEstado = PAGADO
+     */
     TARJETA_DEBITO,
+    /**
+     * Depende de la respuesta de la API de Paypal
+     */
     PAYPAL
 }

@@ -21,13 +21,20 @@ public class Pago {
     private Instant fecha;
 
     @Enumerated(EnumType.STRING)
-    private Currency currency;
+    @Column(nullable = false,name = "moneda")
+    private Moneda moneda;
 
     private String total;
 
-    private PagoMetodo metodo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PagoMetodo pagoMetodo;
+    private PagoMetodo metodo;
+
+    @OneToOne(mappedBy = "pagox", cascade = CascadeType.ALL,optional = false)
+    private Orden orden;
+
+    @ManyToOne(optional = false)
+    private User user;
+
 }

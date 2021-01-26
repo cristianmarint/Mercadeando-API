@@ -30,7 +30,6 @@ public class OrdenRequest {
     @ApiModelProperty(hidden = true)
     private BigDecimal total;
     private List<ordenProductos> ordenDetalle =new ArrayList<>();
-    private PagoRequest pago=new PagoRequest();
     private Long cliente_id;
     @ApiModelProperty(hidden = true)
     private Cliente cliente;

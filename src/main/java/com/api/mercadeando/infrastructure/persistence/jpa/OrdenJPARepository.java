@@ -46,4 +46,12 @@ public interface OrdenJPARepository extends JpaRepository<Orden,Long> {
             value = "UPDATE orden SET activo =:estado WHERE id=:ordenId"
     )
     void updateOrdenEstado(Long ordenId, boolean estado);
+
+    @Transactional
+    @Modifying
+    @Query(
+            nativeQuery = true,
+            value = "UPDATE orden SET pago_id=:pagoId WHERE id=:ordenId"
+    )
+    void editPagoId(Long ordenId, Long pagoId);
 }

@@ -1,7 +1,6 @@
 package com.api.mercadeando.infrastructure.controller;
 
 import com.api.mercadeando.domain.dto.ClienteRequest;
-import com.api.mercadeando.domain.dto.ClienteResponse;
 import com.api.mercadeando.domain.dto.ClientesResponse;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
@@ -51,14 +50,14 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('READ_CLIENTE')")
     @GetMapping(value = "/{clienteId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClienteResponse> readCliente(@PathVariable(value = "clienteId") @Min(1) Long clienteId) {
+    public ResponseEntity readCliente(@PathVariable(value = "clienteId") @Min(1) Long clienteId) {
         try{
-            if(clienteId == null) throw new BadRequestException();
+            if(clienteId == null) throw new BadRequestException("ClienteId no puede ser null");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(clienteService.readCliente(clienteId));
         } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -92,7 +91,7 @@ public class ClienteController {
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -105,14 +104,14 @@ public class ClienteController {
      */
     @PreAuthorize("hasAuthority('DELETE_CLIENTE')")
     @DeleteMapping(value = "/{clienteId}")
-    public ResponseEntity<Void> deactivateCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
+    public ResponseEntity deactivateCliente(@PathVariable("clienteId") @Min(1) Long clienteId, @RequestParam(value = "estado",required = true,defaultValue = "0") boolean estado) {
         try{
             clienteService.deactivateCliente(clienteId,estado);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }catch (BadRequestException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

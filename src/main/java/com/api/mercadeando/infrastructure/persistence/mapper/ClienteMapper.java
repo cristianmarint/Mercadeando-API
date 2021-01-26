@@ -80,7 +80,7 @@ public class ClienteMapper {
      * @return Cliente datos de cliente mapeado
      */
     public Cliente mapClienteRequestToCliente(ClienteRequest request, Cliente cliente) throws BadRequestException {
-        if (request==null) throw new BadRequestException("ClienteRequest cannot be Null");
+        if (request==null) throw new BadRequestException("ClienteRequest no puede ser Null");
         if (cliente==null) cliente = new Cliente();
 
         if (request.getId()!=null) cliente.setId(request.getId());

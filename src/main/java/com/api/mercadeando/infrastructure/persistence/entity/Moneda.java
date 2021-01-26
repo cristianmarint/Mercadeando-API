@@ -4,7 +4,7 @@ package com.api.mercadeando.infrastructure.persistence.entity;
  * @author cristianmarint
  * @Date 2021-01-25 9:12
  */
-public enum Currency {
+public enum Moneda {
 
     /*This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -180,13 +180,13 @@ public enum Currency {
     ZMW("Zambia Kwacha"),
     ZWD("Zimbabwe Dollar");
 
-    private String description;
+    private String descripcion;
 
-    Currency(String description) {
-        this.description = description;
+    Moneda(String description) {
+        this.descripcion = description;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescripcion() {
+        return descripcion;
     }
 }

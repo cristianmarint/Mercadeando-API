@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -23,12 +22,12 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class OrdenDataloader implements CommandLineRunner {
-    private OrdenJPARepository ordenJPARepository;
-    private OrdenProductoJPARepository ordenProductoJPARepository;
-    private ProductoJPARepository productoJPARepository;
-    private PagoJPARepository pagoJPARepository;
-    private ClienteJPARepository clienteJPARepository;
-    private UserJPARepository userJPARepository;
+    private final OrdenJPARepository ordenJPARepository;
+    private final OrdenProductoJPARepository ordenProductoJPARepository;
+    private final ProductoJPARepository productoJPARepository;
+    private final PagoJPARepository pagoJPARepository;
+    private final ClienteJPARepository clienteJPARepository;
+    private final UserJPARepository userJPARepository;
 
 
     @Override
@@ -40,32 +39,46 @@ public class OrdenDataloader implements CommandLineRunner {
         List<Pago> pagos = new ArrayList<>();
         List<OrdenProducto> ordenProductos = new ArrayList<>();
 
-        Pago pago1 = new Pago().builder().fecha(Instant.parse("2021-01-08T08:48:04Z")).pagoMetodo(PagoMetodo.EFECTIVO).build();
-        Pago pago2 = new Pago().builder().fecha(Instant.parse("2021-01-01T01:01:01Z")).pagoMetodo(PagoMetodo.TARJETA_CREDITO).build();
-        pagos.add(pago1);
-        pagos.add(pago2);
-        pagoJPARepository.saveAll(pagos);
-
         Orden orden1 = new Orden().builder()
                 .estado(OrdenEstado.PENDIENTE)
                 .fecha(Instant.now())
                 .total(BigDecimal.valueOf(15.490))
-                .pago(pago1)
-                .cliente(clienteJPARepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
-                .user(userJPARepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
+                .cliente(clienteJPARepository.findById(1L).get())
+                .user(userJPARepository.findById(1L).get())
                 .build();
 
         Orden orden2 = new Orden().builder()
                 .estado(OrdenEstado.PAGADO)
                 .fecha(Instant.parse("2021-01-01T01:01:01Z"))
                 .total(BigDecimal.valueOf(38.200))
-                .pago(pago2)
-                .cliente(clienteJPARepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
-                .user(userJPARepository.findById(1L).orElseThrow(ChangeSetPersister.NotFoundException::new))
+                .cliente(clienteJPARepository.findById(1L).get())
+                .user(userJPARepository.findById(1L).get())
                 .build();
 
+        Pago pago1 = new Pago().builder()
+                .fecha(Instant.parse("2021-01-08T08:48:04Z"))
+                .moneda(Moneda.COP)
+                .total(String.valueOf(orden1.getTotal()))
+                .orden(orden1)
+                .user(userJPARepository.findById(1L).get())
+                .metodo(PagoMetodo.EFECTIVO).build();
+
+        Pago pago2 = new Pago().builder()
+                .fecha(Instant.parse("2021-01-01T01:01:01Z"))
+                .moneda(Moneda.COP)
+                .total(String.valueOf(orden2.getTotal()))
+                .orden(orden2)
+                .user(userJPARepository.findById(1L).get())
+                .metodo(PagoMetodo.TARJETA_CREDITO).build();
+        pagos.add(pago1);
+        pagos.add(pago2);
+
+
+        orden1.setPagox(pago1);
+        orden2.setPagox(pago2);
         ordenes.add(orden1);
         ordenes.add(orden2);
+        pagoJPARepository.saveAll(pagos);
         ordenJPARepository.saveAll(ordenes);
 
         log.info("---------> 4.5 - CARGANDO PRODUCTO A ORDENES");

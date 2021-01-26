@@ -36,6 +36,7 @@ public class ProductoMapper {
         if (producto.getId()!=null) response.setId(producto.getId());
         response.setSelf(new Link("self",URL_PRODUCTOS_V1+"/"+producto.getId()));
         if (producto.getActivo()!=null) response.setActivo(producto.getActivo());
+        if (producto.getCodigo()!=null) response.setCodigo(producto.getCodigo());
         if (producto.getNombre()!=null) response.setNombre(producto.getNombre());
         if (producto.getDescripcion()!=null) response.setDescripcion(producto.getDescripcion());
         if (producto.getPeso()!=null) response.setPeso(producto.getPeso());
@@ -89,7 +90,7 @@ public class ProductoMapper {
     }
 
     public Producto mapProductoRequestToProducto(ProductoRequest request, Producto producto) throws BadRequestException {
-        if (request==null) throw new BadRequestException("Productorequest cannot be Null");
+        if (request==null) throw new BadRequestException("Productorequest no puede ser Null");
         if (producto==null) producto = new Producto();
 
         if (request.getId()!=null) producto.setId(request.getId());
