@@ -3,7 +3,6 @@ package com.api.mercadeando.domain.data;
 import com.api.mercadeando.domain.dto.OrdenRequest;
 import com.api.mercadeando.domain.dto.OrdenResponse;
 import com.api.mercadeando.domain.dto.OrdenesResponse;
-import com.api.mercadeando.domain.dto.ProductoResponse;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo;

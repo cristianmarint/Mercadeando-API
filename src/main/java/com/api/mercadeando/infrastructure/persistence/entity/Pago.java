@@ -21,6 +21,13 @@ public class Pago {
     private Instant fecha;
 
     @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    private String total;
+
+    private PagoMetodo metodo;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PagoMetodo pagoMetodo;
 }

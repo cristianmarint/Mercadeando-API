@@ -24,7 +24,6 @@ import java.util.Optional;
 import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PAGADO;
 import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PENDIENTE;
 import static com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo.*;
-import static com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo.CHECK;
 
 /**
  * @author cristianmarint
@@ -118,7 +117,7 @@ public class OrdenRepository implements OrdenData {
             if (!ordenAlmacenda.get().getEstado().equals(PAGADO)){
 
                 ordenAlmacenda.get().setPago(pago);
-                if (pagoMetodo.equals(EFECTIVO)) ordenAlmacenda.get().setEstado(PAGADO);
+//                if (pagoMetodo.equals(EFECTIVO)) ordenAlmacenda.get().setEstado(PAGADO);
                 if (pagoMetodo.equals(TARJETA_DEBITO)) ordenAlmacenda.get().setEstado(PAGADO);
                 if (pagoMetodo.equals(TARJETA_CREDITO)) ordenAlmacenda.get().setEstado(PENDIENTE);
                 if (pagoMetodo.equals(CHECK)) ordenAlmacenda.get().setEstado(PENDIENTE);

@@ -1,12 +1,12 @@
 package com.api.mercadeando.infrastructure.persistence;
 
+import com.api.mercadeando.domain.data.ClienteData;
 import com.api.mercadeando.domain.dto.ClienteRequest;
 import com.api.mercadeando.domain.dto.ClienteResponse;
 import com.api.mercadeando.domain.dto.ClientesResponse;
 import com.api.mercadeando.domain.dto.Link;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
-import com.api.mercadeando.domain.data.ClienteData;
 import com.api.mercadeando.infrastructure.persistence.entity.Cliente;
 import com.api.mercadeando.infrastructure.persistence.entity.Orden;
 import com.api.mercadeando.infrastructure.persistence.jpa.ClienteJPARepository;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CLIENTES_V1;
 import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES_V1;
 
 /**

@@ -16,5 +16,6 @@ public enum PagoMetodo {
     /**
      * Estado de la orden Orden.setEstado = PAGADO
      */
-    TARJETA_DEBITO
+    TARJETA_DEBITO,
+    PAYPAL
 }

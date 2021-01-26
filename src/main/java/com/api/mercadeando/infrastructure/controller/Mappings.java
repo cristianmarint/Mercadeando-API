@@ -15,4 +15,5 @@ public final class Mappings {
     public static final String URL_ORDENES_V1 = "/api/v1/ordenes";
     public static final String URL_CATEGORIAS_V1 = "/api/v1/categorias";
     public static final String URL_STATIC_FILE_V1 = "/api/v1/static";
+    public static final String URL_PAGOS_V1 = "/api/v1/pagos";
 }

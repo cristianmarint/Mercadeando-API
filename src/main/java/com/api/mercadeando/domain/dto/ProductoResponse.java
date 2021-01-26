@@ -1,6 +1,5 @@
 package com.api.mercadeando.domain.dto;
 
-import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import com.api.mercadeando.infrastructure.persistence.entity.ProductoEstado;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;

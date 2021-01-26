@@ -1,7 +1,7 @@
 package com.api.mercadeando.domain.service;
 
-import com.api.mercadeando.infrastructure.persistence.entity.RefreshToken;
 import com.api.mercadeando.domain.exception.MercadeandoException;
+import com.api.mercadeando.infrastructure.persistence.entity.RefreshToken;
 import com.api.mercadeando.infrastructure.persistence.jpa.RefreshTokenJPARepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

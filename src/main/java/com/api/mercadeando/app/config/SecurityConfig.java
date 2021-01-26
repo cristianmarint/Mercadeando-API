@@ -16,7 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.api.mercadeando.infrastructure.controller.Mappings.*;
+import static com.api.mercadeando.infrastructure.controller.Mappings.URL_AUTH_V1;
+import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PRODUCTOS_V1;
 
 /**
  * Configura la seguridad de la aplicacion

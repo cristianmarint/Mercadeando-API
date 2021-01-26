@@ -1,6 +1,5 @@
 package com.api.mercadeando.infrastructure.persistence.jpa;
 
-import com.api.mercadeando.infrastructure.persistence.entity.Orden;
 import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
