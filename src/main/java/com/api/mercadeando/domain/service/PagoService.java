@@ -23,9 +23,13 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.api.mercadeando.infrastructure.controller.Mappings.*;
+import static com.api.mercadeando.infrastructure.controller.Mappings.FULL_BASE_V1;
+import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PAGOS_V1;
 
 /**
  * @author cristianmarint

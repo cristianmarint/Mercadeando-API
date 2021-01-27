@@ -1,6 +1,5 @@
 package com.api.mercadeando.infrastructure.persistence.entity;
 
-import com.api.mercadeando.domain.dto.Link;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
