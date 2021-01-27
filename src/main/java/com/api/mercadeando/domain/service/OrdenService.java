@@ -1,16 +1,13 @@
 package com.api.mercadeando.domain.service;
 
 import com.api.mercadeando.domain.data.OrdenData;
-import com.api.mercadeando.domain.dto.Link;
 import com.api.mercadeando.domain.dto.OrdenRequest;
 import com.api.mercadeando.domain.dto.OrdenResponse;
 import com.api.mercadeando.domain.dto.OrdenesResponse;
-import com.api.mercadeando.infrastructure.persistence.entity.*;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.MercadeandoException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
-import com.api.mercadeando.infrastructure.persistence.mapper.OrdenMapper;
-import com.api.mercadeando.infrastructure.persistence.jpa.*;
+import com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PAGADO;
-import static com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado.PENDIENTE;
-import static com.api.mercadeando.infrastructure.persistence.entity.PagoMetodo.*;
 
 /**
  * @author cristianmarint
@@ -86,16 +73,11 @@ public class OrdenService {
         return ordenData.addOrden(ordenRequest);
     }
 
-    /**
-     * Permite cambiar el metodo de pago de una orden por medio del metodo de pago
-     * @param ordenId Id de una orden registrada
-     * @param pagoMetodo Metodo de pago valido
-     * @throws BadRequestException Cuando valores necesario no son asignados
-     * @throws ResourceNotFoundException Cuando la orden requerida no es encontrada
-     */
     @PreAuthorize("hasAuthority('EDIT_ORDEN')")
-    public void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException {
-        ordenData.editOrden(ordenId,pagoMetodo);
+    public void completarOrden(Long ordenId) throws BadRequestException, ResourceNotFoundException {
+        OrdenResponse orden = ordenData.readOrden(ordenId);
+        if (!orden.getEstado().equals(OrdenEstado.PAGADO)) throw new MercadeandoException("La orden no ha sido pagada");
+        ordenData.completarOrden(orden.getId());
     }
 
     /**

@@ -59,16 +59,18 @@ public class OrdenResponse {
     @JsonSerialize
     public class productosDetalle{
         private Long id;
+        private String codigo;
         private String nombre;
         private Integer cantidad;
         private BigDecimal precioUnidad;
         private BigDecimal precioTotal;
         private Link self;
     }
-    public void addProductoDetalle(long productoId, String productoNombre, int cantidad, BigDecimal precioUnidad) {
+    public void addProductoDetalle(long productoId,String productoCodigo, String productoNombre, int cantidad, BigDecimal precioUnidad) {
         Link link = new Link("self", String.format(URL_PRODUCTOS_V1 + "/%s",productoId));
         productos.add(new productosDetalle(
                 productoId,
+                productoCodigo,
                 productoNombre,
                 cantidad,
                 precioUnidad,

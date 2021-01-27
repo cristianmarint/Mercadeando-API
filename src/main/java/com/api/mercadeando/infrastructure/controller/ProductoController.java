@@ -4,14 +4,14 @@ import com.api.mercadeando.domain.dto.ProductoRequest;
 import com.api.mercadeando.domain.dto.ProductoResponse;
 import com.api.mercadeando.domain.dto.ProductosResponse;
 import com.api.mercadeando.domain.dto.UploadFileResponse;
-import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
-import com.api.mercadeando.infrastructure.persistence.entity.FileStorageDocumentType;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.DocumentStorageException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.domain.service.AuthService;
 import com.api.mercadeando.domain.service.FileStorageService;
 import com.api.mercadeando.domain.service.ProductoService;
+import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
+import com.api.mercadeando.infrastructure.persistence.entity.FileStorageDocumentType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -124,7 +124,7 @@ public class ProductoController {
     @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
     @PostMapping("/{productoId}/foto")
     public ResponseEntity addFoto(@PathVariable("productoId") @Min(1) Long productoId, @RequestParam("file") MultipartFile uploadedFile) throws DocumentStorageException, BadRequestException, ResourceNotFoundException {
-        if (productoId==null) throw new BadRequestException("ProductoId cannot be Null");
+        if (productoId==null) throw new BadRequestException("ProductoId no puede ser Null");
         List<String> allowedMimeTypes = new ArrayList<>();
         allowedMimeTypes.add("image/jpg");
         allowedMimeTypes.add("image/jpeg");
@@ -158,8 +158,8 @@ public class ProductoController {
     @PreAuthorize("hasAuthority('EDIT_PRODUCTO')")
     @DeleteMapping("/{productoId}/foto/{nombreArchivo}")
     public ResponseEntity deleteFoto(@PathVariable("productoId") @Min(1) Long productoId, @PathVariable("nombreArchivo") String nombreArchivo, HttpServletRequest request) {
-        if (productoId==null) return ResponseEntity.badRequest().body("ProductoId cannot be Null");
-        if (nombreArchivo==null || nombreArchivo.isEmpty()) return ResponseEntity.badRequest().body("nombreArchivo cannot be Null");
+        if (productoId==null) return ResponseEntity.badRequest().body("ProductoId no puede ser Null");
+        if (nombreArchivo==null || nombreArchivo.isEmpty()) return ResponseEntity.badRequest().body("nombreArchivo no puede ser Null");
         String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);
         try {
             productoService.deleteFoto(productoId,uriFileName);

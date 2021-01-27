@@ -49,7 +49,7 @@ public class CategoriaRepository implements CategoriaData {
 
     @Override
     public CategoriaResponse getCategoria(Long categoriaId) throws ResourceNotFoundException, BadRequestException {
-        if (categoriaId==null) throw new BadRequestException("CategoriaId cannot be null");
+        if (categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
         Categoria categoria = categoriaJPARepository.findById(categoriaId).orElseThrow(()->new ResourceNotFoundException(categoriaId,"Categoria"));
 
         List<Link> productosLinks=new ArrayList<>();
@@ -67,7 +67,7 @@ public class CategoriaRepository implements CategoriaData {
 
     @Override
     public void editCategoria(Long categoriaId, CategoriaRequest request) throws ResourceNotFoundException, BadRequestException {
-        if (categoriaId == null) throw new BadRequestException("CategoriaId cannot be Null");
+        if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
         Optional<Categoria> actual = categoriaJPARepository.findById(categoriaId);
         if (actual.isPresent()){
             request.setId(categoriaId);
@@ -79,7 +79,7 @@ public class CategoriaRepository implements CategoriaData {
 
     @Override
     public void deleteCategoria(Long categoriaId) throws BadRequestException, ResourceNotFoundException {
-        if(categoriaId==null) throw new BadRequestException("CategoriaId cannot be Null");
+        if(categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
         if (categoriaJPARepository.findById(categoriaId).isPresent()) {
             categoriaJPARepository.deleteById(categoriaId);
         }else {
@@ -89,7 +89,7 @@ public class CategoriaRepository implements CategoriaData {
 
     @Override
     public ProductosResponse getCategoriaProductos(Long categoriaId) throws BadRequestException {
-        if(categoriaId==null) throw new BadRequestException("CategoriaId cannot be Null");
+        if(categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
         List<Producto> productos = productoJPARepository.getCategoriaProductos(categoriaId);
         return productoMapper.mapProductosToProductosResponse(0,0,productos);
     }

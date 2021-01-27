@@ -1,7 +1,7 @@
 package com.api.mercadeando.app.boot;
 
-import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
+import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.infrastructure.persistence.entity.ProductoEstado;
 import com.api.mercadeando.infrastructure.persistence.jpa.CategoriaJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.ProductoJPARepository;

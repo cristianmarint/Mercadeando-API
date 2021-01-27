@@ -1,8 +1,8 @@
 package com.api.mercadeando.app.boot;
 
+import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.infrastructure.persistence.entity.Rol;
 import com.api.mercadeando.infrastructure.persistence.entity.User;
-import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.infrastructure.persistence.jpa.RolJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.UserJPARepository;
 import lombok.AllArgsConstructor;

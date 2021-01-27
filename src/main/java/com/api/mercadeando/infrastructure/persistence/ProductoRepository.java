@@ -38,7 +38,7 @@ public class ProductoRepository implements ProductoData {
     private FileStorageService fileStorageService;
 
     public ProductoResponse readProducto(Long productoId) throws BadRequestException, ResourceNotFoundException {
-        if (productoId==null) throw new BadRequestException("ProductoId cannot be null");
+        if (productoId==null) throw new BadRequestException("ProductoId no puede ser Null");
         Producto producto = productoJPARepository.findById(productoId).orElseThrow(() -> new ResourceNotFoundException(productoId, "Producto"));
         return productoMapper.mapProductoToProductoResponse(producto);
     }
@@ -59,7 +59,7 @@ public class ProductoRepository implements ProductoData {
 
     public void editProducto(Long productoId, ProductoRequest request) throws BadRequestException, ResourceNotFoundException {
         validarProducto(request);
-        if (productoId==null) throw new BadRequestException("ProductoId cannot be Null");
+        if (productoId==null) throw new BadRequestException("ProductoId no puede ser Null");
         Optional<Producto> actual = productoJPARepository.findById(productoId);
         if (actual.isPresent()){
             request.setId(productoId);
@@ -70,14 +70,14 @@ public class ProductoRepository implements ProductoData {
     }
 
     public void addFoto(Long productoId, FileStorage foto) throws BadRequestException, ResourceNotFoundException {
-        if (productoId==null) throw new BadRequestException("ProductoData Id cannot be Null");
+        if (productoId==null) throw new BadRequestException("ProductoData Id no puede ser Null");
         Producto producto = productoJPARepository.findById(productoId).orElseThrow(() -> new ResourceNotFoundException(productoId, "ProductoData"));
         producto.getFotos().add(foto);
         productoJPARepository.save(producto);
     }
 
     public void deleteFoto(Long productoId, String nombreArchivo) throws BadRequestException, ResourceNotFoundException {
-        if (productoId==null) throw new BadRequestException("ProductoData Id cannot be Null");
+        if (productoId==null) throw new BadRequestException("ProductoData Id no puede ser Null");
         Producto producto = productoJPARepository.findById(productoId).orElseThrow(() -> new ResourceNotFoundException(productoId, "ProductoData"));
         FileStorage foto = fileStorageJPARepository.findByFileName(nombreArchivo).orElseThrow(()-> new ResourceNotFoundException("Foto no registrada."));
         producto.getFotos().remove(foto);

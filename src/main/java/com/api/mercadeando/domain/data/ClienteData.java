@@ -12,9 +12,9 @@ import com.api.mercadeando.domain.exception.ResourceNotFoundException;
  */
 public interface ClienteData {
 
-    ClientesResponse getClientes(int offset, int limit);
+    ClientesResponse readClientes(int offset, int limit);
 
-    ClienteResponse getCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException;
+    ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException;
 
     ClienteResponse addCliente(ClienteRequest request) throws BadRequestException;
 

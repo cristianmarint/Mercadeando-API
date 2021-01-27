@@ -4,22 +4,23 @@ import com.api.mercadeando.domain.dto.Link;
 import com.api.mercadeando.domain.dto.OrdenRequest;
 import com.api.mercadeando.domain.dto.OrdenResponse;
 import com.api.mercadeando.domain.dto.OrdenesResponse;
-import com.api.mercadeando.infrastructure.persistence.entity.Orden;
-import com.api.mercadeando.infrastructure.persistence.entity.OrdenProducto;
-import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.service.AuthService;
+import com.api.mercadeando.infrastructure.persistence.entity.Orden;
+import com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado;
+import com.api.mercadeando.infrastructure.persistence.entity.OrdenProducto;
+import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.api.mercadeando.infrastructure.controller.Mappings.URL_CLIENTES_V1;
-import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES_V1;
 import static com.api.mercadeando.domain.utils.formatDates.instantToString;
+import static com.api.mercadeando.infrastructure.controller.Mappings.*;
 /**
  * @author cristianmarint
  * @Date 2021-01-14 9:42
@@ -57,16 +58,22 @@ public class OrdenMapper {
         if(orden.getEstado()!=null) response.setEstado(orden.getEstado());
         if(orden.getFecha()!=null) response.setFecha(instantToString(orden.getFecha()));
         if(orden.getTotal()!=null) response.setTotal(orden.getTotal());
-        if(orden.getPago()!=null) {
-            response.getPago().setMetodo(String.valueOf(orden.getPago().getPagoMetodo()));
-            response.getPago().setFecha(instantToString(orden.getPago().getFecha()));
+        if(orden.getPagox()!=null) {
+            response.getPago().setId(orden.getPagox().getId());
+            response.getPago().setMetodo(orden.getPagox().getMetodo());
+            response.getPago().setSelf(new Link("self",URL_PAGOS_V1+"/"+orden.getPagox().getId()));
+            response.getPago().setMoneda(orden.getPagox().getMoneda());
+            response.getPago().setTotal(orden.getPagox().getTotal());
+            response.getPago().setMetodo(orden.getPagox().getMetodo());
+            response.getPago().setFecha(instantToString(orden.getPagox().getFecha()));
+            response.getPago().setOrden(response.getSelf());
         }
         for (OrdenProducto d:ordenProductosDetalles
              ) {
             List<Producto> p = ordenProductos.stream().
                     filter(a -> Objects.equals(a.getId(), d.getProducto().getId()))
                     .collect(Collectors.toList());
-            response.addProductoDetalle(p.get(0).getId(),p.get(0).getNombre(),d.getCantidad(),d.getPrecio());
+            response.addProductoDetalle(p.get(0).getId(),p.get(0).getCodigo(),p.get(0).getNombre(),d.getCantidad(),d.getPrecio());
         }
         return response;
     }
@@ -84,9 +91,15 @@ public class OrdenMapper {
         if (orden.getTotal()!=null) response.setTotal(orden.getTotal());
         if (orden.getEstado()!=null) response.setEstado(orden.getEstado());
         if (orden.getCliente()!=null) response.setCliente(new Link("cliente",URL_CLIENTES_V1+"/"+orden.getCliente().getId()));
-        if(orden.getPago()!=null) {
-            response.getPago().setMetodo(String.valueOf(orden.getPago().getPagoMetodo()));
-            response.getPago().setFecha(instantToString(orden.getPago().getFecha()));
+        if(orden.getPagox()!=null) {
+            response.getPago().setId(orden.getPagox().getId());
+            response.getPago().setMetodo(orden.getPagox().getMetodo());
+            response.getPago().setSelf(new Link("self",URL_PAGOS_V1+"/"+orden.getPagox().getId()));
+            response.getPago().setMoneda(orden.getPagox().getMoneda());
+            response.getPago().setTotal(orden.getPagox().getTotal());
+            response.getPago().setMetodo(orden.getPagox().getMetodo());
+            response.getPago().setFecha(instantToString(orden.getPagox().getFecha()));
+            response.getPago().setOrden(response.getSelf());
         }
         response.setSelf(new Link("self",URL_ORDENES_V1+"/"+orden.getId()));
 
@@ -102,7 +115,7 @@ public class OrdenMapper {
      */
     public OrdenesResponse mapOrdenesToOrdenResponse(List<Orden> ordenes, int offset, int limit) {
         OrdenesResponse response = new OrdenesResponse();
-        if (ordenes!=null & !ordenes.isEmpty()){
+        if (ordenes!=null){
             response.setCount(ordenes.size());
             ordenes.forEach(orden -> response.getOrdenes().add(
                     this.asignarOrdenAOrdenes(orden)
@@ -127,13 +140,17 @@ public class OrdenMapper {
      * @throws BadRequestException Cuando OrdenRequest es Null
      */
     public Orden mapOrdenRequestToOrden(OrdenRequest request, Orden orden) throws BadRequestException {
-        if (request==null) throw new BadRequestException("OrdenRequest cannot be Null");
+        if (request==null) throw new BadRequestException("OrdenRequest no puede ser Null");
         if (orden==null) orden = new Orden();
 
         if (request.getId()!=null) orden.setId(request.getId());
-        if (request.getEstado()!=null) orden.setEstado(request.getEstado());
+        if (request.getEstado()!=null) orden.setEstado(OrdenEstado.PENDIENTE);
         if (request.getActivo()!=null) orden.setActivo(request.getActivo());
-        if (request.getFecha()!=null) orden.setFecha(request.getFecha());
+        if (request.getFecha()!=null) {
+            orden.setFecha(request.getFecha());
+        }else {
+            orden.setFecha(Instant.now());
+        }
         if (request.getTotal()!=null) orden.setTotal(request.getTotal());
         if (request.getCliente()!=null) orden.setCliente(request.getCliente());
         orden.setUser(authService.getCurrentUser());

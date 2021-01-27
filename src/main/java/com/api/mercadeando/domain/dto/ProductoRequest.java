@@ -1,6 +1,5 @@
 package com.api.mercadeando.domain.dto;
 
-import com.api.mercadeando.infrastructure.persistence.entity.Categoria;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

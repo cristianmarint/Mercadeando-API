@@ -74,7 +74,7 @@ public class CategoriaMapper {
      * @return Categoria datos de cliente mapeado
      */
     public Categoria mapCategoriaRequestToCategoria(CategoriaRequest request, Categoria categoria) throws BadRequestException {
-        if (request==null) throw new BadRequestException("CategoriaRequest cannot be Null");
+        if (request==null) throw new BadRequestException("CategoriaRequest no puede ser Null");
         if (categoria==null) categoria = new Categoria();
 
         if (request.getId()!=null) categoria.setId(request.getId());

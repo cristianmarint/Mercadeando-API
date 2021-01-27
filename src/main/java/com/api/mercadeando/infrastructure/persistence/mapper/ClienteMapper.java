@@ -4,8 +4,8 @@ import com.api.mercadeando.domain.dto.ClienteRequest;
 import com.api.mercadeando.domain.dto.ClienteResponse;
 import com.api.mercadeando.domain.dto.ClientesResponse;
 import com.api.mercadeando.domain.dto.Link;
-import com.api.mercadeando.infrastructure.persistence.entity.Cliente;
 import com.api.mercadeando.domain.exception.BadRequestException;
+import com.api.mercadeando.infrastructure.persistence.entity.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -80,7 +80,7 @@ public class ClienteMapper {
      * @return Cliente datos de cliente mapeado
      */
     public Cliente mapClienteRequestToCliente(ClienteRequest request, Cliente cliente) throws BadRequestException {
-        if (request==null) throw new BadRequestException("ClienteRequest cannot be Null");
+        if (request==null) throw new BadRequestException("ClienteRequest no puede ser Null");
         if (cliente==null) cliente = new Cliente();
 
         if (request.getId()!=null) cliente.setId(request.getId());

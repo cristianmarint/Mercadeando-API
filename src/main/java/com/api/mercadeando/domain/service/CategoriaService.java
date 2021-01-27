@@ -57,7 +57,7 @@ public class CategoriaService {
      */
     @PreAuthorize("hasAuthority('READ_CATEGORIA')")
     public CategoriaResponse readCategoria(Long categoriaId) throws ResourceNotFoundException, BadRequestException {
-        if (categoriaId==null) throw new MercadeandoException("CategoriaId cannot be Null");
+        if (categoriaId==null) throw new MercadeandoException("CategoriaId no puede ser Null");
         return categoriaData.getCategoria(categoriaId);
     }
 

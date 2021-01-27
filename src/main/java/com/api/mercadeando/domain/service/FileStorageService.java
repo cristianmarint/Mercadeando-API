@@ -1,8 +1,8 @@
 package com.api.mercadeando.domain.service;
 
+import com.api.mercadeando.domain.exception.DocumentStorageException;
 import com.api.mercadeando.infrastructure.persistence.entity.FileStorage;
 import com.api.mercadeando.infrastructure.persistence.entity.FileStorageDocumentType;
-import com.api.mercadeando.domain.exception.DocumentStorageException;
 import com.api.mercadeando.infrastructure.persistence.jpa.FileStorageJPARepository;
 import com.api.mercadeando.infrastructure.persistence.jpa.UserJPARepository;
 import lombok.AllArgsConstructor;
