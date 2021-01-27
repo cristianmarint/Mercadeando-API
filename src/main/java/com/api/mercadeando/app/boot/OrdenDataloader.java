@@ -58,7 +58,7 @@ public class OrdenDataloader implements CommandLineRunner {
         Pago pago1 = new Pago().builder()
                 .fecha(Instant.parse("2021-01-08T08:48:04Z"))
                 .moneda(Moneda.COP)
-                .total(String.valueOf(orden1.getTotal()))
+                .total(orden1.getTotal())
                 .orden(orden1)
                 .user(userJPARepository.findById(1L).get())
                 .metodo(PagoMetodo.EFECTIVO).build();
@@ -66,7 +66,7 @@ public class OrdenDataloader implements CommandLineRunner {
         Pago pago2 = new Pago().builder()
                 .fecha(Instant.parse("2021-01-01T01:01:01Z"))
                 .moneda(Moneda.COP)
-                .total(String.valueOf(orden2.getTotal()))
+                .total(orden2.getTotal())
                 .orden(orden2)
                 .user(userJPARepository.findById(1L).get())
                 .metodo(PagoMetodo.TARJETA_CREDITO).build();

@@ -4,7 +4,10 @@ import com.api.mercadeando.domain.dto.PagoRequest;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.domain.service.PagoService;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PAGOS_V
 @RestController
 @RequestMapping(value = URL_PAGOS_V1)
 @AllArgsConstructor
+@Slf4j
 public class PagoController {
 
     private final PagoService pagoService;
@@ -46,5 +50,21 @@ public class PagoController {
         }
     }
 
-
+    @CrossOrigin(value = "**")
+    @RequestMapping(method = RequestMethod.GET, value = "/confirmar")
+    public ResponseEntity confirmarPago(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId){
+        try {
+            Payment payment = pagoService.confirmarPago(paymentId, payerId);
+            if(payment.getState().equals("approved")){
+                pagoService.completarPagoPayPal(paymentId);
+                return ResponseEntity.ok().build();
+            }else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El pago no esta aprovado, vuelva a intentarlo.");
+            }
+        } catch (PayPalRESTException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error procesando el pago en PayPal");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

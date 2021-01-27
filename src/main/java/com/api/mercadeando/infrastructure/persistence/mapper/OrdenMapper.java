@@ -7,6 +7,7 @@ import com.api.mercadeando.domain.dto.OrdenesResponse;
 import com.api.mercadeando.domain.exception.BadRequestException;
 import com.api.mercadeando.domain.service.AuthService;
 import com.api.mercadeando.infrastructure.persistence.entity.Orden;
+import com.api.mercadeando.infrastructure.persistence.entity.OrdenEstado;
 import com.api.mercadeando.infrastructure.persistence.entity.OrdenProducto;
 import com.api.mercadeando.infrastructure.persistence.entity.Producto;
 import lombok.AllArgsConstructor;
@@ -143,7 +144,7 @@ public class OrdenMapper {
         if (orden==null) orden = new Orden();
 
         if (request.getId()!=null) orden.setId(request.getId());
-        if (request.getEstado()!=null) orden.setEstado(request.getEstado());
+        if (request.getEstado()!=null) orden.setEstado(OrdenEstado.PENDIENTE);
         if (request.getActivo()!=null) orden.setActivo(request.getActivo());
         if (request.getFecha()!=null) {
             orden.setFecha(request.getFecha());

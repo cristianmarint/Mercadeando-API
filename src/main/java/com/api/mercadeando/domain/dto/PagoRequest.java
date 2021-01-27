@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 /**
@@ -32,14 +33,15 @@ public class PagoRequest {
     @JsonProperty(required = true)
     private Moneda moneda;
     @ApiModelProperty(hidden = true)
-    @NotBlank
-    private String total;
+    private @NotBlank BigDecimal total;
     @NotBlank
     @JsonProperty(required = true)
     private PagoMetodo metodo;
     @ApiModelProperty(hidden = true)
     @NotBlank
     private Instant fecha;
+
+    private String paypalPaymentId;
 
     @NotBlank
     @JsonProperty(required = true,value = "orden-id")

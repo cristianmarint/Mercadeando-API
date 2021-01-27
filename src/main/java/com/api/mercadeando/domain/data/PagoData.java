@@ -10,7 +10,9 @@ import com.api.mercadeando.domain.exception.ResourceNotFoundException;
  * @Date 2021-01-25 9:16
  */
 public interface PagoData {
-    PagoResponse addPago(PagoRequest request) throws BadRequestException;
+    PagoResponse addPago(PagoRequest request) throws BadRequestException, ResourceNotFoundException;
 
-    PagoResponse readCliente(Long pagoId) throws BadRequestException, ResourceNotFoundException;
+    PagoResponse readPago(Long pagoId) throws BadRequestException, ResourceNotFoundException;
+
+    PagoResponse findPagoByPaymentId(String paymentId) throws ResourceNotFoundException;
 }

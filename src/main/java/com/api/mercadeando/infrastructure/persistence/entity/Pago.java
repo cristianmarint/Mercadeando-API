@@ -1,11 +1,13 @@
 package com.api.mercadeando.infrastructure.persistence.entity;
 
+import com.api.mercadeando.domain.dto.Link;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
@@ -24,8 +26,9 @@ public class Pago {
     @Column(nullable = false,name = "moneda")
     private Moneda moneda;
 
-    private String total;
+    private BigDecimal total;
 
+    private String paypalPaymentId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

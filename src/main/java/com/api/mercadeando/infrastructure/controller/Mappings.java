@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public final class Mappings {
+    public static final String FULL_BASE_V1 = "http://localhost:8080";
     public static final String URL_BASE_V1 = "/api/v1";
     public static final String URL_AUTH_V1 = "/api/v1/auth/";
     public static final String URL_CLIENTES_V1 = "/api/v1/clientes";

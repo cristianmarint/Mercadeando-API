@@ -79,7 +79,7 @@ public class OrdenRepository implements OrdenData {
                 throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
         }
 
-        BigDecimal total = getTotalYActualizarOrdenProductoDetalle(ordenRequest, orden);
+        BigDecimal total = getOrdenTotal(ordenRequest, orden);
         orden.setTotal(total);
 
         Orden save = ordenJPARepository.save(orden);
@@ -89,14 +89,35 @@ public class OrdenRepository implements OrdenData {
         return ordenMapper.mapOrdenToOrdenResponse(save,ordenProductos,ordenProductosDetalles);
     }
 
+    public void completarOrden(Long ordenId) throws BadRequestException {
+        Orden orden = ordenJPARepository.findById(ordenId).get();
+        for (OrdenProducto o: orden.getProductos()
+        ) {
+            Producto producto = productoJPARepository.findById(o.getProducto().getId()).get();
+            if (o.getCantidad()>producto.getUnidades())
+                throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
+
+            producto.setUnidades(producto.getUnidades()-o.getCantidad());
+            if (producto.getUnidades()>10){
+                producto.setEstado(ProductoEstado.DISPONIBLE);
+            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
+                producto.setEstado(ProductoEstado.POCAS_UNIDADES);
+            }else{
+                producto.setEstado(ProductoEstado.AGOTADO);
+            }
+            productoJPARepository.save(producto);
+        }
+        orden.setEstado(PAGADO);
+        ordenJPARepository.save(orden);
+    }
+
     /**
-     * Para una OrdenRequest Crea o actualizar una orden y le asigna el total
-     * 1) Solo se descuentan los producto si orden.estado=PAGADO
+     * Calcula el total de una orden
      * @param ordenRequest Petición para crear una nueva orden
      * @param orden Orden almacenada, si no se provee se crea una.
      * @return total BigDecimal con el total de la orden.
      */
-    private BigDecimal getTotalYActualizarOrdenProductoDetalle(OrdenRequest ordenRequest, Orden orden) {
+    private BigDecimal getOrdenTotal(OrdenRequest ordenRequest, Orden orden) {
         BigDecimal total = BigDecimal.ZERO;
         if (orden==null) orden = new Orden();
 
@@ -104,9 +125,6 @@ public class OrdenRepository implements OrdenData {
         ) {
             Producto producto = productoJPARepository.findById(o.getProducto_id()).get();
 
-            if (orden.getEstado().equals(PAGADO)){
-                producto.setUnidades(producto.getUnidades()-o.getCantidad());
-            }
             OrdenProducto ordenProducto = new OrdenProducto(
                     null,
                     o.getCantidad(),
@@ -115,43 +133,11 @@ public class OrdenRepository implements OrdenData {
                     producto);
 
             total = total.add(producto.getPrecio().multiply(BigDecimal.valueOf(o.getCantidad())));
-
-            if (producto.getUnidades()>10){
-                producto.setEstado(ProductoEstado.DISPONIBLE);
-            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
-                producto.setEstado(ProductoEstado.POCAS_UNIDADES);
-            }else{
-                producto.setEstado(ProductoEstado.AGOTADO);
-            }
-
             productoJPARepository.save(producto);
             ordenProductoJPARepository.save(ordenProducto);
         }
         return total;
     }
-
-//    @Override
-//    public void editOrden(Long ordenId, PagoMetodo pagoMetodo) throws BadRequestException, ResourceNotFoundException {
-//
-//
-//        OrdenRequest ordenRequestMetodoPago = new OrdenRequest();
-//        Pago pago = new Pago().builder().metodo(pagoMetodo).fecha(Instant.now()).build();
-//        pagoJPARepository.save(pago);
-//        Optional<Orden> ordenAlmacenda = ordenJPARepository.findById(ordenId);
-//
-//        if (ordenAlmacenda.isPresent()){
-//            if (!ordenAlmacenda.get().getEstado().equals(PAGADO)){
-//
-//                ordenAlmacenda.get().setPagox(pago);
-//
-//                ordenJPARepository.save(ordenAlmacenda.get());
-//            }else{
-//                throw new BadRequestException("La orden no puede ser modificada, el pago ya fue procesado");
-//            }
-//        }else{
-//            throw new ResourceNotFoundException(ordenId,"Orden");
-//        }
-//    }
 
     public void softDeleteOrden(Long ordenId, Boolean estado) throws BadRequestException, ResourceNotFoundException {
         if (ordenId==null) throw new BadRequestException("OrdenId no puede ser Null");
