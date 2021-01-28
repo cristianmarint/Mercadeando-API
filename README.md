@@ -1,6 +1,6 @@
 # Mercadeando API
 
-_API para comprar ricuras! Ordenes, pagos (efectivo, checke e integración con la API de PayPal), roles y permisos_
+_REST API para comprar ricuras! Ordenes, pagos (efectivo, cheques e integración con la API de PayPal), roles y permisos_
 
 ## Comenzando 🚀
 
