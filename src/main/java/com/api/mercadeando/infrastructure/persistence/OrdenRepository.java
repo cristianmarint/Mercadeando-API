@@ -42,40 +42,40 @@ public class OrdenRepository implements OrdenData {
 
     @Override
     public OrdenResponse readOrden(Long ordenId) throws ResourceNotFoundException, BadRequestException {
-        if (ordenId==null) throw new BadRequestException("OrdenId no puede ser Null");
-        Orden orden = ordenJPARepository.findById(ordenId).orElseThrow(()->new ResourceNotFoundException(ordenId,"Orden"));
-        Map<String, Link> productosLinks=new HashMap<>();
+        if (ordenId == null) throw new BadRequestException("OrdenId no puede ser Null");
+        Orden orden = ordenJPARepository.findById(ordenId).orElseThrow(() -> new ResourceNotFoundException(ordenId, "Orden"));
+        Map<String, Link> productosLinks = new HashMap<>();
         List<OrdenProducto> ordenProductosDetalles = ordenProductoJPARepository.getOrdenProductoDetalles(ordenId);
         List<Producto> ordenProductos = productoJPARepository.getOrdenProductos(ordenId);
-        return ordenMapper.mapOrdenToOrdenResponse(orden,ordenProductos,ordenProductosDetalles);
+        return ordenMapper.mapOrdenToOrdenResponse(orden, ordenProductos, ordenProductosDetalles);
     }
 
     @Override
     public OrdenesResponse readOrdenes(int offset, int limit) {
-        if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
-        if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
-        if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
-        List<Orden> ordenes= ordenJPARepository.getOrdenes(offset,limit);
-        return ordenMapper.mapOrdenesToOrdenResponse(ordenes,offset,limit);
+        if (offset < 0) throw new MercadeandoException("Offset must be greater than zero 0");
+        if (limit < 0) throw new MercadeandoException("Limit must be greater than zero 0");
+        if (limit > 100) throw new MercadeandoException("Offset must be less than one hundred 100");
+        List<Orden> ordenes = ordenJPARepository.getOrdenes(offset, limit);
+        return ordenMapper.mapOrdenesToOrdenResponse(ordenes, offset, limit);
     }
 
     @Override
     public OrdenResponse addOrden(OrdenRequest ordenRequest) throws ResourceNotFoundException, BadRequestException {
         validateOrden(ordenRequest);
-        if (ordenRequest.getCliente_id()!=null){
-            Cliente cliente = clienteJPARepository.findById(ordenRequest.getCliente_id()).orElseThrow(()-> new ResourceNotFoundException(ordenRequest.getCliente_id(), "Cliente"));
+        if (ordenRequest.getCliente_id() != null) {
+            Cliente cliente = clienteJPARepository.findById(ordenRequest.getCliente_id()).orElseThrow(() -> new ResourceNotFoundException(ordenRequest.getCliente_id(), "Cliente"));
             ordenRequest.setCliente(cliente);
             ordenRequest.setCliente_id(cliente.getId());
-        }else{
+        } else {
             ordenRequest.setCliente(null);
             ordenRequest.setCliente_id(null);
         }
-        Orden orden= ordenJPARepository.save(ordenMapper.mapOrdenRequestToOrden(ordenRequest, null));
+        Orden orden = ordenJPARepository.save(ordenMapper.mapOrdenRequestToOrden(ordenRequest, null));
 
-        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
+        for (OrdenRequest.ordenProductos o : ordenRequest.getOrdenDetalle()
         ) {
             Producto producto = productoJPARepository.findById(o.getProducto_id()).get();
-            if (o.getCantidad()>producto.getUnidades())
+            if (o.getCantidad() > producto.getUnidades())
                 throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
         }
 
@@ -86,23 +86,23 @@ public class OrdenRepository implements OrdenData {
         List<OrdenProducto> ordenProductosDetalles = ordenProductoJPARepository.getOrdenProductoDetalles(save.getId());
         List<Producto> ordenProductos = productoJPARepository.getOrdenProductos(save.getId());
 
-        return ordenMapper.mapOrdenToOrdenResponse(save,ordenProductos,ordenProductosDetalles);
+        return ordenMapper.mapOrdenToOrdenResponse(save, ordenProductos, ordenProductosDetalles);
     }
 
     public void completarOrden(Long ordenId) throws BadRequestException {
         Orden orden = ordenJPARepository.findById(ordenId).get();
-        for (OrdenProducto o: orden.getProductos()
+        for (OrdenProducto o : orden.getProductos()
         ) {
             Producto producto = productoJPARepository.findById(o.getProducto().getId()).get();
-            if (o.getCantidad()>producto.getUnidades())
+            if (o.getCantidad() > producto.getUnidades())
                 throw new BadRequestException("Unidades insuficientes para el producto " + producto.getNombre() + " producto_id: " + producto.getId());
 
-            producto.setUnidades(producto.getUnidades()-o.getCantidad());
-            if (producto.getUnidades()>10){
+            producto.setUnidades(producto.getUnidades() - o.getCantidad());
+            if (producto.getUnidades() > 10) {
                 producto.setEstado(ProductoEstado.DISPONIBLE);
-            }else if (producto.getUnidades()<=10 & producto.getUnidades()>1){
+            } else if (producto.getUnidades() <= 10 & producto.getUnidades() > 1) {
                 producto.setEstado(ProductoEstado.POCAS_UNIDADES);
-            }else{
+            } else {
                 producto.setEstado(ProductoEstado.AGOTADO);
             }
             productoJPARepository.save(producto);
@@ -113,15 +113,16 @@ public class OrdenRepository implements OrdenData {
 
     /**
      * Calcula el total de una orden
+     *
      * @param ordenRequest Petición para crear una nueva orden
-     * @param orden Orden almacenada, si no se provee se crea una.
+     * @param orden        Orden almacenada, si no se provee se crea una.
      * @return total BigDecimal con el total de la orden.
      */
     private BigDecimal getOrdenTotal(OrdenRequest ordenRequest, Orden orden) {
         BigDecimal total = BigDecimal.ZERO;
-        if (orden==null) orden = new Orden();
+        if (orden == null) orden = new Orden();
 
-        for (OrdenRequest.ordenProductos o: ordenRequest.getOrdenDetalle()
+        for (OrdenRequest.ordenProductos o : ordenRequest.getOrdenDetalle()
         ) {
             Producto producto = productoJPARepository.findById(o.getProducto_id()).get();
 
@@ -140,38 +141,40 @@ public class OrdenRepository implements OrdenData {
     }
 
     public void softDeleteOrden(Long ordenId, Boolean estado) throws BadRequestException, ResourceNotFoundException {
-        if (ordenId==null) throw new BadRequestException("OrdenId no puede ser Null");
-        if (ordenJPARepository.findById(ordenId).isPresent()){
-            ordenJPARepository.updateOrdenEstado(ordenId,estado);
-        }else {
-            throw new ResourceNotFoundException(ordenId,"Orden");
+        if (ordenId == null) throw new BadRequestException("OrdenId no puede ser Null");
+        if (ordenJPARepository.findById(ordenId).isPresent()) {
+            ordenJPARepository.updateOrdenEstado(ordenId, estado);
+        } else {
+            throw new ResourceNotFoundException(ordenId, "Orden");
         }
     }
 
     @Override
     public void addPagoId(Long ordenId, Long pagoId) throws ResourceNotFoundException {
-        if (ordenJPARepository.findById(ordenId).isPresent()){
-            ordenJPARepository.editPagoId(ordenId,pagoId);
-        } else{
-            throw new ResourceNotFoundException(ordenId,"Orden");
+        if (ordenJPARepository.findById(ordenId).isPresent()) {
+            ordenJPARepository.editPagoId(ordenId, pagoId);
+        } else {
+            throw new ResourceNotFoundException(ordenId, "Orden");
         }
     }
 
     /**
      * Valida datos necesario en una OrdenRequest
+     *
      * @param ordenRequest Datos necesarios para crear orden
-     * @throws BadRequestException cuando faltan datos necesario
+     * @throws BadRequestException       cuando faltan datos necesario
      * @throws ResourceNotFoundException cuando no se encuentra un recurso
      */
     private void validateOrden(OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
-        if (ordenRequest.getOrdenDetalle()==null) throw new BadRequestException("La orden debe tener uno o mas productos");
-        if (ordenRequest.getFecha()==null) throw new BadRequestException("La fecha de la orden no puede ser Null");
+        if (ordenRequest.getOrdenDetalle() == null)
+            throw new BadRequestException("La orden debe tener uno o mas productos");
+        if (ordenRequest.getFecha() == null) throw new BadRequestException("La fecha de la orden no puede ser Null");
 
-        for (OrdenRequest.ordenProductos detalleOrdenProducto:ordenRequest.getOrdenDetalle()
+        for (OrdenRequest.ordenProductos detalleOrdenProducto : ordenRequest.getOrdenDetalle()
         ) {
-            Producto producto = productoJPARepository.findById(detalleOrdenProducto.getProducto_id()).orElseThrow(()-> new ResourceNotFoundException(detalleOrdenProducto.getProducto_id(),"No se encontro el producto"));
-            if (detalleOrdenProducto.getCantidad()>producto.getUnidades()){
-                throw new BadRequestException("No existe suficientes productos de "+producto.getNombre()+" producto_id: "+producto.getId());
+            Producto producto = productoJPARepository.findById(detalleOrdenProducto.getProducto_id()).orElseThrow(() -> new ResourceNotFoundException(detalleOrdenProducto.getProducto_id(), "No se encontro el producto"));
+            if (detalleOrdenProducto.getCantidad() > producto.getUnidades()) {
+                throw new BadRequestException("No existe suficientes productos de " + producto.getNombre() + " producto_id: " + producto.getId());
             }
         }
     }

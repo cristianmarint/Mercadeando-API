@@ -7,6 +7,7 @@ import com.api.mercadeando.domain.dto.RegisterRequest;
 import com.api.mercadeando.domain.service.AuthService;
 import com.api.mercadeando.domain.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,48 +28,53 @@ public class AuthController {
 
     /**
      * Enruta una petición de registro de usuario al Service
+     *
      * @param registerRequest En el cuerpo contiene username, email y password
      * @return ResponseEntity Contiene una respuesta exitosa
      */
     @PostMapping("signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
         authService.signup(registerRequest);
         return new ResponseEntity<>("User Registration Successful", OK);
     }
 
     /**
      * Enruta una petición de ingreso al Service
+     *
      * @param loginRequest En el cuerpo contiene username y password
      * @return AuthenticationResponse Contiene datos de un ingreso exitoso
      */
     @PostMapping("login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
 
     /**
      * Enruta una petición de verificar cuenta via token al Service
+     *
      * @param token String que activa la cuenta via Email
      * @return ResponseEntity<String> Contiene respuesta exitosa
      */
     @GetMapping("account-verification/{token}")
-    public ResponseEntity<String> verifyAccount(@PathVariable String token){
+    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account activated successfully", OK);
     }
 
     /**
      * Genera un nuevo token Bearer de autentificación
+     *
      * @param refreshTokenRequest En el cuerpo contiene refreshToken y username
      * @return AuthenticationResponse
      */
     @PostMapping("refresh-token")
-    public AuthenticationResponse refreshTokens(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+    public AuthenticationResponse refreshTokens(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return authService.refreshToken(refreshTokenRequest);
     }
 
     /**
      * Cierra la sesión del usuario
+     *
      * @param refreshTokenRequest En el cuerpo contiene refreshToken y username
      * @return AuthenticationResponse<String> Mensaje de cierro exitoso
      */

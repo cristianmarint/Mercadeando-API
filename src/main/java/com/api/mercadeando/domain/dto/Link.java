@@ -12,17 +12,22 @@ import javax.persistence.Enumerated;
  */
 @Setter
 @Getter
-@JsonPropertyOrder({"rel","type","href"})
+@JsonPropertyOrder({"rel", "type", "href"})
 public class Link {
+    private String rel;
+    @Enumerated(EnumType.STRING)
+    private HttpMethods type = HttpMethods.GET;
+    private String href;
+
     public Link(String rel, String href) {
-        this.href=href;
-        this.rel=rel;
-        this.type=HttpMethods.GET;
+        this.href = href;
+        this.rel = rel;
+        this.type = HttpMethods.GET;
     }
     public Link(String rel, String href, HttpMethods type) {
-        this.href=href;
-        this.rel=rel;
-        this.type=type;
+        this.href = href;
+        this.rel = rel;
+        this.type = type;
     }
     enum HttpMethods {
         GET,
@@ -30,9 +35,5 @@ public class Link {
         PUT,
         DELETE
     }
-    private String rel;
-    @Enumerated(EnumType.STRING)
-    private HttpMethods type = HttpMethods.GET;
-    private String href;
 
 }

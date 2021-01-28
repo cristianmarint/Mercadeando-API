@@ -18,7 +18,7 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PRODUCT
  */
 
 /**
- *  API response para cuando se solicita un solo Cliente.
+ * API response para cuando se solicita un solo Cliente.
  */
 @JsonPropertyOrder({
         "id",
@@ -45,29 +45,12 @@ public class OrdenResponse {
     private OrdenEstado estado;
     private String fecha;
     private BigDecimal total;
-    private PagoResponse pago= new PagoResponse();
+    private PagoResponse pago = new PagoResponse();
     private Link cliente;
-    private List<productosDetalle> productos=new ArrayList<>();
+    private List<productosDetalle> productos = new ArrayList<>();
 
-
-    /**
-     * Permite vincular todos los producto de una orden con sus datos
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @JsonSerialize
-    public class productosDetalle{
-        private Long id;
-        private String codigo;
-        private String nombre;
-        private Integer cantidad;
-        private BigDecimal precioUnidad;
-        private BigDecimal precioTotal;
-        private Link self;
-    }
-    public void addProductoDetalle(long productoId,String productoCodigo, String productoNombre, int cantidad, BigDecimal precioUnidad) {
-        Link link = new Link("self", String.format(URL_PRODUCTOS_V1 + "/%s",productoId));
+    public void addProductoDetalle(long productoId, String productoCodigo, String productoNombre, int cantidad, BigDecimal precioUnidad) {
+        Link link = new Link("self", String.format(URL_PRODUCTOS_V1 + "/%s", productoId));
         productos.add(new productosDetalle(
                 productoId,
                 productoCodigo,
@@ -77,5 +60,22 @@ public class OrdenResponse {
                 precioUnidad.multiply(BigDecimal.valueOf(cantidad)),
                 link
         ));
+    }
+
+    /**
+     * Permite vincular todos los producto de una orden con sus datos
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @JsonSerialize
+    public class productosDetalle {
+        private Long id;
+        private String codigo;
+        private String nombre;
+        private Integer cantidad;
+        private BigDecimal precioUnidad;
+        private BigDecimal precioTotal;
+        private Link self;
     }
 }

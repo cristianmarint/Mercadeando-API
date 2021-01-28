@@ -27,7 +27,7 @@ public class PagoController {
     @CrossOrigin(origins = "http://localhost:4200")
     @PreAuthorize("hasAuthority('ADD_PAGO')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addPago(@RequestBody() PagoRequest request){
+    public ResponseEntity addPago(@RequestBody() PagoRequest request) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(pagoService.addPago(request));
         } catch (BadRequestException e) {
@@ -38,10 +38,10 @@ public class PagoController {
     }
 
     @PreAuthorize("hasAuthority('ADD_PAGO')")
-    @GetMapping(value = "/{pagoId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity readPago(@PathVariable("pagoId") Long pagoId){
-        try{
-            if(pagoId == null) throw new BadRequestException("PagoId no puede ser null");
+    @GetMapping(value = "/{pagoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity readPago(@PathVariable("pagoId") Long pagoId) {
+        try {
+            if (pagoId == null) throw new BadRequestException("PagoId no puede ser null");
             return ResponseEntity.ok().body(pagoService.readPago(pagoId));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -52,13 +52,13 @@ public class PagoController {
 
     @CrossOrigin(value = "**")
     @RequestMapping(method = RequestMethod.GET, value = "/confirmar")
-    public ResponseEntity confirmarPago(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId){
+    public ResponseEntity confirmarPago(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             Payment payment = pagoService.confirmarPago(paymentId, payerId);
-            if(payment.getState().equals("approved")){
+            if (payment.getState().equals("approved")) {
                 pagoService.completarPagoPayPal(paymentId);
                 return ResponseEntity.ok().build();
-            }else {
+            } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El pago no esta aprovado, vuelva a intentarlo.");
             }
         } catch (PayPalRESTException e) {

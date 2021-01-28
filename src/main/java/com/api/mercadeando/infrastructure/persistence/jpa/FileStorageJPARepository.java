@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface FileStorageJPARepository extends JpaRepository<FileStorage, Long> {
     /**
      * Busca un archivo por nombre.
+     *
      * @param fileName nombre de un archivo
      * @return Boolean true si el archivo es encontrado, false si no.
      */
@@ -26,6 +27,7 @@ public interface FileStorageJPARepository extends JpaRepository<FileStorage, Lon
 
     /**
      * Busca un archivo por nombre.
+     *
      * @param fileName nombre de un archivo
      * @return Optional<FileStorage> datos archivo encontrado
      */

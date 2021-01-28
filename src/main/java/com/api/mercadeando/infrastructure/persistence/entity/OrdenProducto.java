@@ -22,14 +22,14 @@ public class OrdenProducto {
     private Integer cantidad;
 
     @Column(nullable = false)
-    private BigDecimal precio= BigDecimal.valueOf(0);
+    private BigDecimal precio = BigDecimal.valueOf(0);
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "orden_id",nullable = false,updatable = false)
+    @JoinColumn(name = "orden_id", nullable = false, updatable = false)
     private Orden ordenx;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "producto_id",nullable = false)
+    @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
 }

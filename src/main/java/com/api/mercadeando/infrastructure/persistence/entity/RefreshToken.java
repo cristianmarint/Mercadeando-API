@@ -23,5 +23,5 @@ public class RefreshToken {
     private Long id;
     private String token;
     @Builder.Default
-    private Timestamp createdAt= Timestamp.from(Instant.now());
+    private Timestamp createdAt = Timestamp.from(Instant.now());
 }

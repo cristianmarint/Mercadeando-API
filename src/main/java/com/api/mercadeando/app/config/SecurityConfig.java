@@ -31,21 +31,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Override
-    public void configure(HttpSecurity httpSecurity) throws Exception{
+    public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(URL_AUTH_V1 +"**")
+                .antMatchers(URL_AUTH_V1 + "**")
                 .permitAll()
 
                 .antMatchers(HttpMethod.GET, URL_PRODUCTOS_V1)
                 .permitAll()
-                .antMatchers(HttpMethod.GET,URL_PRODUCTOS_V1+"**")
+                .antMatchers(HttpMethod.GET, URL_PRODUCTOS_V1 + "**")
                 .permitAll()
 
                 .antMatchers("/v2/api-docs",
@@ -62,14 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

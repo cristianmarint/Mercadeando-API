@@ -22,10 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class RolesYPermisosDataloader implements CommandLineRunner {
     @Autowired
-    private PermisoJPARepository permisoJPARepository;
+    private final PermisoJPARepository permisoJPARepository;
     @Autowired
-    private RolJPARepository rolJPARepository;
-
+    private final RolJPARepository rolJPARepository;
 
 
     @Transactional

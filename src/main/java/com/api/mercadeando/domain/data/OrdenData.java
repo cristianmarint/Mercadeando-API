@@ -17,9 +17,9 @@ public interface OrdenData {
 
     OrdenResponse addOrden(OrdenRequest request) throws ResourceNotFoundException, BadRequestException;
 
-    void softDeleteOrden(Long ordenId,Boolean estado) throws BadRequestException, ResourceNotFoundException;
+    void softDeleteOrden(Long ordenId, Boolean estado) throws BadRequestException, ResourceNotFoundException;
 
-    void addPagoId(Long ordenId ,Long pagoId) throws ResourceNotFoundException;
+    void addPagoId(Long ordenId, Long pagoId) throws ResourceNotFoundException;
 
     void completarOrden(Long ordenId) throws BadRequestException;
 }

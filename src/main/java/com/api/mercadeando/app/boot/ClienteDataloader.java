@@ -26,7 +26,7 @@ public class ClienteDataloader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("---------> 2 - CARGANDO CLIENTES");
-        List<Cliente> clientes=new ArrayList<>();
+        List<Cliente> clientes = new ArrayList<>();
         Cliente cliente1 = new Cliente().builder()
                 .cedula("112777001")
                 .nombres("Fernando")

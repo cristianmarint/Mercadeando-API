@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Import(SwaggerConfig.class)
 public class MercadeandoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MercadeandoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MercadeandoApplication.class, args);
+    }
 
 }

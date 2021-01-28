@@ -36,36 +36,39 @@ public class CategoriaService {
 
     /**
      * Encuentra todos los categorias y responde en JSON si se cuenta con el permiso
+     *
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
-     * @param limit Cantidad de valores a entontrar menor a cien
+     * @param limit  Cantidad de valores a entontrar menor a cien
      * @return CategoriasResponse Con los categorias en formato JSON
      */
     @PreAuthorize("hasAuthority('READ_CATEGORIA')")
     @Transactional(readOnly = true)
-    public CategoriasResponse readCategorias(int offset, int limit){
-        if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
-        if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
-        if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
-        return categoriaData.getCategorias(offset,limit);
+    public CategoriasResponse readCategorias(int offset, int limit) {
+        if (offset < 0) throw new MercadeandoException("Offset must be greater than zero 0");
+        if (limit < 0) throw new MercadeandoException("Limit must be greater than zero 0");
+        if (limit > 100) throw new MercadeandoException("Offset must be less than one hundred 100");
+        return categoriaData.getCategorias(offset, limit);
     }
 
     /**
      * Encuentra un categoria especificado y retorna sus datos y ordenes asociadas si se cuenta con el permiso
+     *
      * @param categoriaId Id de un categoria registrado
      * @return CategoriaResponse con datos correspondientes
      * @throws ResourceNotFoundException cuando el categoria no es encontrado
      */
     @PreAuthorize("hasAuthority('READ_CATEGORIA')")
     public CategoriaResponse readCategoria(Long categoriaId) throws ResourceNotFoundException, BadRequestException {
-        if (categoriaId==null) throw new MercadeandoException("CategoriaId no puede ser Null");
+        if (categoriaId == null) throw new MercadeandoException("CategoriaId no puede ser Null");
         return categoriaData.getCategoria(categoriaId);
     }
 
     /**
      * Permite ver los productos vinculados a una categoria
+     *
      * @param categoriaId Id de un categoria registrado
      * @return ProductosResponse productos vinculadosa una categoria
-     * @throws BadRequestException cuando CategoriaId es Null
+     * @throws BadRequestException       cuando CategoriaId es Null
      * @throws ResourceNotFoundException cuando el Categoria no esta registrado
      */
     @PreAuthorize("hasAuthority('READ_PRODUCTO')")
@@ -75,9 +78,10 @@ public class CategoriaService {
 
     /**
      * Permite crear un categoria especificando sus datos si se cuenta con el permiso
+     *
      * @param request Datos necesarios para crear categoria
-     * @throws BadRequestException cuando faltan datos necesario
      * @return CategoriaResponse con los datos en formato JSON
+     * @throws BadRequestException cuando faltan datos necesario
      */
     @PreAuthorize("hasAuthority('ADD_CATEGORIA')")
     public CategoriaResponse addCategoria(@Valid CategoriaRequest request) throws BadRequestException {
@@ -87,10 +91,11 @@ public class CategoriaService {
 
     /**
      * Permite actualizar los datos de un categoria registrado si se cuenta con el permiso
+     *
      * @param categoriaId Id de un categoria registrado
-     * @param request CategoriaRequest con los datos modificados
+     * @param request     CategoriaRequest con los datos modificados
      * @throws ResourceNotFoundException cuando el recuerso no existe
-     * @throws BadRequestException cuando existen valores incorrectos.
+     * @throws BadRequestException       cuando existen valores incorrectos.
      */
     @PreAuthorize("hasAuthority('EDIT_CATEGORIA')")
     public void editCategoria(Long categoriaId, CategoriaRequest request) throws ResourceNotFoundException, BadRequestException {
@@ -100,8 +105,9 @@ public class CategoriaService {
 
     /**
      * Actualiza el estado de un categoria registrado si se cuenta con el permiso
+     *
      * @param categoriaId Id de un categoria registrado
-     * @throws BadRequestException cuando CategoriaId es Null
+     * @throws BadRequestException       cuando CategoriaId es Null
      * @throws ResourceNotFoundException cuando el Categoria no esta registrado
      */
     @PreAuthorize("hasAuthority('DELETE_CATEGORIA')")
@@ -111,11 +117,13 @@ public class CategoriaService {
 
     /**
      * Permite validar campos necesarios
+     *
      * @param request entidad a verificar
      * @throws BadRequestException cuando existen valores en NUll
      */
     private void validarCategoria(CategoriaRequest request) throws BadRequestException {
-        if (request.getNombre()==null) throw new BadRequestException("El nombre de la categoria no puede ser Null");
-        if (request.getDescripcion()==null) throw new BadRequestException("La descripción de la categoria no puede ser Null");
+        if (request.getNombre() == null) throw new BadRequestException("El nombre de la categoria no puede ser Null");
+        if (request.getDescripcion() == null)
+            throw new BadRequestException("La descripción de la categoria no puede ser Null");
     }
 }

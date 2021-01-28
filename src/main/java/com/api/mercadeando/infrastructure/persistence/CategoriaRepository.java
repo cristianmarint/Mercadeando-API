@@ -31,66 +31,67 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_PRODUCT
 @Slf4j
 public class CategoriaRepository implements CategoriaData {
     @Autowired
-    private CategoriaJPARepository categoriaJPARepository;
+    private final CategoriaJPARepository categoriaJPARepository;
     @Autowired
-    private ProductoJPARepository productoJPARepository;
+    private final ProductoJPARepository productoJPARepository;
     @Autowired
-    private CategoriaMapper categoriaMapper;
+    private final CategoriaMapper categoriaMapper;
     @Autowired
-    private ProductoMapper productoMapper;
+    private final ProductoMapper productoMapper;
+
     @Override
     public CategoriasResponse getCategorias(int offset, int limit) {
-        if (offset<0) throw new MercadeandoException("Offset must be greater than zero 0");
-        if (limit<0) throw new MercadeandoException("Limit must be greater than zero 0");
-        if (limit>100) throw new MercadeandoException("Offset must be less than one hundred 100");
+        if (offset < 0) throw new MercadeandoException("Offset must be greater than zero 0");
+        if (limit < 0) throw new MercadeandoException("Limit must be greater than zero 0");
+        if (limit > 100) throw new MercadeandoException("Offset must be less than one hundred 100");
         List<Categoria> categorias = categoriaJPARepository.getCategorias(offset, limit);
         return categoriaMapper.mapCategoriasToCategoriaResponse(categorias, offset, limit);
     }
 
     @Override
     public CategoriaResponse getCategoria(Long categoriaId) throws ResourceNotFoundException, BadRequestException {
-        if (categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
-        Categoria categoria = categoriaJPARepository.findById(categoriaId).orElseThrow(()->new ResourceNotFoundException(categoriaId,"Categoria"));
+        if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
+        Categoria categoria = categoriaJPARepository.findById(categoriaId).orElseThrow(() -> new ResourceNotFoundException(categoriaId, "Categoria"));
 
-        List<Link> productosLinks=new ArrayList<>();
+        List<Link> productosLinks = new ArrayList<>();
         for (Producto producto : productoJPARepository.getCategoriaProductos(categoriaId)) {
-            productosLinks.add(new Link("producto", URL_PRODUCTOS_V1 + "/"+producto.getId()));
-        };
-        return categoriaMapper.mapCategoriaToCategoriaResponse(categoria,productosLinks);
+            productosLinks.add(new Link("producto", URL_PRODUCTOS_V1 + "/" + producto.getId()));
+        }
+        return categoriaMapper.mapCategoriaToCategoriaResponse(categoria, productosLinks);
     }
 
     @Override
     public CategoriaResponse addCategoria(CategoriaRequest request) throws BadRequestException {
         Categoria categoria = categoriaJPARepository.save(categoriaMapper.mapCategoriaRequestToCategoria(request, null));
-        return categoriaMapper.mapCategoriaToCategoriaResponse(categoria,null);
+        return categoriaMapper.mapCategoriaToCategoriaResponse(categoria, null);
     }
 
     @Override
     public void editCategoria(Long categoriaId, CategoriaRequest request) throws ResourceNotFoundException, BadRequestException {
         if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
         Optional<Categoria> actual = categoriaJPARepository.findById(categoriaId);
-        if (actual.isPresent()){
+        if (actual.isPresent()) {
             request.setId(categoriaId);
-            categoriaJPARepository.save(categoriaMapper.mapCategoriaRequestToCategoria(request,actual.get()));
-        }else {
-            throw new ResourceNotFoundException(categoriaId,"Categoria");
+            categoriaJPARepository.save(categoriaMapper.mapCategoriaRequestToCategoria(request, actual.get()));
+        } else {
+            throw new ResourceNotFoundException(categoriaId, "Categoria");
         }
     }
 
     @Override
     public void deleteCategoria(Long categoriaId) throws BadRequestException, ResourceNotFoundException {
-        if(categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
+        if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
         if (categoriaJPARepository.findById(categoriaId).isPresent()) {
             categoriaJPARepository.deleteById(categoriaId);
-        }else {
-            throw new ResourceNotFoundException(categoriaId,"Categoria");
+        } else {
+            throw new ResourceNotFoundException(categoriaId, "Categoria");
         }
     }
 
     @Override
     public ProductosResponse getCategoriaProductos(Long categoriaId) throws BadRequestException {
-        if(categoriaId==null) throw new BadRequestException("CategoriaId no puede ser Null");
+        if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
         List<Producto> productos = productoJPARepository.getCategoriaProductos(categoriaId);
-        return productoMapper.mapProductosToProductosResponse(0,0,productos);
+        return productoMapper.mapProductosToProductosResponse(0, 0, productos);
     }
 }

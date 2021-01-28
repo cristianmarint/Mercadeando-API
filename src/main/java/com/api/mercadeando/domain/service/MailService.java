@@ -27,12 +27,12 @@ public class MailService {
             messageHelper.setSubject(notificationEmail.getSubject());
             messageHelper.setText(notificationEmail.getBody());
         };
-        try{
+        try {
             mailSender.send(messagePreparator);
-            log.info("Activation email sent to "+notificationEmail.getRecipient());
-        }catch(MailException exception){
+            log.info("Activation email sent to " + notificationEmail.getRecipient());
+        } catch (MailException exception) {
             log.error("Exception occurred when sending mail", exception);
-            throw new MercadeandoException("Exception occurred when sending mail to " + notificationEmail.getRecipient() + " MailService.java",exception);
+            throw new MercadeandoException("Exception occurred when sending mail to " + notificationEmail.getRecipient() + " MailService.java", exception);
         }
     }
 }

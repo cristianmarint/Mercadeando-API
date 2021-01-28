@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- *  API response para cuando se solicita un solo Cliente.
+ * API response para cuando se solicita un solo Cliente.
  */
 @JsonPropertyOrder({
         "id",

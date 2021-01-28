@@ -30,18 +30,18 @@ public class Orden {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private OrdenEstado estado=OrdenEstado.PENDIENTE;
+    private OrdenEstado estado = OrdenEstado.PENDIENTE;
 
     @Builder.Default
-    private Instant fecha=null;
+    private Instant fecha = null;
 
     @Builder.Default
     private BigDecimal total = null;
 
     @Builder.Default
-    private Instant createdAt= Instant.now();
+    private Instant createdAt = Instant.now();
 
-    @OneToMany(mappedBy = "ordenx",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordenx", cascade = CascadeType.ALL)
     private Set<OrdenProducto> productos = new HashSet<>();
 
     @OneToOne()

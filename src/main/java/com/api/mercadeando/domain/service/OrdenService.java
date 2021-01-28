@@ -37,6 +37,7 @@ public class OrdenService {
 
     /**
      * Crea una respuesta Json mapeado los datos de Orden, Productos y OrdenProductos a una respuesta detallada
+     *
      * @param ordenId Id de una orden registrada
      * @return OrdenResponse con los detos en formato JSON
      * @throws ResourceNotFoundException Cuando la orden no es encontrada
@@ -48,13 +49,14 @@ public class OrdenService {
 
     /**
      * Crea una respuesta en JSON mapeado los datos de Orden, ProductoData y OrdenProducto a una respues
+     *
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
-     * @param limit Cantidad de valores a entontrar menor a cien
+     * @param limit  Cantidad de valores a entontrar menor a cien
      * @return OrdenesResponse con datos correspondientes
      */
     @PreAuthorize("hasAuthority('READ_ORDEN')")
     @Transactional(readOnly = true)
-    public OrdenesResponse readOrdenes(int offset, int limit){
+    public OrdenesResponse readOrdenes(int offset, int limit) {
         return ordenData.readOrdenes(offset, limit);
     }
 
@@ -64,9 +66,9 @@ public class OrdenService {
      * la cantidad pedida
      *
      * @param ordenRequest Datos necesarios para crear orden
-     * @throws BadRequestException cuando faltan datos necesario
-     * @throws ResourceNotFoundException cuando no se encuentra un recurso
      * @return OrdenResponse con los datos en formato JSON
+     * @throws BadRequestException       cuando faltan datos necesario
+     * @throws ResourceNotFoundException cuando no se encuentra un recurso
      */
     @PreAuthorize("hasAuthority('ADD_ORDEN')")
     public OrdenResponse addOrden(@Valid OrdenRequest ordenRequest) throws BadRequestException, ResourceNotFoundException {
@@ -82,13 +84,14 @@ public class OrdenService {
 
     /**
      * Cambia el estado de una Orden a false (softdelete)
+     *
      * @param ordenId Id de una orden registrada
-     * @param estado Boolean
+     * @param estado  Boolean
      * @throws ResourceNotFoundException Cuando no se encuentra la Orden
-     * @throws BadRequestException Cuando existen valores necesarios Null
+     * @throws BadRequestException       Cuando existen valores necesarios Null
      */
     @PreAuthorize("hasAuthority('DELETE_ORDEN')")
-    public void softDeleteOrden(Long ordenId,Boolean estado) throws ResourceNotFoundException, BadRequestException {
-        ordenData.softDeleteOrden(ordenId,estado);
+    public void softDeleteOrden(Long ordenId, Boolean estado) throws ResourceNotFoundException, BadRequestException {
+        ordenData.softDeleteOrden(ordenId, estado);
     }
 }

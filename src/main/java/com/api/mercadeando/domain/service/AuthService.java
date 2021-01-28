@@ -52,12 +52,12 @@ public class AuthService {
 
     /**
      * Permite registrar un usuario y envia correo para verificar cuenta
+     *
      * @param registerRequest Contiene username, email, y password
      */
     public void signup(RegisterRequest registerRequest) {
 
-        if(userJPARepository.findByEmailIgnoreCase(registerRequest.getEmail()) == null && userJPARepository.findByUsernameIgnoreCase(registerRequest.getUsername()) == null)
-        {
+        if (userJPARepository.findByEmailIgnoreCase(registerRequest.getEmail()) == null && userJPARepository.findByUsernameIgnoreCase(registerRequest.getUsername()) == null) {
             User user = User
                     .builder()
                     .username(registerRequest.getUsername())
@@ -70,14 +70,15 @@ public class AuthService {
             mailService.sendMail(new NotificationEmail(
                     "Por favor active su cuenta", user.getEmail(),
                     "Gracias por registrarse en Mercadeando,  por favor acceda a el enlace para activar su cuenta: " +
-                            "http://localhost:8080"+URL_AUTH_V1+"account-verification/" + token));
-        }else{
-            throw new MercadeandoException("Correo en uso "+registerRequest.getEmail());
+                            "http://localhost:8080" + URL_AUTH_V1 + "account-verification/" + token));
+        } else {
+            throw new MercadeandoException("Correo en uso " + registerRequest.getEmail());
         }
     }
 
     /**
      * Permite conocer el usuario de en una petición
+     *
      * @return User usuario de petición actual
      */
     @Transactional(readOnly = true)
@@ -90,6 +91,7 @@ public class AuthService {
 
     /**
      * Permite activar la cuenta de un usuario
+     *
      * @param verificationToken token de verificacion con datos de usuario
      */
     private void fetchUserAndEnable(VerificationToken verificationToken) {
@@ -101,6 +103,7 @@ public class AuthService {
 
     /**
      * Permite generar token de verificación
+     *
      * @param user usuario registrado
      * @return String token
      */
@@ -116,6 +119,7 @@ public class AuthService {
 
     /**
      * Permite activar una cuenta de usuario basado en el token
+     *
      * @param token token de verificación
      */
     public void verifyAccount(String token) {
@@ -125,12 +129,13 @@ public class AuthService {
 
     /**
      * Permite autentificar un usuario activo via credenciales correctas
+     *
      * @param loginRequest Contiene username y password
      * @return AuthenticationResponse con datos de acceso
      */
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
@@ -143,13 +148,13 @@ public class AuthService {
                 .build();
 
         Set<Rol> rolSet = rolJPARepository.findByUsername(loginRequest.getUsername());
-        Set<String> permisos=new HashSet<>();
-        Set<String> roles=new HashSet<>();
+        Set<String> permisos = new HashSet<>();
+        Set<String> roles = new HashSet<>();
 
-        for (Rol r:rolSet) {
+        for (Rol r : rolSet) {
             roles.add(r.getName());
             Set<Permiso> tempo = permisoJPARepository.findByRolName(r.getName());
-            for (Permiso p:tempo) {
+            for (Permiso p : tempo) {
                 permisos.add(p.getName());
             }
         }
@@ -161,6 +166,7 @@ public class AuthService {
 
     /**
      * Permite generar un nuevo Bearer token
+     *
      * @param refreshTokenRequest Contiene username y refreshToken
      * @return AuthenticationResponse con datos de acceso
      */
@@ -177,6 +183,7 @@ public class AuthService {
 
     /**
      * Permite verificar si un usuario tiene un sesion activa
+     *
      * @return boolean
      */
     public boolean isLoggedIn() {

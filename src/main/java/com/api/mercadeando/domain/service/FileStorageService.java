@@ -60,8 +60,8 @@ public class FileStorageService {
     /**
      * Permite almacenar un archivo de forma local
      * la ruta se define en application.properties
-     * 
-     * @param file MultipartFile 
+     *
+     * @param file         MultipartFile
      * @param documentType tipo de documento, información para metadatos
      * @return FileStorage archivo creado
      * @throws DocumentStorageException
@@ -72,19 +72,19 @@ public class FileStorageService {
         String fileName = "";
         try {
             // Check if the file's name contains invalid characters
-            if(originalFileName.contains("..")) {
+            if (originalFileName.contains("..")) {
                 throw new DocumentStorageException("El nombre de archivo contiene una secuencia de ruta no válida" + originalFileName);
             }
             String fileExtension;
             try {
                 fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            } catch(Exception e) {
+            } catch (Exception e) {
                 fileExtension = "";
             }
 
-            fileName = UUID.randomUUID().toString()+""+ fileExtension;
+            fileName = UUID.randomUUID().toString() + "" + fileExtension;
             //Crea la url para acceder
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(URL_STATIC_FILE_V1+"/").path(fileName).toUriString();
+            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(URL_STATIC_FILE_V1 + "/").path(fileName).toUriString();
 
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
@@ -108,6 +108,7 @@ public class FileStorageService {
 
     /**
      * Permite borrar un archivo local
+     *
      * @param fileName nombre de un archivo existente
      * @throws Exception cuando el archivo no es encontrado
      */
@@ -120,6 +121,7 @@ public class FileStorageService {
 
     /**
      * Permite cargar un archivo guardado
+     *
      * @param fileName nombre del archivo
      * @return Resource archivo encontrado
      * @throws Exception
@@ -140,15 +142,12 @@ public class FileStorageService {
 
     /**
      * Busca un archivo por nombre.
+     *
      * @param fileName nombre de un archivo
      * @return Boolean true si el archivo es encontrado, false si no.
      */
     public Boolean doesItExists(String fileName) {
         Integer var = fileStorageJPARepository.findByFileNameAndCount(fileName);
-        if (var==0){
-            return false;
-        }else {
-            return true;
-        }
+        return var != 0;
     }
 }

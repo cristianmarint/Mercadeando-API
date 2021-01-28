@@ -25,13 +25,13 @@ public class RefreshTokenService {
         return refreshTokenJPARepository.save(refreshToken);
     }
 
-    void validateRefreshToken(String token){
+    void validateRefreshToken(String token) {
         refreshTokenJPARepository
                 .findByToken(token)
-                .orElseThrow(()-> new MercadeandoException("Invalid refresh Token"));
+                .orElseThrow(() -> new MercadeandoException("Invalid refresh Token"));
     }
 
-    public void deleteRefreshToken(String token){
+    public void deleteRefreshToken(String token) {
         refreshTokenJPARepository.deleteByToken(token);
     }
 }

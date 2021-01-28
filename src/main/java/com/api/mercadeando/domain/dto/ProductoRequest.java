@@ -16,8 +16,9 @@ import java.util.Set;
  * @author cristianmarint
  * @Date 2021-01-21 10:07
  */
+
 /**
- *  API request para cuando se crea un solo ProductoData.
+ * API request para cuando se crea un solo ProductoData.
  */
 @Data
 @AllArgsConstructor
@@ -34,12 +35,12 @@ public class ProductoRequest {
      * En gramos
      */
     private Double peso;
-    private Integer unidades=0;
+    private Integer unidades = 0;
     /**
      * En Peso Colombiano CO
      */
     @NotNull
     @DecimalMin(value = "0.00", message = "El precio debe de ser un valor mayor a cero (0)")
-    private BigDecimal precio= BigDecimal.valueOf(0);
+    private BigDecimal precio = BigDecimal.valueOf(0);
     private Set<CategoriaResponse> categorias = new HashSet<>();
 }

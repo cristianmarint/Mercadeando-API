@@ -44,7 +44,7 @@ public class PagoRequest {
     private String paypalPaymentId;
 
     @NotBlank
-    @JsonProperty(required = true,value = "orden-id")
+    @JsonProperty(required = true, value = "orden-id")
     private Long ordenId;
     @ApiModelProperty(hidden = true)
     @NotBlank

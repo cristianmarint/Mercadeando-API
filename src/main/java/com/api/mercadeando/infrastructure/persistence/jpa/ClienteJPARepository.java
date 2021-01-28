@@ -16,7 +16,7 @@ public interface ClienteJPARepository extends JpaRepository<Cliente, Long> {
             nativeQuery = true,
             value = "SELECT cliente.* FROM cliente ORDER BY cliente.created_at ASC LIMIT :limit OFFSET :offset"
     )
-    List<Cliente> getClientes(@Param("offset") int offset,@Param("limit") int limit);
+    List<Cliente> getClientes(@Param("offset") int offset, @Param("limit") int limit);
 
     @Transactional
     @Modifying

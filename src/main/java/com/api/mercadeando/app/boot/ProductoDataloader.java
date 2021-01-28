@@ -18,6 +18,7 @@ import java.util.List;
  * @author cristianmarint
  * @Date 2021-01-15 10:02
  */
+
 /**
  * Crea valores por defecto para productos en la BD
  */
@@ -26,8 +27,8 @@ import java.util.List;
 @Order(4)
 @Slf4j
 public class ProductoDataloader implements CommandLineRunner {
-    private ProductoJPARepository productoJPARepository;
-    private CategoriaJPARepository categoriaJPARepository;
+    private final ProductoJPARepository productoJPARepository;
+    private final CategoriaJPARepository categoriaJPARepository;
 
     @Override
     public void run(String... args) {

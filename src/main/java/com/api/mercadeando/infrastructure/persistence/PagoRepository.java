@@ -32,26 +32,26 @@ public class PagoRepository implements PagoData {
 
     @Override
     public PagoResponse addPago(PagoRequest request) throws BadRequestException, ResourceNotFoundException {
-        if (request==null) throw new BadRequestException("PagoRequest no puede ser Null");
-        Pago pago=new Pago();
+        if (request == null) throw new BadRequestException("PagoRequest no puede ser Null");
+        Pago pago = new Pago();
         pago.setUser(authService.getCurrentUser());
 
-        Orden orden = ordenJPARepository.findById(request.getOrdenId()).orElseThrow(()-> new ResourceNotFoundException(request.getOrdenId(), "Orden"));
+        Orden orden = ordenJPARepository.findById(request.getOrdenId()).orElseThrow(() -> new ResourceNotFoundException(request.getOrdenId(), "Orden"));
         request.setOrdenId(orden.getId());
 
-        Pago save = pagoJPARepository.save(pagoMapper.mapPagoRequestToPago(request,pago));
+        Pago save = pagoJPARepository.save(pagoMapper.mapPagoRequestToPago(request, pago));
         return pagoMapper.mapPagoToPagoResponse(save);
     }
 
     @Override
     public PagoResponse readPago(Long pagoId) throws BadRequestException, ResourceNotFoundException {
-        if (pagoId==null) throw new BadRequestException("PagoId no puede ser Null");
+        if (pagoId == null) throw new BadRequestException("PagoId no puede ser Null");
         Pago pago = pagoJPARepository.findById(pagoId).orElseThrow(() -> new ResourceNotFoundException(pagoId, "Pago"));
         return pagoMapper.mapPagoToPagoResponse(pago);
     }
 
     @Override
     public PagoResponse findPagoByPaymentId(String paymentId) throws ResourceNotFoundException {
-        return pagoMapper.mapPagoToPagoResponse(pagoJPARepository.findByPaymentId(paymentId).orElseThrow(()-> new ResourceNotFoundException("Pago no encontrado con payment id " + paymentId)));
+        return pagoMapper.mapPagoToPagoResponse(pagoJPARepository.findByPaymentId(paymentId).orElseThrow(() -> new ResourceNotFoundException("Pago no encontrado con payment id " + paymentId)));
     }
 }

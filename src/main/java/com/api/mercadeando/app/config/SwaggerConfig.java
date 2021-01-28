@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
     @Bean
-    public Docket mercadeandoApi(){
+    public Docket mercadeandoApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -29,14 +29,15 @@ public class SwaggerConfig {
 
     /**
      * Información sobre el desarrollador
+     *
      * @return ApiInfo
      */
-    private ApiInfo getApiInfo(){
+    private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
                 .title("Mercadeando")
                 .version("1.0")
                 .description("API para comprar ricuras!")
-                .contact(new Contact("Cristian Marin","https://www.cristianmarint.com","cristianmarint@gmail.com"))
+                .contact(new Contact("Cristian Marin", "https://www.cristianmarint.com", "cristianmarint@gmail.com"))
                 .license("MIT")
                 .build();
     }

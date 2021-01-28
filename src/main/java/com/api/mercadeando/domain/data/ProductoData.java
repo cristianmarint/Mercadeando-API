@@ -19,7 +19,7 @@ public interface ProductoData {
     ProductoResponse addProducto(ProductoRequest request) throws BadRequestException;
 
     void editProducto(Long productoId, ProductoRequest request) throws BadRequestException, ResourceNotFoundException;
-    
+
     void deleteFoto(Long productoId, String nombreArchivo) throws BadRequestException, ResourceNotFoundException;
 
     void addFoto(Long productoId, FileStorage foto) throws BadRequestException, ResourceNotFoundException;

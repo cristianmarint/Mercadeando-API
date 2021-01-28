@@ -47,15 +47,16 @@ public class FileStorageController {
 
     /**
      * Permite acceder a un recuurso y descargarlo.
+     *
      * @param pathFileName nombre de un archivo existe
-     * @param request HttpServletRequest peticion Http
+     * @param request      HttpServletRequest peticion Http
      * @return ResponseEntity<Resource> archivo
      */
     @GetMapping("/static/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String pathFileName, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String pathFileName, HttpServletRequest request) {
         String uriFileName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1);
         Resource resource = null;
-        if(fileStorageService.doesItExists(uriFileName)) {
+        if (fileStorageService.doesItExists(uriFileName)) {
             try {
                 resource = fileStorageService.loadFileAsResource(uriFileName);
             } catch (Exception e) {
@@ -69,7 +70,7 @@ public class FileStorageController {
                 //logger.info("Could not determine file type.");
             }
             // Fallback to the default content type if type could not be determined
-            if(contentType == null) {
+            if (contentType == null) {
                 contentType = "application/octet-stream";
             }
             return ResponseEntity.ok()

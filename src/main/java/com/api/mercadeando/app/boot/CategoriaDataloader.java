@@ -17,6 +17,7 @@ import java.util.List;
  * @author cristianmarint
  * @Date 2021-01-22 10:22
  */
+
 /**
  * Crea valores por defecto para productos en la BD
  */
@@ -26,12 +27,12 @@ import java.util.List;
 @Slf4j
 public class CategoriaDataloader implements CommandLineRunner {
     @Autowired
-    private CategoriaJPARepository categoriaJPARepository;
+    private final CategoriaJPARepository categoriaJPARepository;
 
     @Override
     public void run(String... args) {
         log.info("---------> 3 - CARGANDO CATEGORIAS");
-        List<Categoria> categorias= new ArrayList<>();
+        List<Categoria> categorias = new ArrayList<>();
 
         Categoria categoria1 = new Categoria().builder()
                 .nombre("Cuidado Personal")
