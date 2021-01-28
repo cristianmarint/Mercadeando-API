@@ -30,32 +30,13 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdenesResponse {
-    private int count=0;
-    private List<OrdenesDetalle> ordenes=new ArrayList<>();
+    private int count = 0;
+    private List<OrdenesDetalle> ordenes = new ArrayList<>();
     private List<Link> links = new ArrayList<>();
 
-    /**
-     * Permite vincular todos las ordenes con sus datos
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonSerialize
-    public static class OrdenesDetalle{
-        private Long id;
-        private Link self;
-        private Boolean activo;
-        private OrdenEstado estado;
-        private String fecha;
-        private BigDecimal total;
-        private PagoResponse pago=new PagoResponse();
-        private Link cliente;
-    }
-
-    public void addOrdenesDetalle(Long ordenId,Boolean activo,OrdenEstado estado,String fecha,BigDecimal total,PagoResponse pago,Long clienteId){
-        Link self = new Link("self", String.format(URL_ORDENES_V1 + "/%s",ordenId));
-        Link cliente = new Link("cliente", String.format(URL_CLIENTES_V1 + "/%s",clienteId));
+    public void addOrdenesDetalle(Long ordenId, Boolean activo, OrdenEstado estado, String fecha, BigDecimal total, PagoResponse pago, Long clienteId) {
+        Link self = new Link("self", String.format(URL_ORDENES_V1 + "/%s", ordenId));
+        Link cliente = new Link("cliente", String.format(URL_CLIENTES_V1 + "/%s", clienteId));
         ordenes.add(new OrdenesDetalle(
                 ordenId,
                 self,
@@ -66,5 +47,24 @@ public class OrdenesResponse {
                 pago,
                 cliente
         ));
+    }
+
+    /**
+     * Permite vincular todos las ordenes con sus datos
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonSerialize
+    public static class OrdenesDetalle {
+        private Long id;
+        private Link self;
+        private Boolean activo;
+        private OrdenEstado estado;
+        private String fecha;
+        private BigDecimal total;
+        private PagoResponse pago = new PagoResponse();
+        private Link cliente;
     }
 }

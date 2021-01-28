@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 public interface PagoJPARepository extends JpaRepository<Pago, Long> {
     @Query(
-           nativeQuery = true,
-           value = "SELECT * FROM PAGO WHERE pago.paypalPaymentId=:paymentId"
+            nativeQuery = true,
+            value = "SELECT * FROM PAGO WHERE pago.paypalPaymentId=:paymentId"
     )
     Optional<Pago> findByPaymentId(String paymentId);
 }

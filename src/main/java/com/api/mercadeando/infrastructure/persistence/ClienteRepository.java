@@ -32,11 +32,12 @@ import static com.api.mercadeando.infrastructure.controller.Mappings.URL_ORDENES
 @Slf4j
 public class ClienteRepository implements ClienteData {
     @Autowired
-    private ClienteJPARepository clienteJPARepository;
+    private final ClienteJPARepository clienteJPARepository;
     @Autowired
-    private OrdenJPARepository ordenJPARepository;
+    private final OrdenJPARepository ordenJPARepository;
     @Autowired
-    private ClienteMapper clienteMapper;
+    private final ClienteMapper clienteMapper;
+
     @Override
     public ClientesResponse readClientes(int offset, int limit) {
         List<Cliente> clientes = clienteJPARepository.getClientes(offset, limit);
@@ -45,41 +46,41 @@ public class ClienteRepository implements ClienteData {
 
     @Override
     public ClienteResponse readCliente(Long clienteId) throws ResourceNotFoundException, BadRequestException {
-        if (clienteId==null) throw new BadRequestException("ClienteId no puede ser Null");
-        Cliente cliente = clienteJPARepository.findById(clienteId).orElseThrow(()->new ResourceNotFoundException(clienteId,"Cliente"));
+        if (clienteId == null) throw new BadRequestException("ClienteId no puede ser Null");
+        Cliente cliente = clienteJPARepository.findById(clienteId).orElseThrow(() -> new ResourceNotFoundException(clienteId, "Cliente"));
 
-        List<Link> ordenesLinks=new ArrayList<>();
+        List<Link> ordenesLinks = new ArrayList<>();
         for (Orden orden : ordenJPARepository.getClienteOrdenes(clienteId)) {
             ordenesLinks.add(new Link("orden", String.format(URL_ORDENES_V1 + "/", orden.getId())));
-        };
-        return clienteMapper.mapClienteToClienteResponse(cliente,ordenesLinks);
+        }
+        return clienteMapper.mapClienteToClienteResponse(cliente, ordenesLinks);
     }
 
     @Override
     public ClienteResponse addCliente(ClienteRequest request) throws BadRequestException {
         Cliente cliente = clienteJPARepository.save(clienteMapper.mapClienteRequestToCliente(request, null));
-        return clienteMapper.mapClienteToClienteResponse(cliente,null);
+        return clienteMapper.mapClienteToClienteResponse(cliente, null);
     }
 
     @Override
     public void editCliente(Long clienteId, ClienteRequest request) throws ResourceNotFoundException, BadRequestException {
         if (clienteId == null) throw new BadRequestException("ClienteId no puede ser Null");
         Optional<Cliente> actual = clienteJPARepository.findById(clienteId);
-        if (actual.isPresent()){
+        if (actual.isPresent()) {
             request.setId(clienteId);
-            clienteJPARepository.save(clienteMapper.mapClienteRequestToCliente(request,actual.get()));
-        }else {
-            throw new ResourceNotFoundException(clienteId,"Cliente");
+            clienteJPARepository.save(clienteMapper.mapClienteRequestToCliente(request, actual.get()));
+        } else {
+            throw new ResourceNotFoundException(clienteId, "Cliente");
         }
     }
 
     @Override
     public void deactivateCliente(Long clienteId, boolean estado) throws BadRequestException, ResourceNotFoundException {
-        if(clienteId==null) throw new BadRequestException("ClienteId no puede ser Null");
+        if (clienteId == null) throw new BadRequestException("ClienteId no puede ser Null");
         if (clienteJPARepository.findById(clienteId).isPresent()) {
-            clienteJPARepository.updateClienteEstado(clienteId,estado);
-        }else {
-            throw new ResourceNotFoundException(clienteId,"Cliente");
+            clienteJPARepository.updateClienteEstado(clienteId, estado);
+        } else {
+            throw new ResourceNotFoundException(clienteId, "Cliente");
         }
     }
 }

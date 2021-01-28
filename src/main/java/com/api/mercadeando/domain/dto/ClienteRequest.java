@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 /**
- *  API request para cuando se crea un solo Cliente.
+ * API request para cuando se crea un solo Cliente.
  */
 @JsonPropertyOrder({
         "id",
@@ -25,6 +25,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClienteRequest {
+    private static Instant updatedAt = Instant.now();
     private Long id;
     private Boolean activo;
     private String nombres;
@@ -33,5 +34,4 @@ public class ClienteRequest {
     private String direccion;
     private String ciudad;
     private ColombiaDepartamentos departamento;
-    private static Instant updatedAt = Instant.now();
 }

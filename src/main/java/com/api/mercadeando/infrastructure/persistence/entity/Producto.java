@@ -30,7 +30,7 @@ public class Producto {
 
     @Nullable
     @Builder.Default
-    private Boolean activo=true;
+    private Boolean activo = true;
 
     @NotBlank(message = "El nombre del pruducto ser no puede estar Blank o Null")
     @Column(nullable = false)
@@ -48,7 +48,7 @@ public class Producto {
      * Unidades
      */
     @Builder.Default
-    private Integer unidades=0;
+    private Integer unidades = 0;
 
     /**
      * En Peso Colombiano CO
@@ -56,14 +56,14 @@ public class Producto {
     @Column(name = "precio", nullable = false)
     @DecimalMin(value = "0.00", message = "El precio debe de ser un valor mayor a cero (0)")
     @Builder.Default
-    private BigDecimal precio= BigDecimal.valueOf(0);
+    private BigDecimal precio = BigDecimal.valueOf(0);
 
-    @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "producto_foto")
     private Set<FileStorage> fotos;
 
     @Builder.Default
-    private ProductoEstado estado=ProductoEstado.DISPONIBLE;
+    private ProductoEstado estado = ProductoEstado.DISPONIBLE;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(targetEntity = Categoria.class)
@@ -73,18 +73,18 @@ public class Producto {
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
     private Set<Categoria> categorias = new HashSet<>();
+    @Builder.Default
+    private Instant createdAt = Instant.now();
+
     public void agregarCategoria(Categoria categoria) {
-        if (categorias == null){
+        if (categorias == null) {
             categorias = new HashSet<>(Collections.singleton(categoria));
-        }else {
+        } else {
             categorias.add(categoria);
         }
     }
 
     public void eliminarCategoria(Categoria categoria) {
-        if(categorias!=null) categorias.remove(categoria);
+        if (categorias != null) categorias.remove(categoria);
     }
-
-    @Builder.Default
-    private Instant createdAt= Instant.now();
 }

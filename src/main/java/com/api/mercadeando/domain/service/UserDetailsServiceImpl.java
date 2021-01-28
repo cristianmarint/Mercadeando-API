@@ -26,9 +26,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional()
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username) {
         Optional<User> userOptional = userJPARepository.findByUsername(username);
-        User user = userOptional.orElseThrow(()->new UsernameNotFoundException("Usuario no encontrado con username:"+ username));
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con username:" + username));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
@@ -46,13 +46,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private List<String> getPermisos(Set<Rol> rolSet) {
-        List<String> permisos=new ArrayList<>();
-        Set<String> roles=new HashSet<>();
+        List<String> permisos = new ArrayList<>();
+        Set<String> roles = new HashSet<>();
 
-        for (Rol r:rolSet) {
+        for (Rol r : rolSet) {
             roles.add(r.getName());
             Set<Permiso> tempo = permisoJPARepository.findByRolName(r.getName());
-            for (Permiso p:tempo) {
+            for (Permiso p : tempo) {
                 permisos.add(p.getName());
             }
         }

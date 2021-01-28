@@ -1,0 +1,1324 @@
+{
+  "info": {
+    "_postman_id": "b9a4ded8-8fb1-4741-a755-48cc514c3999",
+    "name": "Mercadeando Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Account Verification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}auth/accountVerification/c13b088c-0118-41bd-bad9-64a486d2b181",
+              "host": [
+                "{{MercadeandoUrlV1}}auth"
+              ],
+              "path": [
+                "accountVerification",
+                "c13b088c-0118-41bd-bad9-64a486d2b181"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.environment.set(\"authToken\",responseJson.authenticationToken);\r",
+                  "pm.environment.set(\"refreshToken\",responseJson.refreshToken);\r",
+                  "console.log(\"authenticationToken set\");\r",
+                  "console.log(\"refreshToken set\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"cristianmarint\",\r\n    \"refreshToken\":\"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}auth/refresh-token",
+              "host": [
+                "{{MercadeandoUrlV1}}auth"
+              ],
+              "path": [
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.environment.set(\"authToken\",responseJson.authenticationToken);\r",
+                  "pm.environment.set(\"refreshToken\",responseJson.refreshToken);\r",
+                  "console.log(\"authenticationToken set\");\r",
+                  "console.log(\"refreshToken set\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"cristianmarint\",\r\n    \"refreshToken\":\"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}auth/refresh-token",
+              "host": [
+                "{{MercadeandoUrlV1}}auth"
+              ],
+              "path": [
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.environment.set(\"authToken\",responseJson.authenticationToken);\r",
+                  "pm.environment.set(\"refreshToken\",responseJson.refreshToken);\r",
+                  "console.log(\"authentication\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\":\"123456789\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}auth/login",
+              "host": [
+                "{{MercadeandoUrlV1}}auth"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"email\":\"admin@mercadeando.com\",\r\n    \"password\":\"123456789\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}auth/signup",
+              "host": [
+                "{{MercadeandoUrlV1}}auth"
+              ],
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "getClientes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.clientes[0].id;\r",
+                  "pm.environment.set(\"cliente-id\",id);\r",
+                  "console.log(\"cliente-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getClientes params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.clientes[0].id;\r",
+                  "pm.environment.set(\"cliente-id\",id);\r",
+                  "console.log(\"cliente-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes?{{offset}}=5&{{limit}}=5",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ],
+              "query": [
+                {
+                  "key": "{{offset}}",
+                  "value": "5"
+                },
+                {
+                  "key": "{{limit}}",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getCliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes/{{cliente-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ],
+              "path": [
+                "{{cliente-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "createCliente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"nombres\":\"nombres post\",\r\n        \"apellidos\":\"apellidos post\",\r\n        \"cedula\":\"1112777011\",\r\n        \"direccion\":\"direccion post\",\r\n        \"ciudad\":\"CALI\",\r\n        \"departamento\":\"VALLE_DEL_CAUCA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateCliente",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"activo\": \"false\",\r\n        \"nombres\": \"nombres put\",\r\n        \"apellidos\": \"apellidos put\",\r\n        \"cedula\": \"112777099\",\r\n        \"direccion\": \"Crra 99 N # 54-26\",\r\n        \"ciudad\": \"Cali\",\r\n        \"departamento\": \"VALLE_DEL_CAUCA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes/{{cliente-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ],
+              "path": [
+                "{{cliente-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteCliente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}clientes/{{cliente-id}}?estado=false",
+              "host": [
+                "{{MercadeandoUrlV1}}clientes"
+              ],
+              "path": [
+                "{{cliente-id}}"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ordenes",
+      "item": [
+        {
+          "name": "getOrden",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes/{{orden-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ],
+              "path": [
+                "{{orden-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getOrdenes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.count;\r",
+                  "pm.environment.set(\"orden-id\",id);\r",
+                  "console.log(\"orden-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getOrdenes params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.ordenes[0].id;\r",
+                  "pm.environment.set(\"orden-id\",id);\r",
+                  "console.log(\"orden-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes?{{offset}}=1&{{limit}}=1",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ],
+              "query": [
+                {
+                  "key": "{{offset}}",
+                  "value": "1"
+                },
+                {
+                  "key": "{{limit}}",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "addOrden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.id;\r",
+                  "pm.environment.set(\"orden-id\",id);\r",
+                  "console.log(\"orden-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"activo\": true,\r\n  \"cliente_id\": 1,\r\n  \"estado\": \"PAGADO\",\r\n  \"fecha\": \"2021-01-16T14:30:00.846Z\",\r\n  \"ordenDetalle\": [\r\n    {\r\n      \"cantidad\": 5,\r\n      \"producto_id\": 1\r\n    },\r\n    {\r\n      \"cantidad\": 5,\r\n      \"producto_id\": 2\r\n    }\r\n  ],\r\n  \"pago\": {\r\n    \"fecha\": \"2021-01-16T14:30:00.846Z\",\r\n    \"metodo\": \"CHECK\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateOrden",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\"EFECTIVO\"",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes/{{orden-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ],
+              "path": [
+                "{{orden-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteOrden",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}ordenes/{{orden-id}}?estado=false",
+              "host": [
+                "{{MercadeandoUrlV1}}ordenes"
+              ],
+              "path": [
+                "{{orden-id}}"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "getProducto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.id;\r",
+                  "pm.environment.set(\"producto-id\",id);\r",
+                  "console.log(\"producto-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos/1",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "path": [
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getProductos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.count;\r",
+                  "pm.environment.set(\"producto-id\",id);\r",
+                  "console.log(\"producto-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos/",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getProductos params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.productos[0].id;\r",
+                  "pm.environment.set(\"producto-id\",id);\r",
+                  "console.log(\"producto-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos?{{offset}}=5&{{limit}}=1",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "query": [
+                {
+                  "key": "{{offset}}",
+                  "value": "5"
+                },
+                {
+                  "key": "{{limit}}",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "addProducto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "addProducto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"codigo\": \"CAM69\",\r\n  \"descripcion\": \"CAM69\",\r\n  \"nombre\": \"CAM69\",\r\n  \"peso\": 215.1,\r\n  \"precio\": 156.230,\r\n  \"unidades\": 5\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "aditProducto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"codigo\": \"CAM9\",\r\n  \"descripcion\": \"CAM9\",\r\n  \"nombre\": \"CAM9\",\r\n  \"peso\": 300,\r\n  \"precio\": 150,\r\n  \"unidades\": 25\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos/{{producto-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "path": [
+                "{{producto-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "addProducto foto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.fileName;\r",
+                  "pm.environment.set(\"uploadedFileName\",id);\r",
+                  "console.log(\"uploadedFileName -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/crist/Pictures/Fondos/895e757c82ce7ab8781bae.jpg"
+                },
+                {
+                  "key": "docType",
+                  "value": "foto_producto",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos/{{producto-id}}/foto",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "path": [
+                "{{producto-id}}",
+                "foto"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteProducto foto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/crist/Pictures/Fondos/895e757c82ce7ab8781bae.jpg"
+                },
+                {
+                  "key": "docType",
+                  "value": "foto_producto",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}productos/{{producto-id}}/foto/{{uploadedFileName}}",
+              "host": [
+                "{{MercadeandoUrlV1}}productos"
+              ],
+              "path": [
+                "{{producto-id}}",
+                "foto",
+                "{{uploadedFileName}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{authToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categoria",
+      "item": [
+        {
+          "name": "getCategoriaProductos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias/{{categoria-id}}/productos",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ],
+              "path": [
+                "{{categoria-id}}",
+                "productos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getCategoria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias/{{categoria-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ],
+              "path": [
+                "{{categoria-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getCategorias",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.count;\r",
+                  "pm.environment.set(\"orden-id\",id);\r",
+                  "console.log(\"orden-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getCategorias params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.ordenes[0].id;\r",
+                  "pm.environment.set(\"orden-id\",id);\r",
+                  "console.log(\"orden-id -> \"+id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias?{{offset}}=1&{{limit}}=1",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ],
+              "query": [
+                {
+                  "key": "{{offset}}",
+                  "value": "1"
+                },
+                {
+                  "key": "{{limit}}",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "addCategoria",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"nombre\",\r\n  \"descripcion\": \"descripcion\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editCategoria",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"descripcion\": \"string\",\r\n  \"nombre\": \"string\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias/{{categoria-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ],
+              "path": [
+                "{{categoria-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteCategoria",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}categorias/{{categoria-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}categorias"
+              ],
+              "path": [
+                "{{categoria-id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pago",
+      "item": [
+        {
+          "name": "addPago",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "var id = responseJson.id;\r",
+                  "var paypal_payment_id = responseJson.paypal_payment_id\r",
+                  "var paypal_payer_id = responseJson.paypal_payer_id\r",
+                  "pm.environment.set(\"paypal-payment-id\",paypal_payment_id);\r",
+                  "pm.environment.set(\"paypal-payer-id\",paypal_payer_id);\r",
+                  "pm.environment.set(\"pago-id\",id);\r",
+                  "console.log(\"pago-id -> \"+id)\r",
+                  "console.log(\"paypal-payment-id -> \"+paypal_payment_id)\r",
+                  "console.log(\"paypal-payer-id -> \"+paypal_payer_id)"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"metodo\": \"PAYPAL\",\r\n  \"moneda\": \"USD\",\r\n  \"orden-id\": {{orden-id}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}pagos",
+              "host": [
+                "{{MercadeandoUrlV1}}pagos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "readPago",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{MercadeandoUrlV1}}pagos/{{pago-id}}",
+              "host": [
+                "{{MercadeandoUrlV1}}pagos"
+              ],
+              "path": [
+                "{{pago-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "confirmarPago",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/pagos/confirmar?paymentId=PAYID-MAI6UYQ9ES30810AW772543W&token=EC-2A4753492S715690P&PayerID=KUSQB3KDA9ELU",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "pagos",
+                "confirmar"
+              ],
+              "query": [
+                {
+                  "key": "paymentId",
+                  "value": "PAYID-MAI6UYQ9ES30810AW772543W"
+                },
+                {
+                  "key": "token",
+                  "value": "EC-2A4753492S715690P"
+                },
+                {
+                  "key": "PayerID",
+                  "value": "KUSQB3KDA9ELU"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "getArchivos",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "fileName",
+              "value": "{{uploadedFileName}}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{MercadeandoUrlV1}}static",
+          "host": [
+            "{{MercadeandoUrlV1}}static"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getArchivo",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "{{MercadeandoUrlV1}}static/{{uploadedFileName}}",
+          "host": [
+            "{{MercadeandoUrlV1}}static"
+          ],
+          "path": [
+            "{{uploadedFileName}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "uploadedFileName",
+      "value": "uploadedFileName"
+    }
+  ]
+}

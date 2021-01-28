@@ -10,6 +10,7 @@ import java.util.List;
  * @author cristianmarint
  * @Date 2021-01-19 10:00
  */
+
 /**
  * API response para cuando se solicitan multiples productos.
  */
@@ -24,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductosResponse {
-    private int count=0;
     List<ProductoResponse> productos = new ArrayList<>();
+    private int count = 0;
     private List<Link> links = new ArrayList<>();
 }

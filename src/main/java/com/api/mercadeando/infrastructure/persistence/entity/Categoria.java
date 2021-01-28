@@ -35,19 +35,19 @@ public class Categoria {
     @Builder.Default
     private Instant createdAt = Instant.now();
 
-    @ManyToMany(mappedBy = "categorias",targetEntity = Producto.class, fetch=FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "categorias", targetEntity = Producto.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Producto> productos = new HashSet<>();
 
-    public void agregarProducto(Producto producto){
-        if (productos == null){
+    public void agregarProducto(Producto producto) {
+        if (productos == null) {
             productos = new HashSet<>(Collections.singleton(producto));
-        }else {
+        } else {
             productos.add(producto);
         }
     }
 
     public void eliminarProducto(Producto producto) {
-        if(productos!=null){
+        if (productos != null) {
             productos.remove(producto);
         }
     }

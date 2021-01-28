@@ -27,7 +27,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Username es requerido")
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @NotBlank(message = "Password es requerido")
@@ -36,32 +36,34 @@ public class User {
 
     @Email
     @NotBlank(message = "Email es requerido")
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Builder.Default
-    private Timestamp createdAt= Timestamp.from(Instant.now());
+    private Timestamp createdAt = Timestamp.from(Instant.now());
 
     @Builder.Default
-    private Boolean activo=false;
+    private Boolean activo = false;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(targetEntity = Rol.class)
     @JoinTable(
             name = "user_rol",
-            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_id",referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "id")
     )
     private Set<Rol> roles = new HashSet<>();
-    public void addRol(Rol rol){
-        if (roles == null){
+
+    public void addRol(Rol rol) {
+        if (roles == null) {
             roles = new HashSet<>(Collections.singleton(rol));
-        }else {
+        } else {
             roles.add(rol);
         }
     }
-    public void removeRol(Rol rol){
-        if (roles!=null){
+
+    public void removeRol(Rol rol) {
+        if (roles != null) {
             roles.remove(rol);
         }
     }

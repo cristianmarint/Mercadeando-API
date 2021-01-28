@@ -22,7 +22,7 @@ public class Cliente {
 
     @Nullable
     @Builder.Default
-    private Boolean activo=true;
+    private Boolean activo = true;
 
     @NotBlank(message = "El nombre del cliente ser no puede estar Blank o Null")
     @Column(nullable = false)
@@ -47,8 +47,8 @@ public class Cliente {
     private ColombiaDepartamentos departamento;
 
     @Builder.Default
-    private Instant createdAt= Instant.now();
+    private Instant createdAt = Instant.now();
 
     @Builder.Default
-    private Instant updatedAt= Instant.now();
+    private Instant updatedAt = Instant.now();
 }

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface OrdenJPARepository extends JpaRepository<Orden,Long> {
+public interface OrdenJPARepository extends JpaRepository<Orden, Long> {
     /**
      * @param clienteId Id de un cliente registrado y con almenos una orden
      * @return List<Orden> Listado de ordenes
@@ -24,8 +24,9 @@ public interface OrdenJPARepository extends JpaRepository<Orden,Long> {
 
     /**
      * Permite buscar a todas las ordenes
+     *
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
-     * @param limit Cantidad de valores a entontrar menor a cien
+     * @param limit  Cantidad de valores a entontrar menor a cien
      * @return List<Orden> Listado de ordenes existentes
      */
     @Query(
@@ -36,6 +37,7 @@ public interface OrdenJPARepository extends JpaRepository<Orden,Long> {
 
     /**
      * Cambia el estado de una orden
+     *
      * @param ordenId Id de una orden registrada
      * @param estado
      */

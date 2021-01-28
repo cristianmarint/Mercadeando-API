@@ -12,6 +12,7 @@ import java.util.List;
 public interface ProductoJPARepository extends JpaRepository<Producto, Long> {
     /**
      * Permite buscar a los productos en una orden
+     *
      * @param ordenId Id de una orden existente
      * @return Listado de productos para una orden
      */
@@ -25,8 +26,9 @@ public interface ProductoJPARepository extends JpaRepository<Producto, Long> {
 
     /**
      * Permite buscar a todos los productos
+     *
      * @param offset Punto de partida mayor a cero para buscar nuevos valores
-     * @param limit Cantidad de valores a entontrar menor a cien
+     * @param limit  Cantidad de valores a entontrar menor a cien
      * @return List<ProductoData> Listado de productos existentes
      */
     @Query(

@@ -10,7 +10,7 @@ public enum Moneda {
     USD("United States Dollar"),
     COP("Colombia Peso");
 
-    private String descripcion;
+    private final String descripcion;
 
     Moneda(String description) {
         this.descripcion = description;

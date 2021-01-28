@@ -62,59 +62,59 @@ public class PagoService {
             throw new ResourceNotFoundException("Orden no encontrada");
         }
 
-        switch (request.getMetodo()){
+        switch (request.getMetodo()) {
             case EFECTIVO:
             case TARJETA_DEBITO:
                 log.info("efectivo o tar. debito");
-                    request.setOrdenEstado(OrdenEstado.PAGADO);
-                    request.setTotal(orden.getTotal());
-                    pago = pagoData.addPago(request);
-                    this.completarPagoAddPago(orden.getId(),pago.getId());
-                    ordenData.addPagoId(orden.getId(), pago.getId());
+                request.setOrdenEstado(OrdenEstado.PAGADO);
+                request.setTotal(orden.getTotal());
+                pago = pagoData.addPago(request);
+                this.completarPagoAddPago(orden.getId(), pago.getId());
+                ordenData.addPagoId(orden.getId(), pago.getId());
                 break;
 
             case CHECK:
             case TARJETA_CREDITO:
                 log.info("checkeo tar. credito");
-                    request.setOrdenEstado(OrdenEstado.PENDIENTE);
-                    request.setTotal(orden.getTotal());
-                    pago = pagoData.addPago(request);
-                    this.completarPagoAddPago(orden.getId(),pago.getId());
-                    ordenData.addPagoId(orden.getId(), pago.getId());
+                request.setOrdenEstado(OrdenEstado.PENDIENTE);
+                request.setTotal(orden.getTotal());
+                pago = pagoData.addPago(request);
+                this.completarPagoAddPago(orden.getId(), pago.getId());
+                ordenData.addPagoId(orden.getId(), pago.getId());
                 break;
 
             case PAYPAL:
                 log.info("paypal");
                 int intercambio;
                 if (request.getMoneda().equals(Moneda.EUR)) {
-                        intercambio = 4405;
-                    } else if (request.getMoneda().equals(Moneda.USD)) {
-                        intercambio = 3640;
-                }else {
+                    intercambio = 4405;
+                } else if (request.getMoneda().equals(Moneda.USD)) {
+                    intercambio = 3640;
+                } else {
                     throw new BadRequestException("Moneda invalida, use USD o EUR para el metodo de pago PayPal");
                 }
 
                 Map<String, Object> response = new HashMap<>();
                 Amount amount = new Amount();
-                    amount.setCurrency(request.getMoneda().name());
-                    amount.setTotal(orden.getTotal().divide(BigDecimal.valueOf(intercambio),2, RoundingMode.HALF_UP).toPlainString());
+                amount.setCurrency(request.getMoneda().name());
+                amount.setTotal(orden.getTotal().divide(BigDecimal.valueOf(intercambio), 2, RoundingMode.HALF_UP).toPlainString());
 
                 Transaction transaction = new Transaction();
-                    transaction.setAmount(amount);
-                    List<Transaction> transactions = new ArrayList<>();
-                    transactions.add(transaction);
+                transaction.setAmount(amount);
+                List<Transaction> transactions = new ArrayList<>();
+                transactions.add(transaction);
 
                 Payer payer = new Payer();
-                    payer.setPaymentMethod("paypal");
+                payer.setPaymentMethod("paypal");
 
                 Payment payment = new Payment();
-                    payment.setIntent("sale");
-                    payment.setPayer(payer);
-                    payment.setTransactions(transactions);
+                payment.setIntent("sale");
+                payment.setPayer(payer);
+                payment.setTransactions(transactions);
 
                 RedirectUrls redirectUrls = new RedirectUrls();
-                redirectUrls.setCancelUrl(FULL_BASE_V1+URL_PAGOS_V1+"/cancelar");
-                redirectUrls.setReturnUrl(FULL_BASE_V1+URL_PAGOS_V1+"/confirmar");
+                redirectUrls.setCancelUrl(FULL_BASE_V1 + URL_PAGOS_V1 + "/cancelar");
+                redirectUrls.setReturnUrl(FULL_BASE_V1 + URL_PAGOS_V1 + "/confirmar");
                 payment.setRedirectUrls(redirectUrls);
                 log.info(String.valueOf(payment));
                 Payment createdPayment;
@@ -123,10 +123,10 @@ public class PagoService {
                     String redirectUrl = "";
                     createdPayment = payment.create(context);
 
-                    if(createdPayment!=null){
+                    if (createdPayment != null) {
                         List<Links> links = createdPayment.getLinks();
-                        for (Links link:links) {
-                            if(link.getRel().equals("approval_url")){
+                        for (Links link : links) {
+                            if (link.getRel().equals("approval_url")) {
                                 redirectUrl = link.getHref();
                                 break;
                             }
@@ -135,11 +135,11 @@ public class PagoService {
                         response.put("redirect_url", redirectUrl);
 
                         request.setOrdenEstado(OrdenEstado.PENDIENTE);
-                            request.setTotal(orden.getTotal());
-                            request.setPaypalPaymentId(createdPayment.getId());
+                        request.setTotal(orden.getTotal());
+                        request.setPaypalPaymentId(createdPayment.getId());
                         pago = pagoData.addPago(request);
                         ordenData.addPagoId(orden.getId(), pago.getId());
-                        pago.setPaypalUrl(new Link("self",redirectUrl));
+                        pago.setPaypalUrl(new Link("self", redirectUrl));
                     }
                 } catch (PayPalRESTException e) {
                     throw new MercadeandoException("Error creado el pago");
@@ -162,24 +162,24 @@ public class PagoService {
 
     public void completarPagoPayPal(String paymentId) throws ResourceNotFoundException {
         PagoResponse pago = pagoData.findPagoByPaymentId(paymentId);
-        if (pago.getId()==null) return  ;
+        if (pago.getId() == null) return;
 
     }
 
     @PreAuthorize("hasAuthority('READ_PAGO')")
     public PagoResponse readPago(Long pagoId) throws BadRequestException, ResourceNotFoundException {
-        if (pagoId==null) throw new BadRequestException("PagoId no puede ser Null");
+        if (pagoId == null) throw new BadRequestException("PagoId no puede ser Null");
         return pagoData.readPago(pagoId);
     }
 
     private void validarPagoRequest(PagoRequest request) throws BadRequestException {
-        if (request.getMoneda()==null) throw new BadRequestException("Moneda no puede ser Null");
-        if (request.getMetodo()==null) throw new BadRequestException("Metodo de Pago no puede ser Null");
-        if (request.getOrdenId()==null) throw new BadRequestException("OrdenId no puede ser Null");
+        if (request.getMoneda() == null) throw new BadRequestException("Moneda no puede ser Null");
+        if (request.getMetodo() == null) throw new BadRequestException("Metodo de Pago no puede ser Null");
+        if (request.getOrdenId() == null) throw new BadRequestException("OrdenId no puede ser Null");
     }
 
 
-    public Payment confirmarPago(String paymentId, String payerId) throws PayPalRESTException{
+    public Payment confirmarPago(String paymentId, String payerId) throws PayPalRESTException {
         Payment payment = new Payment();
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();

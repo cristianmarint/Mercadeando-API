@@ -1,6 +1,5 @@
 package com.api.mercadeando.app.boot;
 
-import com.api.mercadeando.domain.exception.ResourceNotFoundException;
 import com.api.mercadeando.infrastructure.persistence.entity.Rol;
 import com.api.mercadeando.infrastructure.persistence.entity.User;
 import com.api.mercadeando.infrastructure.persistence.jpa.RolJPARepository;
@@ -26,7 +25,7 @@ public class UserDataloader implements CommandLineRunner {
     private final RolJPARepository rolJPARepository;
 
     @Override
-    public void run(String... args) throws ResourceNotFoundException {
+    public void run(String... args) {
         log.info("---------> 1 - CARGANDO USERS");
         userJPARepository.deleteAllInBatch();
 

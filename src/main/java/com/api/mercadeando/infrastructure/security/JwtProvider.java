@@ -26,11 +26,10 @@ import static java.util.Date.from;
 @Service
 public class JwtProvider {
 
+    private static final String SECRECT = "123456789";
     private KeyStore keyStore;
     @Value("${jwt.expiration.time}")
     private Long jwtExpirationInMillis;
-
-    private static final String SECRECT = "123456789";
 
     /**
      * Accede al archivo .JKS donde se almacena la llave privada
@@ -49,6 +48,7 @@ public class JwtProvider {
 
     /**
      * Genera para un petición de autentificación un token Bearer
+     *
      * @param authentication con datos de usuario
      * @return String Bearer Token
      */
@@ -64,6 +64,7 @@ public class JwtProvider {
 
     /**
      * Genera un Bearer token basado en el username
+     *
      * @param username nombre de un usuario registrado
      * @return String token
      */
@@ -78,6 +79,7 @@ public class JwtProvider {
 
     /**
      * Extrae la llava privada del archivo JKS
+     *
      * @return PrivateKey
      */
     private PrivateKey getPrivateKey() {
@@ -108,6 +110,7 @@ public class JwtProvider {
 
     /**
      * Extrae el nombre de usuario del Jwt
+     *
      * @param token token
      * @return String username
      */

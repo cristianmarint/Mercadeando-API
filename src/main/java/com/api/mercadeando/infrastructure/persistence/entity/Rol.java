@@ -33,36 +33,39 @@ public class Rol {
     @ManyToMany(
             mappedBy = "roles",
             targetEntity = User.class,
-            fetch=FetchType.EAGER,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE
     )
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     private List<User> users;
-    public void addUser(User user){
-        if (users == null){
+    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = Permiso.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "rol_permiso")
+    private Set<Permiso> permisos;
+
+    public void addUser(User user) {
+        if (users == null) {
             users = new ArrayList<User>(Collections.singleton(user));
-        }else {
+        } else {
             users.add(user);
         }
     }
-    public void removeUser(User user){
-        if (users!=null){
+
+    public void removeUser(User user) {
+        if (users != null) {
             users.remove(user);
         }
     }
 
-    @ManyToMany(cascade = CascadeType.MERGE,targetEntity = Permiso.class, fetch=FetchType.EAGER)
-    @JoinTable(name="rol_permiso")
-    private Set<Permiso> permisos;
-    public void addPermiso(Permiso permiso){
-        if (permisos == null){
+    public void addPermiso(Permiso permiso) {
+        if (permisos == null) {
             permisos = new HashSet<>(Arrays.asList(permiso));
-        }else {
+        } else {
             permisos.add(permiso);
         }
     }
-    public void removePermiso(Permiso permiso){
-        if (permisos!=null){
+
+    public void removePermiso(Permiso permiso) {
+        if (permisos != null) {
             permisos.remove(permiso);
         }
     }

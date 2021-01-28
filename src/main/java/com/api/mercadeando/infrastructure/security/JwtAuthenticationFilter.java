@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * Valida por medio de filtro el JWT en una petición
+     *
      * @param httpServletRequest
      * @param httpServletResponse
      * @param filterChain
@@ -42,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(httpServletRequest);
 
-        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)){
+        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
             String username = jwtProvider.getUsernameFromJwt(jwt);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -53,17 +54,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        filterChain.doFilter(httpServletRequest,httpServletResponse);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
     /**
      * extrae el token del Servlet Request
+     *
      * @param httpServletRequest
      * @return String Bearer token
      */
     private String getJwtFromRequest(HttpServletRequest httpServletRequest) {
         String bearerToken = httpServletRequest.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return bearerToken;
