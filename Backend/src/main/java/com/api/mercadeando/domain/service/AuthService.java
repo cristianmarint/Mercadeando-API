@@ -56,7 +56,6 @@ public class AuthService {
      * @param registerRequest Contiene username, email, y password
      */
     public void signup(RegisterRequest registerRequest) {
-
         if (userJPARepository.findByEmailIgnoreCase(registerRequest.getEmail()) == null && userJPARepository.findByUsernameIgnoreCase(registerRequest.getUsername()) == null) {
             User user = User
                     .builder()

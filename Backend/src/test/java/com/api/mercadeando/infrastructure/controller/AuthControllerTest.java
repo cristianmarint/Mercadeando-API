@@ -49,8 +49,8 @@ public class AuthControllerTest {
                 .build();
     }
 
-    private static final String EMAIL = "testuser@email.com";
-    private static final String USERNAME = "testuser";
+    private static final String EMAIL = "testusercontroller@email.com";
+    private static final String USERNAME = "testusercontroller";
     private static final String PASSWORD_PLAIN  = "123456789";
 
     @Test
