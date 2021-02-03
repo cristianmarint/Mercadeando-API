@@ -24,11 +24,13 @@ public class Link {
         this.rel = rel;
         this.type = HttpMethods.GET;
     }
+
     public Link(String rel, String href, HttpMethods type) {
         this.href = href;
         this.rel = rel;
         this.type = type;
     }
+
     enum HttpMethods {
         GET,
         POST,

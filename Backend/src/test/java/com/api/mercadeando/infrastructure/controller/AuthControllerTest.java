@@ -32,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AuthControllerTest {
+    private static final String EMAIL = "testusercontroller@email.com";
+    private static final String USERNAME = "testusercontroller";
+    private static final String PASSWORD_PLAIN = "123456789";
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -49,14 +52,10 @@ public class AuthControllerTest {
                 .build();
     }
 
-    private static final String EMAIL = "testusercontroller@email.com";
-    private static final String USERNAME = "testusercontroller";
-    private static final String PASSWORD_PLAIN  = "123456789";
-
     @Test
-    public void signUp_statusOkAndMessage_ifAllDataIsValid() throws Exception{
-        String body = "{\"username\":\"" + USERNAME + "\", \"password\":\""+ PASSWORD_PLAIN + "\",\"email\":\""+EMAIL+"\"}";
-        mvc.perform(post(URL_AUTH_V1+"signup")
+    public void signUp_statusOkAndMessage_ifAllDataIsValid() throws Exception {
+        String body = "{\"username\":\"" + USERNAME + "\", \"password\":\"" + PASSWORD_PLAIN + "\",\"email\":\"" + EMAIL + "\"}";
+        mvc.perform(post(URL_AUTH_V1 + "signup")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(body)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -68,7 +67,7 @@ public class AuthControllerTest {
     public void verifyAccount_statusOkAndMessage_ifTokenIsValid() throws Exception {
         Long testUserId = userJPARepository.findByUsername(USERNAME).get().getId();
         Optional<VerificationToken> token = verificationTokenJPARepository.findByUserId(testUserId);
-        mvc.perform(get(URL_AUTH_V1+"account-verification/"+token.get().getToken())
+        mvc.perform(get(URL_AUTH_V1 + "account-verification/" + token.get().getToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.ALL))
                 .andExpect(content().string("Account activated successfully"))
@@ -76,9 +75,9 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void login_statusOk_IfAccountIsValid() throws Exception{
-        String body = "{\"username\":\"" + USERNAME + "\", \"password\":\""+ PASSWORD_PLAIN + "\"}";
-        mvc.perform(post(URL_AUTH_V1+"login")
+    public void login_statusOk_IfAccountIsValid() throws Exception {
+        String body = "{\"username\":\"" + USERNAME + "\", \"password\":\"" + PASSWORD_PLAIN + "\"}";
+        mvc.perform(post(URL_AUTH_V1 + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
                 .accept(MediaType.ALL))

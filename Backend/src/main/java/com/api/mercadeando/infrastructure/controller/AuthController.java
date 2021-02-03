@@ -3,11 +3,10 @@ package com.api.mercadeando.infrastructure.controller;
 import com.api.mercadeando.domain.dto.AuthenticationResponse;
 import com.api.mercadeando.domain.dto.LoginRequest;
 import com.api.mercadeando.domain.dto.RefreshTokenRequest;
-import com.api.mercadeando.domain.dto.RegisterRequest;
+import com.api.mercadeando.domain.dto.SignupRequest;
 import com.api.mercadeando.domain.service.AuthService;
 import com.api.mercadeando.domain.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +28,12 @@ public class AuthController {
     /**
      * Enruta una petición de registro de usuario al Service
      *
-     * @param registerRequest En el cuerpo contiene username, email y password
+     * @param signupRequest En el cuerpo contiene username, email y password
      * @return ResponseEntity Contiene una respuesta exitosa
      */
     @PostMapping("signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+        authService.signup(signupRequest);
         return new ResponseEntity<>("User Registration Successful", OK);
     }
 

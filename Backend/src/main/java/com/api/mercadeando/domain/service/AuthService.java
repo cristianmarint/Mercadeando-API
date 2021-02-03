@@ -3,7 +3,7 @@ package com.api.mercadeando.domain.service;
 import com.api.mercadeando.domain.dto.AuthenticationResponse;
 import com.api.mercadeando.domain.dto.LoginRequest;
 import com.api.mercadeando.domain.dto.RefreshTokenRequest;
-import com.api.mercadeando.domain.dto.RegisterRequest;
+import com.api.mercadeando.domain.dto.SignupRequest;
 import com.api.mercadeando.domain.exception.MercadeandoException;
 import com.api.mercadeando.infrastructure.persistence.entity.*;
 import com.api.mercadeando.infrastructure.persistence.jpa.PermisoJPARepository;
@@ -53,15 +53,15 @@ public class AuthService {
     /**
      * Permite registrar un usuario y envia correo para verificar cuenta
      *
-     * @param registerRequest Contiene username, email, y password
+     * @param signupRequest Contiene username, email, y password
      */
-    public void signup(RegisterRequest registerRequest) {
-        if (userJPARepository.findByEmailIgnoreCase(registerRequest.getEmail()) == null && userJPARepository.findByUsernameIgnoreCase(registerRequest.getUsername()) == null) {
+    public void signup(SignupRequest signupRequest) {
+        if (userJPARepository.findByEmailIgnoreCase(signupRequest.getEmail()) == null && userJPARepository.findByUsernameIgnoreCase(signupRequest.getUsername()) == null) {
             User user = User
                     .builder()
-                    .username(registerRequest.getUsername())
-                    .email(registerRequest.getEmail())
-                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .username(signupRequest.getUsername())
+                    .email(signupRequest.getEmail())
+                    .password(passwordEncoder.encode(signupRequest.getPassword()))
                     .build();
             user.addRol(rolJPARepository.findByName("USUARIO"));
             userJPARepository.save(user);
@@ -71,7 +71,7 @@ public class AuthService {
                     "Gracias por registrarse en Mercadeando,  por favor acceda a el enlace para activar su cuenta: " +
                             "http://localhost:8080" + URL_AUTH_V1 + "account-verification/" + token));
         } else {
-            throw new MercadeandoException("Correo en uso " + registerRequest.getEmail());
+            throw new MercadeandoException("Correo en uso " + signupRequest.getEmail());
         }
     }
 

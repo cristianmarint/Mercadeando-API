@@ -59,11 +59,11 @@ public class CategoriaMapper {
             if (offset > 0) {
                 response.getLinks().add(
                         new Link("prev",
-                                String.format("/api/v1/clientes?offset=%s&limit=%s", Math.max(offset - limit, 0), limit)));
+                                String.format(URL_CATEGORIAS_V1 + "/?offset=%s&limit=%s", Math.max(offset - limit, 0), limit)));
             }
             response.getLinks().add(
                     new Link("next",
-                            String.format("/api/v1/clientes?offset=%s&limit=%s", offset + limit, limit)));
+                            String.format(URL_CATEGORIAS_V1 + "/?offset=%s&limit=%s", offset + limit, limit)));
         }
         return response;
     }

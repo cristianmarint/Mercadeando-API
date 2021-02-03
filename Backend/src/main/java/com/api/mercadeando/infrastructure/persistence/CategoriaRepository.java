@@ -89,8 +89,9 @@ public class CategoriaRepository implements CategoriaData {
     }
 
     @Override
-    public ProductosResponse getCategoriaProductos(Long categoriaId) throws BadRequestException {
+    public ProductosResponse getCategoriaProductos(Long categoriaId) throws BadRequestException, ResourceNotFoundException {
         if (categoriaId == null) throw new BadRequestException("CategoriaId no puede ser Null");
+        categoriaJPARepository.findById(categoriaId).orElseThrow(() -> new ResourceNotFoundException(categoriaId, "Categoria"));
         List<Producto> productos = productoJPARepository.getCategoriaProductos(categoriaId);
         return productoMapper.mapProductosToProductosResponse(0, 0, productos);
     }
